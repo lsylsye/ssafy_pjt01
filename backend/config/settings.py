@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -24,8 +25,6 @@ SECRET_KEY = 'django-insecure-ya9(#mtv-wonao^*%#5!82s7c3@%zc39lk$oay1=!r4a9zz8te
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
-SITE_ID = 1
 
 ALLOWED_HOSTS = []
 
@@ -44,21 +43,29 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     
-    # allauth 필수 앱
+    # allauth
     'django.contrib.sites',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
     
-    # DRF + Auth
-    'rest_framework',
-    'rest_framework.authtoken',
-    'dj_rest_auth',
-    'dj_rest_auth.registration',
-    'drf_yasg',
+    # DRF
+    "rest_framework",
+    "rest_framework.authtoken",
+
+    # REST Auth
+    "dj_rest_auth",
+    "dj_rest_auth.registration",
+
+    # Swagger
+    "drf_yasg",
+    
+    # CORS
+    'corsheaders',
 ]
 
 AUTH_USER_MODEL = 'users.User'
+SITE_ID = 1
 
 REST_FRAMEWORK = {
     # 1) 인증 방식
@@ -75,30 +82,26 @@ REST_FRAMEWORK = {
 }
 
 REST_AUTH = {
-    'REGISTER_SERIALIZER': 'users.serializers.CustomRegisterSerializer',
+    'USE_JWT': True,
+}
+REST_AUTH_SERIALIZERS = {
+    "USER_DETAILS_SERIALIZER": "users.serializers.CustomUserSerializer",
+}
+REST_AUTH_REGISTER_SERIALIZERS = {
+    "REGISTER_SERIALIZER": "users.serializers.CustomRegisterSerializer",
 }
 
 
-# 토큰 유효 시간 설정
-# from datetime import timedelta
-# SIMPLE_JWT = {
-#     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
-#     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
-#     'ROTATE_REFRESH_TOKENS': True,
-#     'BLACKLIST_AFTER_ROTATION': True,
-# }
+# SIMPLE JWT 설정
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
+    "ROTATE_REFRESH_TOKENS": True,
+    "BLACKLIST_AFTER_ROTATION": True,
+}
 
-# 로그인 방식 — username만 사용
-ACCOUNT_LOGIN_METHODS = {"username"}
-
-# 회원가입 시 요구할 필드 목록
-ACCOUNT_SIGNUP_FIELDS = [
-    "username", 
-]
-
-# 이메일 인증 사용하지 않음
-ACCOUNT_EMAIL_VERIFICATION = "none"
-
+ACCOUNT_AUTHENTICATION_METHOD = "username"
+ACCOUNT_USERNAME_REQUIRED = True
 
 
 
@@ -132,8 +135,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'config.wsgi.application'
-
-
 
 
 
@@ -194,3 +195,11 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+
+# CORS (Vue 개발 환경 안정 설정)
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+]
+
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_HEADERS = ["*"]
