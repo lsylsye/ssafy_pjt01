@@ -1,5 +1,5 @@
+from django.contrib.auth.models import AbstractUser
 from django.db import models
-from django.contrib.auth.models import AbstractUser 
 
 # Create your models here.
 def profile_image_path(instance, filename):
@@ -7,7 +7,8 @@ def profile_image_path(instance, filename):
     return f'profiles/user_{instance.id}/profile.{ext}'
 
 class User(AbstractUser):
-    nickname = models.CharField(max_length=30, blank=True)
+    nickname = models.CharField(max_length=30, blank=True, unique=True)
+    email = models.EmailField(unique=True)
 
     FAVORITE_COUNTRIES = [
         ('KR', '한국'),

@@ -16,11 +16,37 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from drf_yasg.views import get_schema_view
+from drf_yasg import openapi
+from rest_framework import permissions
+
+
+schema_view = get_schema_view(
+    openapi.Info(
+        title="JandiBook API Docs",
+        default_version="v1",
+        description="잔디북 프로젝트 API 명세서",
+    ),
+    public=True,
+    permission_classes=[permissions.AllowAny],
+)
 
 urlpatterns = [
+    
+    # auth
     path('admin/', admin.site.urls),
-    # 로그인
-    path('auth/', include('dj_rest_auth.urls')),
-    # 회원가입
-    path('auth/registration/', include('dj_rest_auth.registration.urls')),
+    path('accounts/', include("dj_rest_auth.urls")), 
+    path('accounts/signup/', include('dj_rest_auth.registration.urls')),
+    
+    # swagger
+    path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='swagger-ui'),
+    path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='redoc'),
+    
 ]
+
+
+# static/media
+from django.conf import settings
+from django.conf.urls.static import static
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
