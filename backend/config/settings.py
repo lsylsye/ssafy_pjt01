@@ -73,6 +73,11 @@ REST_FRAMEWORK = {
     # 'PAGE_SIZE': 20,
 }
 
+REST_AUTH = {
+    'REGISTER_SERIALIZER': 'users.serializers.CustomRegisterSerializer',
+}
+
+
 # 토큰 유효 시간 설정
 # from datetime import timedelta
 # SIMPLE_JWT = {
@@ -82,14 +87,17 @@ REST_FRAMEWORK = {
 #     'BLACKLIST_AFTER_ROTATION': True,
 # }
 
-# 로그인 방식을 username 기반으로 설정
-ACCOUNT_AUTHENTICATION_METHOD = 'username'
-# 이메일을 회원가입 필수값으로 요구하지 않음
-ACCOUNT_EMAIL_REQUIRED = False
-# 이메일 인증(메일 전송) 과정 비활성화
-ACCOUNT_EMAIL_VERIFICATION = 'none'
-# 회원가입 시 username 필수
-ACCOUNT_USERNAME_REQUIRED = True
+# 로그인 방식 — username만 사용
+ACCOUNT_LOGIN_METHODS = {"username"}
+
+# 회원가입 시 요구할 필드 목록
+ACCOUNT_SIGNUP_FIELDS = [
+    "username", 
+]
+
+# 이메일 인증 사용하지 않음
+ACCOUNT_EMAIL_VERIFICATION = "none"
+
 
 
 
