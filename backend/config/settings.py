@@ -84,9 +84,16 @@ REST_FRAMEWORK = {
 
 REST_AUTH = {
     "REGISTER_SERIALIZER": "users.serializers.CustomRegisterSerializer",
-    'USE_JWT': True,
+    "USE_JWT": True,
+    "JWT_AUTH_HTTPONLY": False
 }
-ACCOUNT_EMAIL_VERIFICATION = 'none'
+
+ACCOUNT_EMAIL_VERIFICATION = 'none' # 이메일 인증 안함
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
+}
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
