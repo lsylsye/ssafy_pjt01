@@ -34,6 +34,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     # app 설치
     'users',
+    'books',
     
     # 기본설정
     'django.contrib.admin',
@@ -193,3 +194,7 @@ CORS_ALLOWED_ORIGINS = [
 
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_HEADERS = ["*"]
+
+
+# 알라딘 OPEN API 설정
+ALADIN_TTB_KEY = "ttblsy74301608001"

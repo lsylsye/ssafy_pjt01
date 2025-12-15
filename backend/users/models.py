@@ -13,9 +13,8 @@ class User(AbstractUser):
     FAVORITE_COUNTRIES = [
         ('KR', '한국'),
         ('JP', '일본'),
-        ('ZH', '중화권'),
-        ('US', '미국'),
-        ('UK', '영국'),
+        ('CN', '중화권'),
+        ('EN', '영미권'),
         ('OTHER', '기타'),
     ]
 
