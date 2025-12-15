@@ -3,7 +3,6 @@
         "model": "books.bestsellers",
         "pk": 1,
         "fields": {
-            "category": 1,
             "category_id": 50993,
             "category_name": "국내도서>소설/시/희곡>한국소설>2000년대 이후 한국소설",
             "mall_type": "BOOK",
@@ -25,7 +24,6 @@
         "model": "books.bestsellers",
         "pk": 2,
         "fields": {
-            "category": 1,
             "category_id": 50993,
             "category_name": "국내도서>소설/시/희곡>한국소설>2000년대 이후 한국소설",
             "mall_type": "BOOK",
@@ -47,7 +45,6 @@
         "model": "books.bestsellers",
         "pk": 3,
         "fields": {
-            "category": 1,
             "category_id": 50998,
             "category_name": "국내도서>소설/시/희곡>일본소설>1950년대 이후 일본소설",
             "mall_type": "BOOK",
@@ -69,7 +66,6 @@
         "model": "books.bestsellers",
         "pk": 4,
         "fields": {
-            "category": 1,
             "category_id": 89481,
             "category_name": "국내도서>소설/시/희곡>과학소설(SF)>외국 과학소설",
             "mall_type": "BOOK",
@@ -91,7 +87,6 @@
         "model": "books.bestsellers",
         "pk": 5,
         "fields": {
-            "category": 1,
             "category_id": 50919,
             "category_name": "국내도서>소설/시/희곡>영미소설",
             "mall_type": "BOOK",
@@ -113,7 +108,6 @@
         "model": "books.bestsellers",
         "pk": 6,
         "fields": {
-            "category": 1,
             "category_id": 50993,
             "category_name": "국내도서>소설/시/희곡>한국소설>2000년대 이후 한국소설",
             "mall_type": "BOOK",
@@ -135,7 +129,6 @@
         "model": "books.bestsellers",
         "pk": 7,
         "fields": {
-            "category": 1,
             "category_id": 50993,
             "category_name": "국내도서>소설/시/희곡>한국소설>2000년대 이후 한국소설",
             "mall_type": "BOOK",
@@ -157,7 +150,6 @@
         "model": "books.bestsellers",
         "pk": 8,
         "fields": {
-            "category": 1,
             "category_id": 50994,
             "category_name": "국내도서>소설/시/희곡>한국소설>2000년대 이전 한국소설",
             "mall_type": "BOOK",
@@ -179,7 +171,6 @@
         "model": "books.bestsellers",
         "pk": 9,
         "fields": {
-            "category": 1,
             "category_id": 50919,
             "category_name": "국내도서>소설/시/희곡>영미소설",
             "mall_type": "BOOK",
@@ -201,7 +192,6 @@
         "model": "books.bestsellers",
         "pk": 10,
         "fields": {
-            "category": 1,
             "category_id": 50993,
             "category_name": "국내도서>소설/시/희곡>한국소설>2000년대 이후 한국소설",
             "mall_type": "BOOK",
@@ -223,7 +213,6 @@
         "model": "books.bestsellers",
         "pk": 11,
         "fields": {
-            "category": 1,
             "category_id": 51062,
             "category_name": "국내도서>소설/시/희곡>추리/미스터리소설>영미 추리/미스터리소설",
             "mall_type": "BOOK",
@@ -245,7 +234,6 @@
         "model": "books.bestsellers",
         "pk": 12,
         "fields": {
-            "category": 1,
             "category_id": 50993,
             "category_name": "국내도서>소설/시/희곡>한국소설>2000년대 이후 한국소설",
             "mall_type": "BOOK",
@@ -267,7 +255,6 @@
         "model": "books.bestsellers",
         "pk": 13,
         "fields": {
-            "category": 1,
             "category_id": 50993,
             "category_name": "국내도서>소설/시/희곡>한국소설>2000년대 이후 한국소설",
             "mall_type": "BOOK",
@@ -289,7 +276,6 @@
         "model": "books.bestsellers",
         "pk": 14,
         "fields": {
-            "category": 1,
             "category_id": 50993,
             "category_name": "국내도서>소설/시/희곡>한국소설>2000년대 이후 한국소설",
             "mall_type": "BOOK",
@@ -311,7 +297,6 @@
         "model": "books.bestsellers",
         "pk": 15,
         "fields": {
-            "category": 1,
             "category_id": 89481,
             "category_name": "국내도서>소설/시/희곡>과학소설(SF)>외국 과학소설",
             "mall_type": "BOOK",
@@ -333,7 +318,6 @@
         "model": "books.bestsellers",
         "pk": 16,
         "fields": {
-            "category": 1,
             "category_id": 50993,
             "category_name": "국내도서>소설/시/희곡>한국소설>2000년대 이후 한국소설",
             "mall_type": "BOOK",
@@ -355,7 +339,6 @@
         "model": "books.bestsellers",
         "pk": 17,
         "fields": {
-            "category": 1,
             "category_id": 51062,
             "category_name": "국내도서>소설/시/희곡>추리/미스터리소설>영미 추리/미스터리소설",
             "mall_type": "BOOK",
@@ -377,7 +360,6 @@
         "model": "books.bestsellers",
         "pk": 18,
         "fields": {
-            "category": 1,
             "category_id": 50993,
             "category_name": "국내도서>소설/시/희곡>한국소설>2000년대 이후 한국소설",
             "mall_type": "BOOK",
@@ -399,7 +381,6 @@
         "model": "books.bestsellers",
         "pk": 19,
         "fields": {
-            "category": 1,
             "category_id": 50919,
             "category_name": "국내도서>소설/시/희곡>영미소설",
             "mall_type": "BOOK",
@@ -421,7 +402,6 @@
         "model": "books.bestsellers",
         "pk": 20,
         "fields": {
-            "category": 1,
             "category_id": 89482,
             "category_name": "국내도서>소설/시/희곡>과학소설(SF)>한국 과학소설",
             "mall_type": "BOOK",
@@ -443,7 +423,6 @@
         "model": "books.bestsellers",
         "pk": 21,
         "fields": {
-            "category": 1,
             "category_id": 50922,
             "category_name": "국내도서>소설/시/희곡>독일소설",
             "mall_type": "BOOK",
@@ -465,7 +444,6 @@
         "model": "books.bestsellers",
         "pk": 22,
         "fields": {
-            "category": 1,
             "category_id": 50993,
             "category_name": "국내도서>소설/시/희곡>한국소설>2000년대 이후 한국소설",
             "mall_type": "BOOK",
@@ -487,7 +465,6 @@
         "model": "books.bestsellers",
         "pk": 23,
         "fields": {
-            "category": 1,
             "category_id": 51036,
             "category_name": "국내도서>소설/시/희곡>세계의 소설>동유럽소설",
             "mall_type": "BOOK",
@@ -509,7 +486,6 @@
         "model": "books.bestsellers",
         "pk": 24,
         "fields": {
-            "category": 1,
             "category_id": 50919,
             "category_name": "국내도서>소설/시/희곡>영미소설",
             "mall_type": "BOOK",
@@ -531,7 +507,6 @@
         "model": "books.bestsellers",
         "pk": 25,
         "fields": {
-            "category": 1,
             "category_id": 50919,
             "category_name": "국내도서>소설/시/희곡>영미소설",
             "mall_type": "BOOK",
@@ -553,7 +528,6 @@
         "model": "books.bestsellers",
         "pk": 26,
         "fields": {
-            "category": 1,
             "category_id": 51122,
             "category_name": "국내도서>소설/시/희곡>판타지/환상문학>한국판타지/환상소설",
             "mall_type": "BOOK",
@@ -575,7 +549,6 @@
         "model": "books.bestsellers",
         "pk": 27,
         "fields": {
-            "category": 1,
             "category_id": 50998,
             "category_name": "국내도서>소설/시/희곡>일본소설>1950년대 이후 일본소설",
             "mall_type": "BOOK",
@@ -597,7 +570,6 @@
         "model": "books.bestsellers",
         "pk": 28,
         "fields": {
-            "category": 1,
             "category_id": 50922,
             "category_name": "국내도서>소설/시/희곡>독일소설",
             "mall_type": "BOOK",
@@ -619,7 +591,6 @@
         "model": "books.bestsellers",
         "pk": 29,
         "fields": {
-            "category": 4,
             "category_id": 51371,
             "category_name": "국내도서>에세이>한국에세이",
             "mall_type": "BOOK",
@@ -641,7 +612,27 @@
         "model": "books.bestsellers",
         "pk": 30,
         "fields": {
-            "category": 1,
+            "category_id": 107413,
+            "category_name": "국내도서>소설/시/희곡>호러.공포소설>외국 호러.공포소설",
+            "mall_type": "BOOK",
+            "item_id": 378954480,
+            "isbn": "K532033629",
+            "isbn13": "9791194979708",
+            "title": "더럽혀진 성지 순례에 대하여",
+            "author": "세스지",
+            "publisher": "반타",
+            "pub_date": "2025-12-03",
+            "description": "심령 명소를 재취재하며 조작된 이야기를 꾸려가는 세 인물의 호러·추리 서사로, 실시간 방송 같은 몰입감과 인간 내면의 음울한 감정을 날카롭게 드러낸다.",
+            "cover": "https://image.aladin.co.kr/product/37895/44/coversum/k532033629_1.jpg",
+            "best_rank": 30,
+            "sales_point": 13530,
+            "customer_review_rank": 10
+        }
+    },
+    {
+        "model": "books.bestsellers",
+        "pk": 31,
+        "fields": {
             "category_id": 50993,
             "category_name": "국내도서>소설/시/희곡>한국소설>2000년대 이후 한국소설",
             "mall_type": "BOOK",
@@ -661,9 +652,8 @@
     },
     {
         "model": "books.bestsellers",
-        "pk": 31,
+        "pk": 32,
         "fields": {
-            "category": 1,
             "category_id": 89481,
             "category_name": "국내도서>소설/시/희곡>과학소설(SF)>외국 과학소설",
             "mall_type": "BOOK",
@@ -683,9 +673,8 @@
     },
     {
         "model": "books.bestsellers",
-        "pk": 32,
+        "pk": 33,
         "fields": {
-            "category": 1,
             "category_id": 51058,
             "category_name": "국내도서>소설/시/희곡>추리/미스터리소설>일본 추리/미스터리소설",
             "mall_type": "BOOK",
@@ -705,9 +694,8 @@
     },
     {
         "model": "books.bestsellers",
-        "pk": 33,
+        "pk": 34,
         "fields": {
-            "category": 1,
             "category_id": 50993,
             "category_name": "국내도서>소설/시/희곡>한국소설>2000년대 이후 한국소설",
             "mall_type": "BOOK",
@@ -727,9 +715,8 @@
     },
     {
         "model": "books.bestsellers",
-        "pk": 34,
+        "pk": 35,
         "fields": {
-            "category": 1,
             "category_id": 50993,
             "category_name": "국내도서>소설/시/희곡>한국소설>2000년대 이후 한국소설",
             "mall_type": "BOOK",
@@ -749,9 +736,8 @@
     },
     {
         "model": "books.bestsellers",
-        "pk": 35,
+        "pk": 36,
         "fields": {
-            "category": 4,
             "category_id": 51538,
             "category_name": "국내도서>인문학>책읽기/글쓰기>글쓰기",
             "mall_type": "BOOK",
@@ -771,9 +757,8 @@
     },
     {
         "model": "books.bestsellers",
-        "pk": 36,
+        "pk": 37,
         "fields": {
-            "category": 1,
             "category_id": 89482,
             "category_name": "국내도서>소설/시/희곡>과학소설(SF)>한국 과학소설",
             "mall_type": "BOOK",
@@ -793,9 +778,8 @@
     },
     {
         "model": "books.bestsellers",
-        "pk": 37,
+        "pk": 38,
         "fields": {
-            "category": 1,
             "category_id": 50993,
             "category_name": "국내도서>소설/시/희곡>한국소설>2000년대 이후 한국소설",
             "mall_type": "BOOK",
@@ -815,9 +799,8 @@
     },
     {
         "model": "books.bestsellers",
-        "pk": 38,
+        "pk": 39,
         "fields": {
-            "category": 1,
             "category_id": 51167,
             "category_name": "국내도서>소설/시/희곡>시>한국시",
             "mall_type": "BOOK",
@@ -837,9 +820,8 @@
     },
     {
         "model": "books.bestsellers",
-        "pk": 39,
+        "pk": 40,
         "fields": {
-            "category": 1,
             "category_id": 50993,
             "category_name": "국내도서>소설/시/희곡>한국소설>2000년대 이후 한국소설",
             "mall_type": "BOOK",
@@ -859,9 +841,8 @@
     },
     {
         "model": "books.bestsellers",
-        "pk": 40,
+        "pk": 41,
         "fields": {
-            "category": 1,
             "category_id": 50921,
             "category_name": "국내도서>소설/시/희곡>프랑스소설",
             "mall_type": "BOOK",
@@ -881,9 +862,8 @@
     },
     {
         "model": "books.bestsellers",
-        "pk": 41,
+        "pk": 42,
         "fields": {
-            "category": 1,
             "category_id": 51120,
             "category_name": "국내도서>소설/시/희곡>판타지/환상문학>외국판타지/환상소설",
             "mall_type": "BOOK",
@@ -903,9 +883,8 @@
     },
     {
         "model": "books.bestsellers",
-        "pk": 42,
+        "pk": 43,
         "fields": {
-            "category": 1,
             "category_id": 50919,
             "category_name": "국내도서>소설/시/희곡>영미소설",
             "mall_type": "BOOK",
@@ -925,9 +904,8 @@
     },
     {
         "model": "books.bestsellers",
-        "pk": 43,
+        "pk": 44,
         "fields": {
-            "category": 1,
             "category_id": 51058,
             "category_name": "국내도서>소설/시/희곡>추리/미스터리소설>일본 추리/미스터리소설",
             "mall_type": "BOOK",
@@ -947,9 +925,29 @@
     },
     {
         "model": "books.bestsellers",
-        "pk": 44,
+        "pk": 45,
         "fields": {
-            "category": 1,
+            "category_id": 107436,
+            "category_name": "국내도서>소설/시/희곡>액션/스릴러소설>외국 액션/스릴러소설",
+            "mall_type": "BOOK",
+            "item_id": 379666442,
+            "isbn": "8925572869",
+            "isbn13": "9788925572864",
+            "title": "크로싱",
+            "author": "마이클 코넬리",
+            "publisher": "알에이치코리아(RHK)",
+            "pub_date": "2025-12-22",
+            "description": "‘형사 해리 보슈’는 해리 홀레, 마르틴 베크와 함께 형사 추리물을 대표하는 시리즈로 30년 넘게 두터운 팬층을 거느리며 국내에서도 꾸준히 사랑받는 전설의 캐릭터이다. 이번 신작은 퇴직 이후의 시점에서 시작한다.\n",
+            "cover": "https://image.aladin.co.kr/product/37966/64/coversum/8925572869_2.jpg",
+            "best_rank": 45,
+            "sales_point": 4820,
+            "customer_review_rank": 10
+        }
+    },
+    {
+        "model": "books.bestsellers",
+        "pk": 46,
+        "fields": {
             "category_id": 50919,
             "category_name": "국내도서>소설/시/희곡>영미소설",
             "mall_type": "BOOK",
@@ -969,9 +967,8 @@
     },
     {
         "model": "books.bestsellers",
-        "pk": 45,
+        "pk": 47,
         "fields": {
-            "category": 1,
             "category_id": 50919,
             "category_name": "국내도서>소설/시/희곡>영미소설",
             "mall_type": "BOOK",
@@ -991,9 +988,8 @@
     },
     {
         "model": "books.bestsellers",
-        "pk": 46,
+        "pk": 48,
         "fields": {
-            "category": 1,
             "category_id": 50921,
             "category_name": "국내도서>소설/시/희곡>프랑스소설",
             "mall_type": "BOOK",
@@ -1013,9 +1009,8 @@
     },
     {
         "model": "books.bestsellers",
-        "pk": 47,
+        "pk": 49,
         "fields": {
-            "category": 4,
             "category_id": 51371,
             "category_name": "국내도서>에세이>한국에세이",
             "mall_type": "BOOK",
@@ -1035,9 +1030,8 @@
     },
     {
         "model": "books.bestsellers",
-        "pk": 48,
+        "pk": 50,
         "fields": {
-            "category": 1,
             "category_id": 50922,
             "category_name": "국내도서>소설/시/희곡>독일소설",
             "mall_type": "BOOK",

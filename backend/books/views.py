@@ -3,7 +3,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .models import Bestsellers
 from .serializers import BestsellerSerializer
-
+from django.conf import settings
 
 # 베스트셀러 TOP20
 @api_view(["GET"])
@@ -13,9 +13,6 @@ def bestseller_list(request):
 
 
 # 도서 검색
-ALADIN_SEARCH_URL = "http://www.aladin.co.kr/ttb/api/ItemSearch.aspx"
-TTB_KEY = "ttblsy74301608001"
-VERSION = "20131101"
 
 @api_view(["GET"])
 def book_search(request):
@@ -30,7 +27,7 @@ def book_search(request):
     category_id = request.GET.get("category", 0)
 
     params = {
-        "ttbkey": TTB_KEY,
+        "ttbkey": settings.ALADIN_TTB_KEY,
         "Query": q,
         "QueryType": query_type,
         "SearchTarget": "Book",
@@ -39,10 +36,10 @@ def book_search(request):
         "Sort": sort,
         "CategoryId": category_id,
         "Output": "JS",
-        "Version": VERSION,
+        "Version": settings.ALADIN_API_VERSION,
     }
 
-    res = requests.get(ALADIN_SEARCH_URL, params=params)
+    res = requests.get(settings.ALADIN_SEARCH_URL, params=params)
     res.raise_for_status()
     data = res.json()
     

@@ -2,9 +2,8 @@ from django.db import models
 
 # Create your models here.
 class Bestsellers(models.Model):
-    category = models.IntegerField()
 
-    # 알라딘 원본 카테고리 정보 (보존용)
+    # 알라딘 카테고리 정보 (보존용)
     category_id = models.IntegerField()
     category_name = models.CharField(max_length=255)
 
