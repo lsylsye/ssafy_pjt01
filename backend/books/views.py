@@ -25,7 +25,7 @@ def book_search(request):
     size = int(request.GET.get("size", 10))
     sort = request.GET.get("sort", "Accuracy")
     category_id = request.GET.get("category", 0)
-
+    
     params = {
         "ttbkey": settings.ALADIN_TTB_KEY,
         "Query": q,

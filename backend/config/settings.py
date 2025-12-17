@@ -201,3 +201,4 @@ CORS_ALLOW_HEADERS = ["*"]
 ALADIN_TTB_KEY = config("ALADIN_TTB_KEY")
 ALADIN_API_VERSION = config("ALADIN_API_VERSION", default="20131101")
 ALADIN_SEARCH_URL = "http://www.aladin.co.kr/ttb/api/ItemSearch.aspx"
+ALADIN_LOOKUP_URL = "http://www.aladin.co.kr/ttb/api/ItemLookUp.aspx"
