@@ -1,9 +1,12 @@
 import requests
+from django.conf import settings
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .models import Bestsellers
-from .serializers import BestsellerSerializer
-from django.conf import settings
+from .serializers import BestsellerSerializer, BookDetailSerializer
+from .services import get_or_create_book_by_isbn13
+
+
 
 # 베스트셀러 TOP20
 @api_view(["GET"])
@@ -11,9 +14,7 @@ def bestseller_list(request):
     serializer = BestsellerSerializer(Bestsellers.objects.all(), many=True)
     return Response(serializer.data)
 
-
 # 도서 검색
-
 @api_view(["GET"])
 def book_search(request):
     q = request.GET.get("q")
@@ -62,3 +63,19 @@ def book_search(request):
         "size": size,
         "items": items,
     })
+    
+    
+    
+# 도서 상세 페이지
+@api_view(["GET"])
+def book_detail(request, isbn13):
+    try:
+        book = get_or_create_book_by_isbn13(isbn13)
+    except ValueError as e:
+        return Response(
+            {"error": str(e)},
+            status=status.HTTP_404_NOT_FOUND
+        )
+
+    serializer = BookDetailSerializer(book)
+    return Response(serializer.data)

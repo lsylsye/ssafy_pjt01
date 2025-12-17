@@ -48,7 +48,7 @@ class Book(models.Model):
     category_name = models.CharField(max_length=255, blank=True)
 
     # 베스트셀러 정보 (해당되는 경우만)
-    best_seller_rank = models.PositiveIntegerField(null=True, blank=True)
+    best_rank = models.PositiveIntegerField(null=True, blank=True)
 
     # 🤖 AI / Wikipedia 기반 작가 정보
     author_info = models.TextField(blank=True)

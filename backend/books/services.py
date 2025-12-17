@@ -1,4 +1,3 @@
-# books/services/book_service.py
 import requests
 from django.conf import settings
 from books.models import Book
