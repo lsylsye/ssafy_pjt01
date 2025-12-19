@@ -10,10 +10,10 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
-import os
 from pathlib import Path
 from datetime import timedelta
-from dotenv import load_dotenv
+
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -199,7 +199,8 @@ CORS_ALLOW_HEADERS = ["*"]
 
 
 # 알라딘 OPEN API 설정
-ALADIN_TTB_KEY = os.getenv("ALADIN_TTB_KEY")
-ALADIN_API_VERSION = os.getenv("ALADIN_API_VERSION", "20131101")
+ALADIN_TTB_KEY = "ttblsy74301608001"
+ALADIN_API_VERSION = "20131101"
 ALADIN_SEARCH_URL = "http://www.aladin.co.kr/ttb/api/ItemSearch.aspx"
 ALADIN_LOOKUP_URL = "http://www.aladin.co.kr/ttb/api/ItemLookUp.aspx"
+
