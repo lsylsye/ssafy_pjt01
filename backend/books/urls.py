@@ -10,5 +10,4 @@ urlpatterns = [
 
     # 북마크
     path("<str:isbn13>/bookmark/", bookmark_toggle),
-    path("me/bookmarks/", my_bookmarks),
 ]

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Bestsellers, Book
+from .models import Bestsellers, Book, Bookmark
 
 # 베스트셀러
 class BestsellerSerializer(serializers.ModelSerializer):
@@ -19,6 +19,8 @@ class BestsellerSerializer(serializers.ModelSerializer):
 
 # 도서 상세 페이지
 class BookDetailSerializer(serializers.ModelSerializer):
+    is_bookmarked = serializers.SerializerMethodField()
+    
     class Meta:
         model = Book
         fields = [
@@ -31,9 +33,11 @@ class BookDetailSerializer(serializers.ModelSerializer):
             "cover",
             "category_id",
             "category_name",
-            "best_rank",
-            "author_info",
-            "author_works",
-            "author_image",
-            "author_source",
+            "is_bookmarked",
         ]
+        
+    def get_is_bookmarked(self, obj):
+        request = self.context.get("request")
+        if request is None or not request.user.is_authenticated:
+            return False
+        return Bookmark.objects.filter(user=request.user, book=obj).exists()

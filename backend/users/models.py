@@ -19,11 +19,12 @@ class User(AbstractUser):
     ]
 
     FAVORITE_GENRES = [
-        ('novel', '소설'),
-        ('comic', '만화'),
-        ('essay', '에세이'),
-        ('issue', '시사·이슈'), 
-        ('etc', '기타'),
+        ("novel_poem_drama", "소설/시/희곡"),
+        ("business", "경제/경영"),
+        ("self_help", "자기계발"),
+        ("humanities", "인문/교양"),
+        ("comic_ebook", "만화/eBook"),
+        ("science", "과학"),
     ]
 
     favorite_country = models.CharField(max_length=5, choices=FAVORITE_COUNTRIES, null=True, blank=True)

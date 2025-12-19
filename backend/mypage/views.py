@@ -7,6 +7,22 @@ from books.models import Bookmark
 from .serializers import MyBookmarkSerializer
 
 
+# 내 정보 조회
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def my_profile(request):
+    user = request.user
+    return Response({
+        "id": user.id,
+        "username": user.username,
+        "email": user.email,
+        "nickname": getattr(user, "nickname", ""),
+        "favorite_country": getattr(user, "favorite_country", None),
+        "favorite_genre": getattr(user, "favorite_genre", None),
+    })
+
+
+# 내 북마크 조회
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def my_bookmarks(request):

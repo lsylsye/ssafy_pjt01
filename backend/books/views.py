@@ -1,5 +1,6 @@
 import requests
 from django.conf import settings
+from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -78,8 +79,8 @@ def book_detail(request, isbn13):
             status=status.HTTP_404_NOT_FOUND
         )
 
-    serializer = BookDetailSerializer(book)
-    return Response(serializer.data)
+    serializer = BookDetailSerializer(book, context={"request": request})
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 # 북마크
