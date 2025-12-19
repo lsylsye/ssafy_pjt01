@@ -1,8 +1,9 @@
 import requests
 from django.conf import settings
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from .models import Bestsellers
+from .models import Bestsellers, Book, Bookmark
 from .serializers import BestsellerSerializer, BookDetailSerializer
 from .services import get_or_create_book_by_isbn13
 
@@ -79,3 +80,63 @@ def book_detail(request, isbn13):
 
     serializer = BookDetailSerializer(book)
     return Response(serializer.data)
+
+
+# 북마크 생성
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def bookmark_create(request, isbn13):
+    book = get_or_create_book_by_isbn13(isbn13)
+
+    bookmark, created = Bookmark.objects.get_or_create(
+        user=request.user,
+        book=book
+    )
+
+    return Response({
+        "bookmarked": True,
+        "created": created
+    })
+
+# 북마크 삭제
+@api_view(["DELETE"])
+@permission_classes([IsAuthenticated])
+def bookmark_delete(request, isbn13):
+    book = get_object_or_404(Book, isbn13=isbn13)
+
+    Bookmark.objects.filter(
+        user=request.user,
+        book=book
+    ).delete()
+
+    return Response({
+        "bookmarked": False
+    })
+
+
+
+# 📌 내 북마크 목록
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def my_bookmarks(request):
+    bookmarks = (
+        Bookmark.objects
+        .filter(user=request.user)
+        .select_related("book")
+        .order_by("-created_at")
+    )
+
+    data = [
+        {
+            "isbn13": b.book.isbn13,
+            "title": b.book.title,
+            "author": b.book.author,
+            "publisher": b.book.publisher,
+            "pub_date": b.book.pub_date,
+            "cover": b.book.cover,
+            "bookmarked_at": b.created_at,
+        }
+        for b in bookmarks
+    ]
+
+    return Response(data)
