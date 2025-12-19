@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import bestseller_list, book_search, book_detail, bookmark_create, bookmark_delete, my_bookmarks
+from .views import bestseller_list, book_search, book_detail, bookmark_toggle, my_bookmarks
 
 urlpatterns = [
 
@@ -9,7 +9,6 @@ urlpatterns = [
     path("<str:isbn13>/", book_detail),
 
     # 북마크
-    path("<str:isbn13>/bookmark/", bookmark_create),
-    path("<str:isbn13>/bookmark/delete/", bookmark_delete),
+    path("<str:isbn13>/bookmark/", bookmark_toggle),
     path("me/bookmarks/", my_bookmarks),
 ]

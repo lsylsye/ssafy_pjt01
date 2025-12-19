@@ -44,6 +44,9 @@ urlpatterns = [
     
     # books
     path('api/books/', include('books.urls')),
+    
+    # mypage
+    path("api/mypage/", include("mypage.urls")),
 ]
 
 

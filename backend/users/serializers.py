@@ -65,13 +65,13 @@ class CustomRegisterSerializer(RegisterSerializer):
     # ============================
     # 5) 저장 로직
     # ============================
-    def save(self, request):
-        user = super().save(request)
+def save(self, request):
+    user = super().save(request)
 
-        user.nickname = self.cleaned_data.get("nickname")
-        user.favorite_country = self.cleaned_data.get("favorite_country")
-        user.favorite_genre = self.cleaned_data.get("favorite_genre")
-        user.other_country = self.cleaned_data.get("other_country")
+    user.nickname = self.validated_data.get("nickname")
+    user.favorite_country = self.validated_data.get("favorite_country")
+    user.favorite_genre = self.validated_data.get("favorite_genre")
+    user.other_country = self.validated_data.get("other_country")
 
-        user.save()
-        return user
+    user.save()
+    return user

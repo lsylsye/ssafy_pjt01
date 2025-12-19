@@ -4,17 +4,14 @@ from books.models import Book
 
 
 def get_or_create_book_by_isbn13(isbn13: str) -> Book:
-    """
-    isbn13 기준으로 Book을 가져오거나,
-    없으면 알라딘 API → DB 저장 후 반환
-    """
 
-    # 1️⃣ DB 먼저 확인
+
+    # DB 먼저 확인
     book = Book.objects.filter(isbn13=isbn13).first()
     if book:
         return book
 
-    # 2️⃣ 알라딘 상품 조회
+    # 알라딘 상품 조회
     params = {
         "ttbkey": settings.ALADIN_TTB_KEY,
         "ItemId": isbn13,
@@ -44,7 +41,6 @@ def get_or_create_book_by_isbn13(isbn13: str) -> Book:
         cover=item.get("cover", ""),
         category_id=item.get("categoryId"),
         category_name=item.get("categoryName", ""),
-        best_rank=item.get("bestSellerRank"),
     )
 
     return book

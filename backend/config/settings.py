@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     # app 설치
     'users',
     'books',
+    "mypage",
     
     # 기본설정
     'django.contrib.admin',

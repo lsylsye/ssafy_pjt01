@@ -82,40 +82,36 @@ def book_detail(request, isbn13):
     return Response(serializer.data)
 
 
-# 북마크 생성
+# 북마크
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
-def bookmark_create(request, isbn13):
+def bookmark_toggle(request, isbn13):
+    user = request.user
+
+    # Book 확보 (없으면 알라딘 → DB 저장)
     book = get_or_create_book_by_isbn13(isbn13)
 
-    bookmark, created = Bookmark.objects.get_or_create(
-        user=request.user,
-        book=book
-    )
+    # 북마크 존재 여부 확인
+    bookmark = Bookmark.objects.filter(user=user, book=book).first()
 
+    if bookmark:
+        # 이미 있으면 → 삭제
+        bookmark.delete()
+        return Response({
+            "bookmarked": False,
+            "created": False
+        })
+
+    # 없으면 → 생성
+    Bookmark.objects.create(user=user, book=book)
     return Response({
         "bookmarked": True,
-        "created": created
-    })
-
-# 북마크 삭제
-@api_view(["DELETE"])
-@permission_classes([IsAuthenticated])
-def bookmark_delete(request, isbn13):
-    book = get_object_or_404(Book, isbn13=isbn13)
-
-    Bookmark.objects.filter(
-        user=request.user,
-        book=book
-    ).delete()
-
-    return Response({
-        "bookmarked": False
+        "created": True
     })
 
 
 
-# 📌 내 북마크 목록
+# 내 북마크 목록
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def my_bookmarks(request):
