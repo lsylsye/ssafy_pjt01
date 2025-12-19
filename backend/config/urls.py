@@ -37,16 +37,15 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include("dj_rest_auth.urls")), 
     path('accounts/signup/', include('dj_rest_auth.registration.urls')),
-    
     # swagger
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='redoc'),
-    
     # books
     path('api/books/', include('books.urls')),
-    
-    # mypage
+    # 마이페이지
     path("api/mypage/", include("mypage.urls")),
+    # 커뮤니티
+    path("api/community/", include("community.urls")),
 ]
 
 

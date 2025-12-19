@@ -41,6 +41,7 @@ def get_or_create_book_by_isbn13(isbn13: str) -> Book:
         cover=item.get("cover", ""),
         category_id=item.get("categoryId"),
         category_name=item.get("categoryName", ""),
+        sales_point=item.get("salesPoint", "")
     )
 
     return book

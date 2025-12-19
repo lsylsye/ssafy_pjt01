@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'users',
     'books',
     "mypage",
+    "community",
     
     # 기본설정
     'django.contrib.admin',

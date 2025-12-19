@@ -41,6 +41,7 @@ class Book(models.Model):
     pub_date = models.DateField()
     description = models.TextField(blank=True)
     cover = models.URLField(blank=True)
+    sales_point = models.IntegerField(null=True, blank=True)
 
     category_id = models.IntegerField(null=True, blank=True)
     category_name = models.CharField(max_length=255, blank=True)
