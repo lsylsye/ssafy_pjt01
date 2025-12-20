@@ -3,7 +3,7 @@
     <h1>도서 검색</h1>
 
     <!-- 검색창 -->
-    <div>
+    <div class="search-box">
       <input
         v-model="query"
         placeholder="책 제목을 입력하세요"
@@ -19,19 +19,22 @@
         :key="book.isbn13"
         class="result-item"
       >
-        <img :src="book.cover" alt="표지" width="60" />
-        <div>
-          <p><strong>{{ book.title }}</strong></p>
-          <p>{{ book.author }}</p>
-          <p>{{ book.publisher }}</p>
-        </div>
+        <router-link
+          :to="`/books/${book.isbn13}`"
+          class="result-link"
+        >
+          <img :src="book.cover" alt="표지" />
+          <div>
+            <p class="title">{{ book.title }}</p>
+            <p class="author">{{ book.author }}</p>
+            <p class="publisher">{{ book.publisher }}</p>
+          </div>
+        </router-link>
       </li>
     </ul>
 
     <!-- 검색 결과 없음 -->
-    <p v-else-if="isSearched">
-      검색 결과가 없습니다.
-    </p>
+    <p v-else-if="isSearched">검색 결과가 없습니다.</p>
   </section>
 </template>
 
@@ -58,15 +61,43 @@ const searchBooks = () => {
 </script>
 
 <style scoped>
+.search-box {
+  margin-bottom: 16px;
+}
+
+.search-box input {
+  padding: 6px;
+  width: 220px;
+}
+
 .result-list {
   list-style: none;
   padding: 0;
 }
 
 .result-item {
+  border-bottom: 1px solid #eee;
+}
+
+.result-link {
   display: flex;
   gap: 12px;
   padding: 12px 0;
-  border-bottom: 1px solid #eee;
+  text-decoration: none;
+  color: inherit;
+}
+
+.result-link img {
+  width: 60px;
+}
+
+.title {
+  font-weight: bold;
+}
+
+.author,
+.publisher {
+  font-size: 14px;
+  color: #555;
 }
 </style>

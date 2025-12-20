@@ -1,3 +1,35 @@
+<template>
+  <section class="main">
+    <h2 class="title">베스트셀러 TOP 10</h2>
+
+    <ul class="bestseller-list">
+      <li
+        v-for="book in top10"
+        :key="book.id"
+        class="bestseller-item"
+      >
+        <router-link
+          :to="`/books/${book.isbn13}`"
+          class="bestseller-link"
+        >
+          <span class="rank">{{ book.best_rank }}</span>
+
+          <img
+            :src="book.cover"
+            alt="표지"
+            class="cover"
+          />
+
+          <span class="book-title">
+            {{ book.title }}
+          </span>
+        </router-link>
+      </li>
+    </ul>
+  </section>
+</template>
+
+
 <script setup>
 import { ref, onMounted, computed } from 'vue'
 import api from '@/api/axios'
@@ -14,7 +46,6 @@ const fetchBestsellers = () => {
     })
 }
 
-// TOP 10만 사용
 const top10 = computed(() => bestsellers.value.slice(0, 10))
 
 onMounted(() => {
@@ -22,65 +53,57 @@ onMounted(() => {
 })
 </script>
 
-<template>
-  <section>
-    <h2>베스트셀러 TOP 10</h2>
-
-    <ul class="bestseller-list">
-      <li
-        v-for="book in top10"
-        :key="book.id"
-        class="bestseller-item"
-      >
-        <!-- 순위 -->
-        <span class="rank">{{ book.best_rank }}</span>
-
-        <!-- 표지 -->
-        <img
-          :src="book.cover"
-          alt="표지"
-          class="cover"
-        />
-
-        <!-- 제목 -->
-        <span class="title">{{ book.title }}</span>
-      </li>
-    </ul>
-  </section>
-</template>
 
 <style scoped>
+.main {
+  padding: 24px;
+}
+
+.title {
+  margin-bottom: 16px;
+}
+
 .bestseller-list {
   list-style: none;
   padding: 0;
   margin: 0;
 
   display: grid;
-  grid-template-columns: repeat(2, 1fr); /* ⭐ 한 줄에 2개 */
-  gap: 16px 24px; /* 세로 / 가로 간격 */
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px 24px;
 }
 
 .bestseller-item {
+  border: 1px solid #eee;
+  border-radius: 6px;
+}
+
+.bestseller-link {
   display: flex;
   align-items: center;
   gap: 12px;
   padding: 12px;
-  border: 1px solid #eee;
-  border-radius: 6px;
+
+  text-decoration: none;
+  color: inherit;
 }
 
 .rank {
   font-weight: bold;
   color: #e53935;
+  width: 20px;
 }
 
 .cover {
-  width: 40px;
+  width: 50px;
   height: auto;
 }
 
-.title {
+.book-title {
   font-size: 15px;
 }
 
+.bestseller-link:hover {
+  background-color: #f5f7fa;
+}
 </style>
