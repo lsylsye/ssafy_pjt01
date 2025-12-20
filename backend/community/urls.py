@@ -1,26 +1,49 @@
 from django.urls import path
 from .views import (
     community_boards,
-    board_posts, post_detail,
-    board_prefixes,
-    board_reviews, review_detail,
-    post_comments, review_comments,
+
+    free_list, free_write, free_detail,
+    review_list, review_write, review_detail,
+
+    free_prefixes,
+
+    free_comments_list, free_comments_write,
+    review_comments_list, review_comments_write,
+
+    comment_delete, comment_like_toggle,
+
+    post_like_toggle, review_like_toggle,
 )
 
 urlpatterns = [
-    # boards list
+    # 커뮤니티별 게시판 목록
     path("<str:country>/", community_boards),
 
-    # FREE posts
-    path("<str:country>/<slug:board_slug>/posts/", board_posts),
-    path("posts/<int:post_id>/", post_detail),
-    path("posts/<int:post_id>/comments/", post_comments),
+    # 자유 게시판
+    path("<str:country>/free/", free_list),
+    path("<str:country>/free/write", free_write),
+    path("<str:country>/free/<int:post_id>/", free_detail),
 
-    # Prefixes (FREE only)
-    path("<str:country>/<slug:board_slug>/prefixes/", board_prefixes),
+    # 리뷰 게시판
+    path("<str:country>/review/", review_list),
+    path("<str:country>/review/write", review_write),
+    path("<str:country>/review/<int:review_id>/", review_detail),
 
-    # Reviews
-    path("<str:country>/<slug:board_slug>/reviews/", board_reviews),
-    path("reviews/<int:review_id>/", review_detail),
-    path("reviews/<int:review_id>/comments/", review_comments),
+    # 말머리(자유만)
+    path("<str:country>/free/prefixes/", free_prefixes),
+
+    # 댓글(자유/리뷰)
+    path("<str:country>/free/<int:post_id>/comments/", free_comments_list),
+    path("<str:country>/free/<int:post_id>/comments/write", free_comments_write),
+
+    path("<str:country>/review/<int:review_id>/comments/", review_comments_list),
+    path("<str:country>/review/<int:review_id>/comments/write", review_comments_write),
+
+    # 댓글 삭제/댓글 좋아요(전역)
+    path("comments/<int:comment_id>/", comment_delete),
+    path("comments/<int:comment_id>/like/", comment_like_toggle),
+
+    # 글/리뷰 좋아요
+    path("<str:country>/free/<int:post_id>/like/", post_like_toggle),
+    path("<str:country>/review/<int:review_id>/like/", review_like_toggle),
 ]

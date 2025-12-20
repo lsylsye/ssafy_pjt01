@@ -2,8 +2,7 @@ from django.db.models.signals import post_migrate
 from django.dispatch import receiver
 
 @receiver(post_migrate)
-def seed_communities_and_boards(sender, **kwargs):
-    # community 앱 migrate 끝났을 때만 실행
+def seed_community(sender, **kwargs):
     if sender.name != "community":
         return
 
@@ -22,7 +21,6 @@ def seed_communities_and_boards(sender, **kwargs):
             defaults={"name": name},
         )
 
-        # 기본 게시판 2개 (free/review)
         Board.objects.update_or_create(
             community=community,
             slug="free",
