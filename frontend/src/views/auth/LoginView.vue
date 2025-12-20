@@ -2,6 +2,11 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import api from '@/api/axios'
+import { useAuthStore } from '@/stores/auth'
+import { useBookmarkStore } from '@/stores/bookmark'
+
+const auth = useAuthStore()
+const bookmarkStore = useBookmarkStore()
 
 const router = useRouter()
 
@@ -15,11 +20,8 @@ const login = () => {
   })
   .then((res) => {
     // ✅ JWT 토큰 저장
-    const access = res.data.access
-    const refresh = res.data.refresh
-
-    localStorage.setItem('access_token', access)
-    localStorage.setItem('refresh_token', refresh)
+    auth.setTokens({ access: res.data.access, refresh: res.data.refresh })
+    bookmarkStore.sync()
 
     alert('로그인 성공')
     router.push('/')   // 메인 페이지 이동

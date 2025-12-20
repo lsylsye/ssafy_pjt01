@@ -1,20 +1,14 @@
 <template>
   <section class="book-detail">
-    <!-- 로딩 -->
     <p v-if="isLoading">불러오는 중...</p>
-
-    <!-- 에러 -->
     <p v-else-if="errorMsg">{{ errorMsg }}</p>
 
-    <!-- 도서 상세 -->
     <div v-else-if="book">
       <h1 class="title">{{ book.title }}</h1>
 
       <div class="detail">
-        <!-- 표지 -->
         <img :src="book.cover" alt="표지" class="cover" />
 
-        <!-- 정보 -->
         <div class="info">
           <p><strong>저자</strong> {{ book.author }}</p>
           <p><strong>출판사</strong> {{ book.publisher }}</p>
@@ -22,7 +16,6 @@
             <strong>카테고리</strong> {{ book.category_name }}
           </p>
 
-          <!-- ⭐ 북마크 버튼 -->
           <button
             class="bookmark-btn"
             :class="{ active: isBookmarked }"
@@ -33,60 +26,48 @@
         </div>
       </div>
 
-      <!-- 📖 설명 -->
       <div v-if="book.description" class="description">
         <h3>책 소개</h3>
         <p>{{ book.description }}</p>
       </div>
     </div>
 
-    <!-- 데이터 없음 -->
     <p v-else>도서 정보를 찾을 수 없습니다.</p>
   </section>
 </template>
 
-
 <script setup>
-import { ref, onMounted, watch } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import api from '@/api/axios'
+import { useBookmarkStore } from '@/stores/bookmark'
 
 const route = useRoute()
 const router = useRouter()
+const bookmarkStore = useBookmarkStore()
 
 const book = ref(null)
 const isLoading = ref(false)
 const errorMsg = ref('')
-const isBookmarked = ref(false)
 
-/* ===============================
-   로그인 여부 판단
-================================ */
-const isLoggedIn = () => {
-  const token = localStorage.getItem('access_token')
-  console.log('[북마크] access_token:', token)
-  return !!token
-}
+const isbn13 = computed(() => String(route.params.isbn13 || ''))
+const isBookmarked = computed(() => bookmarkStore.isBookmarked(isbn13.value))
 
-/* ===============================
-   도서 상세 조회
-================================ */
-const fetchBookDetail = (isbn13) => {
-  if (!isbn13) return
+const isLoggedIn = () => !!localStorage.getItem('access_token')
 
-  console.log('[도서 상세 요청]', isbn13)
+const fetchBookDetail = (isbn) => {
+  if (!isbn) return
 
   isLoading.value = true
   errorMsg.value = ''
   book.value = null
 
-  api.get(`/api/books/${isbn13}/`)
+  api.get(`/api/books/${isbn}/`)
     .then((res) => {
       book.value = res.data
-      console.log('[도서 상세 응답]', res.data)
     })
     .catch((err) => {
-      console.error('[도서 상세 조회 실패]', err)
+      console.error('[도서 상세 조회 실패]', err.response?.data || err.message)
       errorMsg.value = '도서 정보를 불러오지 못했습니다.'
     })
     .finally(() => {
@@ -94,47 +75,51 @@ const fetchBookDetail = (isbn13) => {
     })
 }
 
-/* ===============================
-   북마크 클릭 처리
-================================ */
 const handleBookmark = () => {
-  console.log('--- 북마크 버튼 클릭 ---')
+  if (!isbn13.value) return
 
-  // 로그인 안 됐을 때
   if (!isLoggedIn()) {
-    console.warn('[북마크 실패] 로그인 필요')
     alert('로그인이 필요한 기능입니다.')
     router.push('/login')
     return
   }
 
-  // 로그인 된 경우 (지금은 UI 토글만)
-  isBookmarked.value = !isBookmarked.value
-
-  console.log('[북마크 토글]')
-  console.log('책 제목:', book.value?.title)
-  console.log('ISBN:', route.params.isbn13)
-  console.log('현재 북마크 상태:', isBookmarked.value)
+  bookmarkStore.toggle(isbn13.value)
+    .then(() => {
+      // store가 상태 갱신까지 처리함
+    })
+    .catch((err) => {
+      if (err?.code === 'LOGIN_REQUIRED') {
+        alert('로그인이 필요한 기능입니다.')
+        router.push('/login')
+        return
+      }
+      if (err?.response?.status === 401) {
+        alert('로그인이 만료되었습니다. 다시 로그인해주세요.')
+        router.push('/login')
+        return
+      }
+      console.error('[북마크 토글 실패]', err?.response?.data || err?.message || err)
+      alert('북마크 처리에 실패했습니다.')
+    })
 }
 
-/* ===============================
-   생명주기
-================================ */
+const loadPage = (isbn) => {
+  fetchBookDetail(isbn)
+  bookmarkStore.sync()
+}
+
 onMounted(() => {
-  console.log('[BookDetailView mounted]')
-  fetchBookDetail(route.params.isbn13)
+  loadPage(isbn13.value)
 })
 
 watch(
-  () => route.params.isbn13,
+  () => isbn13.value,
   (newIsbn) => {
-    console.log('[도서 변경 감지]', newIsbn)
-    isBookmarked.value = false
-    fetchBookDetail(newIsbn)
+    loadPage(newIsbn)
   }
 )
 </script>
-
 
 <style scoped>
 .book-detail {

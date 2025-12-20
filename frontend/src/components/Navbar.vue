@@ -7,12 +7,26 @@
 
     <!-- 메뉴 -->
     <ul class="menu">
-      <li>
-        <router-link to="/signup">회원가입</router-link>
-      </li>
-      <li>
-        <router-link to="/login">로그인</router-link>
-      </li>
+      <!-- ✅ 로그인 전 -->
+      <template v-if="!auth.isLoggedIn">
+        <li>
+          <router-link to="/signup">회원가입</router-link>
+        </li>
+        <li>
+          <router-link to="/login">로그인</router-link>
+        </li>
+      </template>
+
+      <!-- ✅ 로그인 후 -->
+      <template v-else>
+        <li>
+          <router-link to="/mypage">마이페이지</router-link>
+        </li>
+        <li>
+          <button class="logout-btn" @click="handleLogout">로그아웃</button>
+        </li>
+      </template>
+
       <li>
         <router-link to="/search">도서 검색</router-link>
       </li>
@@ -35,6 +49,26 @@
     </ul>
   </nav>
 </template>
+
+<script setup>
+import { useRouter } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
+import { useBookmarkStore } from '@/stores/bookmark'
+
+const router = useRouter()
+const auth = useAuthStore()
+const bookmarkStore = useBookmarkStore()
+
+const handleLogout = () => {
+  auth.logout()
+
+  // ✅ 로그인 사용자 전용 캐시 초기화
+  bookmarkStore.isbnSet = new Set()
+  bookmarkStore.synced = false
+
+  router.push('/login')
+}
+</script>
 
 <style scoped>
 .navbar {
@@ -67,6 +101,20 @@
 
 .menu a.router-link-active {
   font-weight: bold;
+}
+
+/* ✅ 로그아웃 버튼(링크처럼 보이게) */
+.logout-btn {
+  border: none;
+  background: none;
+  padding: 0;
+  color: #444;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.logout-btn:hover {
+  color: #1a73e8;
 }
 
 /* 드롭다운 */
@@ -104,14 +152,12 @@
   display: block;
 }
 
-
 /* ✅ 호버 효과 */
 .dropdown-menu li:hover {
-  background-color: #f5f7fa;   /* 연한 배경 */
+  background-color: #f5f7fa;
 }
 
 .dropdown-menu li:hover a {
-  color: #1a73e8;              /* 글자 색 변경 */
+  color: #1a73e8;
 }
-
 </style>
