@@ -7,6 +7,7 @@ class BestsellerSerializer(serializers.ModelSerializer):
         model = Bestsellers
         fields = [
             "id",
+            "isbn13",
             "category_name",
             "title",
             "author",
