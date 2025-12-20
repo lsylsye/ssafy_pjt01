@@ -203,6 +203,7 @@ CORS_ALLOW_HEADERS = ["*"]
 # 알라딘 OPEN API 설정
 ALADIN_TTB_KEY = "ttblsy74301608001"
 ALADIN_API_VERSION = "20131101"
+ALADIN_ITEMLIST_URL = "http://www.aladin.co.kr/ttb/api/ItemList.aspx"
 ALADIN_SEARCH_URL = "http://www.aladin.co.kr/ttb/api/ItemSearch.aspx"
 ALADIN_LOOKUP_URL = "http://www.aladin.co.kr/ttb/api/ItemLookUp.aspx"
 

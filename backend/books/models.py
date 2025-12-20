@@ -32,6 +32,10 @@ class Bestsellers(models.Model):
     customer_review_rank = models.PositiveSmallIntegerField(null=True)
 
 
+class BestsellerSync(models.Model):
+    updated_at = models.DateTimeField(auto_now=True)
+    
+
 class Book(models.Model):
     isbn13 = models.CharField(max_length=20, unique=True)
 

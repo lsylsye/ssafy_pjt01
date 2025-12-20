@@ -1,20 +1,40 @@
 import requests
+from datetime import timedelta
 from django.conf import settings
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from .models import Bestsellers, Book, Bookmark
+from .models import Bestsellers, Book, Bookmark, BestsellerSync
 from .serializers import BestsellerSerializer, BookDetailSerializer
 from .services import get_or_create_book_by_isbn13
+from .services_bestsellers import refresh_bestsellers_from_aladin
 
 
-
-# 베스트셀러 TOP20
+# 베스트셀러 TOP10
 @api_view(["GET"])
 def bestseller_list(request):
-    serializer = BestsellerSerializer(Bestsellers.objects.all(), many=True)
-    return Response(serializer.data)
+    max_results = 10
+    ttl = timedelta(hours=24)
+
+    sync = BestsellerSync.objects.filter(id=1).first()
+    qs = Bestsellers.objects.all().order_by("best_rank")[:max_results]
+
+    is_fresh = False
+    if sync and qs.count() >= max_results:
+        is_fresh = (timezone.now() - sync.updated_at) <= ttl
+
+    if not is_fresh:
+        try:
+            refresh_bestsellers_from_aladin(max_results=max_results)
+            qs = Bestsellers.objects.all().order_by("best_rank")[:max_results]
+        except Exception:
+            # 알라딘 실패해도 DB 캐시가 있으면 캐시로 반환(서비스 안정성)
+            if qs.exists():
+                return Response(BestsellerSerializer(qs, many=True).data)
+            return Response({"error": "bestsellers refresh failed"}, status=503)
+
+    return Response(BestsellerSerializer(qs, many=True).data)
 
 # 도서 검색
 @api_view(["GET"])

@@ -1,10 +1,10 @@
 import requests
 from django.conf import settings
 from books.models import Book
+from .models import Bestsellers, BestsellerSync
 
 
 def get_or_create_book_by_isbn13(isbn13: str) -> Book:
-
 
     # DB 먼저 확인
     book = Book.objects.filter(isbn13=isbn13).first()
