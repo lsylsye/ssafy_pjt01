@@ -13,10 +13,6 @@ from .serializers import (
     CommentSerializer, CommentWriteSerializer,
 )
 
-# 너의 books 로직 위치에 맞춰 import 경로만 맞춰줘
-from books.services import get_or_create_book_by_isbn13
-
-
 def _auth_required(request):
     if not request.user.is_authenticated:
         return Response({"detail": "Authentication credentials were not provided."}, status=status.HTTP_401_UNAUTHORIZED)
@@ -211,7 +207,7 @@ def review_list(request, country):
     if board is None:
         return Response({"error": "Board not found"}, status=status.HTTP_404_NOT_FOUND)
 
-    qs = Review.objects.filter(board=board).select_related("user", "book").order_by("-id")
+    qs = Review.objects.filter(board=board).select_related("user").order_by("-id")
 
     data = []
     for r in qs:
@@ -278,7 +274,7 @@ def review_detail(request, country, review_id):
     if board is None:
         return Response({"error": "Board not found"}, status=status.HTTP_404_NOT_FOUND)
 
-    review = Review.objects.select_related("user", "book").filter(board=board, id=review_id).first()
+    review = Review.objects.select_related("user").filter(board=board, id=review_id).first()
     if review is None:
         return Response({"error": "Review not found"}, status=status.HTTP_404_NOT_FOUND)
 
