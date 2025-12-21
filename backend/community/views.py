@@ -1,4 +1,5 @@
 from django.contrib.contenttypes.models import ContentType
+from django.db.models import Count, Q
 
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -13,13 +14,22 @@ from .serializers import (
     CommentSerializer, CommentWriteSerializer,
 )
 
+
 def _auth_required(request):
     if not request.user.is_authenticated:
-        return Response({"detail": "Authentication credentials were not provided."}, status=status.HTTP_401_UNAUTHORIZED)
+        return Response(
+            {"detail": "Authentication credentials were not provided."},
+            status=status.HTTP_401_UNAUTHORIZED
+        )
     return None
 
 
+def _normalize_country(country):
+    return (country or "").lower().strip()
+
+
 def _get_community(country):
+    country = _normalize_country(country)
     return Community.objects.filter(country=country).first()
 
 
@@ -27,18 +37,50 @@ def _get_board(community, board_slug):
     return Board.objects.filter(community=community, slug=board_slug).first()
 
 
+_CT_CACHE = {}
+
+
 def _ct(model_cls):
-    return ContentType.objects.get_for_model(model_cls)
+    if model_cls not in _CT_CACHE:
+        _CT_CACHE[model_cls] = ContentType.objects.get_for_model(model_cls)
+    return _CT_CACHE[model_cls]
 
 
-def _like_count(model_cls, obj_id):
+def _like_count_map(model_cls, obj_ids):
+    if not obj_ids:
+        return {}
     ct = _ct(model_cls)
-    return Like.objects.filter(content_type=ct, object_id=obj_id).count()
+    qs = (
+        Like.objects
+        .filter(content_type=ct, object_id__in=obj_ids)
+        .values("object_id")
+        .annotate(cnt=Count("id"))
+    )
+    return {row["object_id"]: row["cnt"] for row in qs}
 
 
-def _comment_count(model_cls, obj_id):
+def _comment_count_map(model_cls, obj_ids):
+    if not obj_ids:
+        return {}
     ct = _ct(model_cls)
-    return Comment.objects.filter(content_type=ct, object_id=obj_id).count()
+    qs = (
+        Comment.objects
+        .filter(content_type=ct, object_id__in=obj_ids)
+        .values("object_id")
+        .annotate(cnt=Count("id"))
+    )
+    return {row["object_id"]: row["cnt"] for row in qs}
+
+
+def _bulk_liked_ids(request, model_cls, obj_ids):
+    if (not request.user.is_authenticated) or (not obj_ids):
+        return set()
+    ct = _ct(model_cls)
+    return set(
+        Like.objects
+        .filter(user=request.user, content_type=ct, object_id__in=obj_ids)
+        .values_list("object_id", flat=True)
+    )
 
 
 def _toggle_like(request, model_cls, obj_id):
@@ -55,10 +97,11 @@ def _toggle_like(request, model_cls, obj_id):
         Like.objects.create(user=request.user, content_type=ct, object_id=obj_id)
         liked = True
 
-    return Response({"liked": liked, "like_count": Like.objects.filter(content_type=ct, object_id=obj_id).count()})
+    like_count = Like.objects.filter(content_type=ct, object_id=obj_id).count()
+    return Response({"liked": liked, "like_count": like_count})
 
 
-# 1) 커뮤니티별 게시판 목록
+# 1) 커뮤니티별 게시판 목록: /api/community/<country>/
 @api_view(["GET"])
 def community_boards(request, country):
     community = _get_community(country)
@@ -68,7 +111,7 @@ def community_boards(request, country):
     return Response(BoardSerializer(community.boards.all(), many=True).data)
 
 
-# 2) 자유 게시판 글 목록
+# 2) 자유 게시판 목록: /api/community/<country>/free/
 @api_view(["GET"])
 def free_list(request, country):
     community = _get_community(country)
@@ -81,21 +124,32 @@ def free_list(request, country):
 
     qs = Post.objects.filter(board=board).select_related("user", "prefix").order_by("-id")
 
-    prefix = request.query_params.get("prefix")
+    # 검색(옵션): q=제목+내용, prefix=말머리
+    q = (request.query_params.get("q") or "").strip()
+    if q:
+        qs = qs.filter(Q(title__icontains=q) | Q(content__icontains=q))
+
+    prefix = (request.query_params.get("prefix") or "").strip()
     if prefix:
         qs = qs.filter(prefix__name=prefix)
 
+    post_ids = list(qs.values_list("id", flat=True))
+
+    like_map = _like_count_map(Post, post_ids)
+    comment_map = _comment_count_map(Post, post_ids)
+    liked_ids = _bulk_liked_ids(request, Post, post_ids)
+
     data = []
     for p in qs:
-        row = PostListSerializer(p).data
-        row["like_count"] = _like_count(Post, p.id)
-        row["comment_count"] = _comment_count(Post, p.id)
+        row = PostListSerializer(p, context={"liked_ids": liked_ids}).data
+        row["like_count"] = like_map.get(p.id, 0)
+        row["comment_count"] = comment_map.get(p.id, 0)
         data.append(row)
 
     return Response(data)
 
 
-# 2) 자유 글 작성: /free/write
+# 3) 자유 글 작성: /api/community/<country>/free/write/
 @api_view(["POST"])
 def free_write(request, country):
     auth_resp = _auth_required(request)
@@ -131,15 +185,13 @@ def free_write(request, country):
         content=s.validated_data["content"],
     )
 
-    data = PostListSerializer(post).data
-    data["like_count"] = 0
-    data["comment_count"] = 0
-    return Response(data, status=status.HTTP_201_CREATED)
+    row = PostListSerializer(post, context={"liked_ids": set()}).data
+    row["like_count"] = 0
+    row["comment_count"] = 0
+    return Response(row, status=status.HTTP_201_CREATED)
 
 
-
-
-# 3) 자유 글 상세/수정/삭제: /free/<post_id>/
+# 4) 자유 글 상세/수정/삭제: /api/community/<country>/free/<post_id>/
 @api_view(["GET", "PATCH", "DELETE"])
 def free_detail(request, country, post_id):
     community = _get_community(country)
@@ -155,10 +207,14 @@ def free_detail(request, country, post_id):
         return Response({"error": "Post not found"}, status=status.HTTP_404_NOT_FOUND)
 
     if request.method == "GET":
-        data = PostListSerializer(post).data
-        data["like_count"] = _like_count(Post, post.id)
-        data["comment_count"] = _comment_count(Post, post.id)
-        return Response(data)
+        like_map = _like_count_map(Post, [post.id])
+        comment_map = _comment_count_map(Post, [post.id])
+        liked_ids = _bulk_liked_ids(request, Post, [post.id])
+
+        row = PostListSerializer(post, context={"liked_ids": liked_ids}).data
+        row["like_count"] = like_map.get(post.id, 0)
+        row["comment_count"] = comment_map.get(post.id, 0)
+        return Response(row)
 
     auth_resp = _auth_required(request)
     if auth_resp:
@@ -190,13 +246,175 @@ def free_detail(request, country, post_id):
 
     post.save()
 
-    data = PostListSerializer(post).data
-    data["like_count"] = _like_count(Post, post.id)
-    data["comment_count"] = _comment_count(Post, post.id)
-    return Response(data)
+    like_map = _like_count_map(Post, [post.id])
+    comment_map = _comment_count_map(Post, [post.id])
+    liked_ids = _bulk_liked_ids(request, Post, [post.id])
+
+    row = PostListSerializer(post, context={"liked_ids": liked_ids}).data
+    row["like_count"] = like_map.get(post.id, 0)
+    row["comment_count"] = comment_map.get(post.id, 0)
+    return Response(row)
 
 
-# 2) 리뷰 목록
+# 5) 자유 글 좋아요 토글: /api/community/<country>/free/<post_id>/like/
+@api_view(["POST"])
+def post_like_toggle(request, country, post_id):
+    community = _get_community(country)
+    if community is None:
+        return Response({"error": "Community not found"}, status=status.HTTP_404_NOT_FOUND)
+
+    board = _get_board(community, "free")
+    if board is None:
+        return Response({"error": "Board not found"}, status=status.HTTP_404_NOT_FOUND)
+
+    if not Post.objects.filter(board=board, id=post_id).exists():
+        return Response({"error": "Post not found"}, status=status.HTTP_404_NOT_FOUND)
+
+    return _toggle_like(request, Post, post_id)
+
+
+# 6) 자유 말머리 목록(옵션): /api/community/<country>/free/prefixes/
+@api_view(["GET"])
+def free_prefixes(request, country):
+    community = _get_community(country)
+    if community is None:
+        return Response({"error": "Community not found"}, status=status.HTTP_404_NOT_FOUND)
+
+    board = _get_board(community, "free")
+    if board is None:
+        return Response({"error": "Board not found"}, status=status.HTTP_404_NOT_FOUND)
+
+    qs = board.prefixes.all().order_by("name")
+    return Response(PrefixSerializer(qs, many=True).data)
+
+
+# -----------------------------
+# 댓글 트리 공통
+# -----------------------------
+def _comment_tree_response(request, target_model, target_id):
+    target_ct = _ct(target_model)
+    comment_ct = _ct(Comment)
+
+    qs = (
+        Comment.objects
+        .filter(content_type=target_ct, object_id=target_id)
+        .select_related("user", "parent_comment")
+        .order_by("id")
+    )
+
+    comment_ids = list(qs.values_list("id", flat=True))
+    liked_comment_ids = _bulk_liked_ids(request, Comment, comment_ids)
+
+    like_qs = (
+        Like.objects
+        .filter(content_type=comment_ct, object_id__in=comment_ids)
+        .values("object_id")
+        .annotate(cnt=Count("id"))
+    )
+    like_map = {row["object_id"]: row["cnt"] for row in like_qs}
+
+    # 베스트(좋아요 10개 이상) Top3
+    best_candidates = []
+    for c in qs:
+        lc = like_map.get(c.id, 0)
+        if lc >= 10:
+            best_candidates.append((lc, c.id, c))
+    best_candidates.sort(key=lambda x: (-x[0], x[1]))
+    best_top3 = best_candidates[:3]
+
+    best = []
+    for lc, _, c in best_top3:
+        d = CommentSerializer(c, context={"liked_ids": liked_comment_ids}).data
+        d["like_count"] = lc
+        best.append(d)
+
+    children = {}
+    roots = []
+    for c in qs:
+        pid = c.parent_comment_id
+        if pid:
+            children.setdefault(pid, []).append(c)
+        else:
+            roots.append(c)
+
+    def build_node(c):
+        d = CommentSerializer(c, context={"liked_ids": liked_comment_ids}).data
+        d["like_count"] = like_map.get(c.id, 0)
+        d["replies"] = [build_node(ch) for ch in children.get(c.id, [])]
+        return d
+
+    return {"best": best, "comments": [build_node(c) for c in roots]}
+
+
+# 7) 자유 댓글 목록: /api/community/<country>/free/<post_id>/comments/
+@api_view(["GET"])
+def free_comments_list(request, country, post_id):
+    community = _get_community(country)
+    if community is None:
+        return Response({"error": "Community not found"}, status=status.HTTP_404_NOT_FOUND)
+
+    board = _get_board(community, "free")
+    if board is None:
+        return Response({"error": "Board not found"}, status=status.HTTP_404_NOT_FOUND)
+
+    if not Post.objects.filter(board=board, id=post_id).exists():
+        return Response({"error": "Post not found"}, status=status.HTTP_404_NOT_FOUND)
+
+    return Response(_comment_tree_response(request, Post, post_id))
+
+
+# 8) 자유 댓글 작성: /api/community/<country>/free/<post_id>/comments/write/
+@api_view(["POST"])
+def free_comments_write(request, country, post_id):
+    auth_resp = _auth_required(request)
+    if auth_resp:
+        return auth_resp
+
+    community = _get_community(country)
+    if community is None:
+        return Response({"error": "Community not found"}, status=status.HTTP_404_NOT_FOUND)
+
+    board = _get_board(community, "free")
+    if board is None:
+        return Response({"error": "Board not found"}, status=status.HTTP_404_NOT_FOUND)
+
+    post = Post.objects.filter(board=board, id=post_id).first()
+    if post is None:
+        return Response({"error": "Post not found"}, status=status.HTTP_404_NOT_FOUND)
+
+    s = CommentWriteSerializer(data=request.data)
+    if not s.is_valid():
+        return Response(s.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    parent_obj = None
+    parent_id = s.validated_data.get("parent_comment_id")
+    if parent_id:
+        parent_obj = Comment.objects.filter(id=parent_id).first()
+        if parent_obj is None:
+            return Response({"error": "Parent comment not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        post_ct = _ct(Post)
+        if parent_obj.content_type_id != post_ct.id or parent_obj.object_id != post.id:
+            return Response({"error": "Parent comment target mismatch"}, status=status.HTTP_400_BAD_REQUEST)
+
+    comment = Comment.objects.create(
+        user=request.user,
+        content_type=_ct(Post),
+        object_id=post.id,
+        parent_comment=parent_obj,
+        content=s.validated_data["content"],
+    )
+
+    row = CommentSerializer(comment, context={"liked_ids": set()}).data
+    row["like_count"] = 0
+    return Response(row, status=status.HTTP_201_CREATED)
+
+
+# -----------------------------
+# 리뷰 게시판
+# -----------------------------
+
+# 1) 리뷰 목록: /api/community/<country>/review/
 @api_view(["GET"])
 def review_list(request, country):
     community = _get_community(country)
@@ -209,25 +427,28 @@ def review_list(request, country):
 
     qs = Review.objects.filter(board=board).select_related("user").order_by("-id")
 
+    review_ids = list(qs.values_list("id", flat=True))
+    like_map = _like_count_map(Review, review_ids)
+    comment_map = _comment_count_map(Review, review_ids)
+    liked_ids = _bulk_liked_ids(request, Review, review_ids)
+
     data = []
     for r in qs:
-        row = ReviewListSerializer(r).data
-        row["like_count"] = _like_count(Review, r.id)
-        row["comment_count"] = _comment_count(Review, r.id)
+        row = ReviewListSerializer(r, context={"liked_ids": liked_ids}).data
+        row["like_count"] = like_map.get(r.id, 0)
+        row["comment_count"] = comment_map.get(r.id, 0)
         data.append(row)
 
     return Response(data)
 
 
-# 2) 리뷰 작성: /review/write
+# 2) 리뷰 작성: /api/community/<country>/review/write/
 @api_view(["POST"])
 def review_write(request, country):
-    # 로그인 필요
     auth_resp = _auth_required(request)
     if auth_resp:
         return auth_resp
 
-    # 커뮤니티/보드 확인
     community = _get_community(country)
     if community is None:
         return Response({"error": "Community not found"}, status=status.HTTP_404_NOT_FOUND)
@@ -236,14 +457,12 @@ def review_write(request, country):
     if board is None:
         return Response({"error": "Board not found"}, status=status.HTTP_404_NOT_FOUND)
 
-    # 입력 검증
     s = ReviewWriteSerializer(data=request.data)
     if not s.is_valid():
         return Response(s.errors, status=status.HTTP_400_BAD_REQUEST)
 
     v = s.validated_data
 
-    # Review 생성
     review = Review.objects.create(
         board=board,
         user=request.user,
@@ -257,13 +476,13 @@ def review_write(request, country):
         cover=v.get("cover", ""),
     )
 
-    data = ReviewListSerializer(review).data
-    data["like_count"] = 0
-    data["comment_count"] = 0
-    return Response(data, status=status.HTTP_201_CREATED)
+    row = ReviewListSerializer(review, context={"liked_ids": set()}).data
+    row["like_count"] = 0
+    row["comment_count"] = 0
+    return Response(row, status=status.HTTP_201_CREATED)
 
 
-# 3) 리뷰 상세/수정/삭제: /review/<review_id>/
+# 3) 리뷰 상세/수정/삭제: /api/community/<country>/review/<review_id>/
 @api_view(["GET", "PATCH", "DELETE"])
 def review_detail(request, country, review_id):
     community = _get_community(country)
@@ -279,10 +498,14 @@ def review_detail(request, country, review_id):
         return Response({"error": "Review not found"}, status=status.HTTP_404_NOT_FOUND)
 
     if request.method == "GET":
-        data = ReviewListSerializer(review).data
-        data["like_count"] = _like_count(Review, review.id)
-        data["comment_count"] = _comment_count(Review, review.id)
-        return Response(data)
+        like_map = _like_count_map(Review, [review.id])
+        comment_map = _comment_count_map(Review, [review.id])
+        liked_ids = _bulk_liked_ids(request, Review, [review.id])
+
+        row = ReviewListSerializer(review, context={"liked_ids": liked_ids}).data
+        row["like_count"] = like_map.get(review.id, 0)
+        row["comment_count"] = comment_map.get(review.id, 0)
+        return Response(row)
 
     auth_resp = _auth_required(request)
     if auth_resp:
@@ -297,170 +520,68 @@ def review_detail(request, country, review_id):
 
     # PATCH
     if "rating" in request.data:
-        try:
-            rating = int(request.data.get("rating"))
-        except Exception:
-            return Response({"error": "rating must be int"}, status=status.HTTP_400_BAD_REQUEST)
-        if rating < 1 or rating > 5:
-            return Response({"error": "rating must be 1~5"}, status=status.HTTP_400_BAD_REQUEST)
-        review.rating = rating
+        rating = request.data.get("rating")
+        if rating is not None and rating != "":
+            try:
+                rating = int(rating)
+            except Exception:
+                return Response({"error": "rating must be int"}, status=status.HTTP_400_BAD_REQUEST)
+            if rating < 1 or rating > 5:
+                return Response({"error": "rating must be 1~5"}, status=status.HTTP_400_BAD_REQUEST)
+            review.rating = rating
+        else:
+            review.rating = None
 
     if "content" in request.data:
         review.content = request.data.get("content")
 
     review.save()
 
-    data = ReviewListSerializer(review).data
-    data["like_count"] = _like_count(Review, review.id)
-    data["comment_count"] = _comment_count(Review, review.id)
-    return Response(data)
+    like_map = _like_count_map(Review, [review.id])
+    comment_map = _comment_count_map(Review, [review.id])
+    liked_ids = _bulk_liked_ids(request, Review, [review.id])
+
+    row = ReviewListSerializer(review, context={"liked_ids": liked_ids}).data
+    row["like_count"] = like_map.get(review.id, 0)
+    row["comment_count"] = comment_map.get(review.id, 0)
+    return Response(row)
 
 
-# 4) 말머리(자유만): /free/prefixes/
-@api_view(["GET"])
-def free_prefixes(request, country):
-    community = _get_community(country)
-    if community is None:
-        return Response({"error": "Community not found"}, status=status.HTTP_404_NOT_FOUND)
-
-    board = _get_board(community, "free")
-    if board is None:
-        return Response({"error": "Board not found"}, status=status.HTTP_404_NOT_FOUND)
-
-    qs = board.prefixes.all().order_by("name")
-    return Response(PrefixSerializer(qs, many=True).data)
-
-
-
-def _comment_tree_response(target_model, target_id):
-    target_ct = _ct(target_model)
-    comment_ct = _ct(Comment)
-
-    qs = Comment.objects.filter(content_type=target_ct, object_id=target_id).select_related("user", "parent_comment").order_by("id")
-
-    # like_count map
-    like_map = {}
-    for c in qs:
-        like_map[c.id] = Like.objects.filter(content_type=comment_ct, object_id=c.id).count()
-
-    # 베스트(좋아요 10개 이상) Top3: likes desc, id asc
-    best_candidates = []
-    for c in qs:
-        lc = like_map.get(c.id, 0)
-        if lc >= 10:
-            best_candidates.append((lc, c.id, c))
-    best_candidates.sort(key=lambda x: (-x[0], x[1]))
-    best_top3 = best_candidates[:3]
-
-    best = []
-    for lc, _, c in best_top3:
-        d = CommentSerializer(c).data
-        d["like_count"] = lc
-        best.append(d)
-
-    # 트리 구성
-    children = {}
-    roots = []
-
-    for c in qs:
-        pid = c.parent_comment_id
-        if pid:
-            children.setdefault(pid, []).append(c)
-        else:
-            roots.append(c)
-
-    def build_node(c):
-        d = CommentSerializer(c).data
-        d["like_count"] = like_map.get(c.id, 0)
-        d["replies"] = [build_node(ch) for ch in children.get(c.id, [])]
-        return d
-
-    return {"best": best, "comments": [build_node(c) for c in roots]}
-
-
-# 5) 댓글 목록(자유): /free/<post_id>/comments/
-@api_view(["GET"])
-def free_comments_list(request, country, post_id):
-    # 존재 확인
-    community = _get_community(country)
-    if community is None:
-        return Response({"error": "Community not found"}, status=status.HTTP_404_NOT_FOUND)
-    board = _get_board(community, "free")
-    if board is None:
-        return Response({"error": "Board not found"}, status=status.HTTP_404_NOT_FOUND)
-
-    exists = Post.objects.filter(board=board, id=post_id).exists()
-    if not exists:
-        return Response({"error": "Post not found"}, status=status.HTTP_404_NOT_FOUND)
-
-    return Response(_comment_tree_response(Post, post_id))
-
-
-# 5) 댓글 작성(자유): /free/<post_id>/comments/write
+# 4) 리뷰 좋아요 토글: /api/community/<country>/review/<review_id>/like/
 @api_view(["POST"])
-def free_comments_write(request, country, post_id):
-    auth_resp = _auth_required(request)
-    if auth_resp:
-        return auth_resp
-
+def review_like_toggle(request, country, review_id):
     community = _get_community(country)
     if community is None:
         return Response({"error": "Community not found"}, status=status.HTTP_404_NOT_FOUND)
-    board = _get_board(community, "free")
+
+    board = _get_board(community, "review")
     if board is None:
         return Response({"error": "Board not found"}, status=status.HTTP_404_NOT_FOUND)
 
-    post = Post.objects.filter(board=board, id=post_id).first()
-    if post is None:
-        return Response({"error": "Post not found"}, status=status.HTTP_404_NOT_FOUND)
+    if not Review.objects.filter(board=board, id=review_id).exists():
+        return Response({"error": "Review not found"}, status=status.HTTP_404_NOT_FOUND)
 
-    s = CommentWriteSerializer(data=request.data)
-    if not s.is_valid():
-        return Response(s.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    parent_obj = None
-    if "parent_comment_id" in s.validated_data:
-        parent_id = s.validated_data["parent_comment_id"]
-        parent_obj = Comment.objects.filter(id=parent_id).first()
-        if parent_obj is None:
-            return Response({"error": "Parent comment not found"}, status=status.HTTP_404_NOT_FOUND)
-
-        # 부모 댓글이 같은 대상(Post)에 달린 댓글인지 검증
-        post_ct = _ct(Post)
-        if parent_obj.content_type_id != post_ct.id or parent_obj.object_id != post.id:
-            return Response({"error": "Parent comment target mismatch"}, status=status.HTTP_400_BAD_REQUEST)
-
-    comment = Comment.objects.create(
-        user=request.user,
-        content_type=_ct(Post),
-        object_id=post.id,
-        parent_comment=parent_obj,
-        content=s.validated_data["content"],
-    )
-
-    data = CommentSerializer(comment).data
-    data["like_count"] = 0
-    return Response(data, status=status.HTTP_201_CREATED)
+    return _toggle_like(request, Review, review_id)
 
 
-# 5) 댓글 목록(리뷰): /review/<review_id>/comments/
+# 5) 리뷰 댓글 목록: /api/community/<country>/review/<review_id>/comments/
 @api_view(["GET"])
 def review_comments_list(request, country, review_id):
     community = _get_community(country)
     if community is None:
         return Response({"error": "Community not found"}, status=status.HTTP_404_NOT_FOUND)
+
     board = _get_board(community, "review")
     if board is None:
         return Response({"error": "Board not found"}, status=status.HTTP_404_NOT_FOUND)
 
-    exists = Review.objects.filter(board=board, id=review_id).exists()
-    if not exists:
+    if not Review.objects.filter(board=board, id=review_id).exists():
         return Response({"error": "Review not found"}, status=status.HTTP_404_NOT_FOUND)
 
-    return Response(_comment_tree_response(Review, review_id))
+    return Response(_comment_tree_response(request, Review, review_id))
 
 
-# 5) 댓글 작성(리뷰): /review/<review_id>/comments/write
+# 6) 리뷰 댓글 작성: /api/community/<country>/review/<review_id>/comments/write/
 @api_view(["POST"])
 def review_comments_write(request, country, review_id):
     auth_resp = _auth_required(request)
@@ -470,6 +591,7 @@ def review_comments_write(request, country, review_id):
     community = _get_community(country)
     if community is None:
         return Response({"error": "Community not found"}, status=status.HTTP_404_NOT_FOUND)
+
     board = _get_board(community, "review")
     if board is None:
         return Response({"error": "Board not found"}, status=status.HTTP_404_NOT_FOUND)
@@ -483,8 +605,8 @@ def review_comments_write(request, country, review_id):
         return Response(s.errors, status=status.HTTP_400_BAD_REQUEST)
 
     parent_obj = None
-    if "parent_comment_id" in s.validated_data:
-        parent_id = s.validated_data["parent_comment_id"]
+    parent_id = s.validated_data.get("parent_comment_id")
+    if parent_id:
         parent_obj = Comment.objects.filter(id=parent_id).first()
         if parent_obj is None:
             return Response({"error": "Parent comment not found"}, status=status.HTTP_404_NOT_FOUND)
@@ -501,12 +623,16 @@ def review_comments_write(request, country, review_id):
         content=s.validated_data["content"],
     )
 
-    data = CommentSerializer(comment).data
-    data["like_count"] = 0
-    return Response(data, status=status.HTTP_201_CREATED)
+    row = CommentSerializer(comment, context={"liked_ids": set()}).data
+    row["like_count"] = 0
+    return Response(row, status=status.HTTP_201_CREATED)
 
 
-# 댓글 삭제(전역): /comments/<comment_id>/
+# -----------------------------
+# 댓글 전역
+# -----------------------------
+
+# 댓글 삭제: /api/community/comments/<comment_id>/
 @api_view(["DELETE"])
 def comment_delete(request, comment_id):
     auth_resp = _auth_required(request)
@@ -524,44 +650,9 @@ def comment_delete(request, comment_id):
     return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-# 댓글 좋아요 토글(전역): /comments/<comment_id>/like/
+# 댓글 좋아요 토글: /api/community/comments/<comment_id>/like/
 @api_view(["POST"])
 def comment_like_toggle(request, comment_id):
-    exists = Comment.objects.filter(id=comment_id).exists()
-    if not exists:
+    if not Comment.objects.filter(id=comment_id).exists():
         return Response({"error": "Comment not found"}, status=status.HTTP_404_NOT_FOUND)
     return _toggle_like(request, Comment, comment_id)
-
-
-# 글 좋아요 토글: /free/<post_id>/like/
-@api_view(["POST"])
-def post_like_toggle(request, country, post_id):
-    community = _get_community(country)
-    if community is None:
-        return Response({"error": "Community not found"}, status=status.HTTP_404_NOT_FOUND)
-    board = _get_board(community, "free")
-    if board is None:
-        return Response({"error": "Board not found"}, status=status.HTTP_404_NOT_FOUND)
-
-    exists = Post.objects.filter(board=board, id=post_id).exists()
-    if not exists:
-        return Response({"error": "Post not found"}, status=status.HTTP_404_NOT_FOUND)
-
-    return _toggle_like(request, Post, post_id)
-
-
-# 리뷰 좋아요 토글: /review/<review_id>/like/
-@api_view(["POST"])
-def review_like_toggle(request, country, review_id):
-    community = _get_community(country)
-    if community is None:
-        return Response({"error": "Community not found"}, status=status.HTTP_404_NOT_FOUND)
-    board = _get_board(community, "review")
-    if board is None:
-        return Response({"error": "Board not found"}, status=status.HTTP_404_NOT_FOUND)
-
-    exists = Review.objects.filter(board=board, id=review_id).exists()
-    if not exists:
-        return Response({"error": "Review not found"}, status=status.HTTP_404_NOT_FOUND)
-
-    return _toggle_like(request, Review, review_id)
