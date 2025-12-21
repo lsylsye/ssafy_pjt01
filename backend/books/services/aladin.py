@@ -3,7 +3,7 @@ from datetime import timedelta, datetime
 from django.conf import settings
 from django.utils import timezone
 from books.models import Book
-from .models import AladinSync, AladinListItem
+from books.models import AladinSync, AladinListItem
 
 def _parse_iso_date(s: str):
     if not s:
@@ -75,7 +75,6 @@ def touch_aladin_sync(query_type: str):
 def _fetch_itemlist_from_aladin(query_type: str, max_results: int = 10, start: int = 1):
     """
     알라딘 ItemList API 호출
-    settings.ALADIN_ITEMLIST_URL 필요
     """
     params = {
         "ttbkey": settings.ALADIN_TTB_KEY,

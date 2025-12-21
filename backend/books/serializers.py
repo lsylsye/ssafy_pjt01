@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from .models import Book, Bookmark, AladinListItem
 
-# 베스트셀러
+# 알라딘 API로부터 받아온 도서 목록 아이템
 class AladinListItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = AladinListItem
