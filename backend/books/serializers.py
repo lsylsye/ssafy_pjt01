@@ -1,10 +1,10 @@
 from rest_framework import serializers
-from .models import Bestsellers, Book, Bookmark
+from .models import Book, Bookmark, AladinListItem
 
 # 베스트셀러
-class BestsellerSerializer(serializers.ModelSerializer):
+class AladinListItemSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Bestsellers
+        model = AladinListItem
         fields = [
             "id",
             "isbn13",
@@ -17,6 +17,7 @@ class BestsellerSerializer(serializers.ModelSerializer):
             "sales_point",
             "customer_review_rank",
         ]
+
 
 # 도서 상세 페이지
 class BookDetailSerializer(serializers.ModelSerializer):

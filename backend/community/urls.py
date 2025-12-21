@@ -26,3 +26,4 @@ urlpatterns = [
     path("comments/<int:comment_id>/", views.comment_delete),
     path("comments/<int:comment_id>/like/", views.comment_like_toggle),
 ]
+
