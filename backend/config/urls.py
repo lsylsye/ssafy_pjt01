@@ -37,6 +37,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include("dj_rest_auth.urls")), 
     path('accounts/signup/', include('dj_rest_auth.registration.urls')),
+    # users
+    path("api/users/", include("users.urls")),
     # swagger
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='redoc'),
