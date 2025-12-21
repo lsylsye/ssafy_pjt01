@@ -6,36 +6,24 @@ from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from .models import Bestsellers, Book, Bookmark, BestsellerSync
-from .serializers import BestsellerSerializer, BookDetailSerializer
-from .services import get_or_create_book_by_isbn13
-from .services_bestsellers import refresh_bestsellers_from_aladin
+from .models import Book, Bookmark
+from .serializers import BookDetailSerializer, AladinListItemSerializer
+from .services import get_or_create_book_by_isbn13, get_cached_aladin_list
 
 
 # 베스트셀러 TOP10
 @api_view(["GET"])
 def bestseller_list(request):
-    max_results = 10
-    ttl = timedelta(hours=24)
+    qs = get_cached_aladin_list(query_type="Bestseller", limit=10, ttl_hours=24)
+    return Response(AladinListItemSerializer(qs, many=True).data)
 
-    sync = BestsellerSync.objects.filter(id=1).first()
-    qs = Bestsellers.objects.all().order_by("best_rank")[:max_results]
 
-    is_fresh = False
-    if sync and qs.count() >= max_results:
-        is_fresh = (timezone.now() - sync.updated_at) <= ttl
+# 주목할만한 신간
+@api_view(["GET"])
+def new_special_list(request):
+    qs = get_cached_aladin_list("ItemNewSpecial", limit=5, ttl_hours=24)
+    return Response(AladinListItemSerializer(qs, many=True).data)
 
-    if not is_fresh:
-        try:
-            refresh_bestsellers_from_aladin(max_results=max_results)
-            qs = Bestsellers.objects.all().order_by("best_rank")[:max_results]
-        except Exception:
-            # 알라딘 실패해도 DB 캐시가 있으면 캐시로 반환(서비스 안정성)
-            if qs.exists():
-                return Response(BestsellerSerializer(qs, many=True).data)
-            return Response({"error": "bestsellers refresh failed"}, status=503)
-
-    return Response(BestsellerSerializer(qs, many=True).data)
 
 # 도서 검색
 @api_view(["GET"])
