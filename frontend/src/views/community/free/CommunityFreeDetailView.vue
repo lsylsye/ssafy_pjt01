@@ -18,12 +18,34 @@
         </div>
       </div>
 
-      <p class="content">{{ post.content }}</p>
+      <!-- ✅ 본문 / 수정모드 -->
+      <div v-if="!isEditing">
+        <p class="content">{{ post.content }}</p>
+      </div>
 
-      <div class="actions">
+      <div v-else class="editbox">
+        <input v-model="editTitle" class="input" placeholder="제목" />
+        <textarea v-model="editContent" class="textarea" placeholder="내용"></textarea>
+
+        <div class="actions">
+          <button class="btn" :disabled="saving" @click="saveEdit">저장</button>
+          <button class="btn" :disabled="saving" @click="cancelEdit">취소</button>
+        </div>
+
+        <p v-if="editError" class="error">{{ editError }}</p>
+      </div>
+
+      <!-- ✅ 버튼 영역 -->
+      <div class="actions" v-if="!isEditing">
         <button class="btn" @click="toggleLike">
           {{ liked ? '좋아요 취소' : '좋아요' }}
         </button>
+
+        <!-- ✅ 수정/삭제: 로그인 상태에서만 노출 (백엔드가 작성자만 허용) -->
+        <template v-if="auth.isLoggedIn">
+          <button class="btn" @click="startEdit">수정</button>
+          <button class="btn danger" @click="deletePost">삭제</button>
+        </template>
       </div>
 
       <hr class="line" />
@@ -67,7 +89,6 @@
                 <button class="btn" @click="cancelReply">취소</button>
               </div>
 
-              <!-- replies (2단계까지만) -->
               <ul v-if="c.replies && c.replies.length" class="rlist">
                 <li v-for="r in c.replies" :key="r.id" class="ritem">
                   <div class="cmeta">
@@ -105,6 +126,18 @@ const auth = useAuthStore()
 const country = computed(() => String(route.params.country || 'kr'))
 const postId = computed(() => String(route.params.postId || ''))
 
+const apiCountry = (c) => String(c || 'kr').toLowerCase()
+const formatDate = (iso) => (typeof iso === 'string' ? iso.slice(0, 10) : '')
+
+const requireTokenOrGoLogin = () => {
+  const token = localStorage.getItem('access_token')
+  if (!token) {
+    router.push('/login')
+    return null
+  }
+  return token
+}
+
 const loading = ref(false)
 const errorMsg = ref('')
 const post = ref(null)
@@ -120,18 +153,21 @@ const newComment = ref('')
 const replyingTo = ref(null)
 const replyText = ref('')
 
-const formatDate = (iso) => (typeof iso === 'string' ? iso.slice(0, 10) : '')
-
+/* =========================
+   ✅ 게시글 상세
+========================= */
 const fetchDetail = () => {
   loading.value = true
   errorMsg.value = ''
   post.value = null
 
-  api.get(`/api/community/${country.value}/free/${postId.value}/`)
+  const c = apiCountry(country.value)
+
+  api.get(`/api/community/${c}/free/${postId.value}/`)
     .then((res) => {
       post.value = res.data
       likeCount.value = res.data?.like_count || 0
-      liked.value = false // 서버에서 liked를 안 주니까 초기 false
+      liked.value = false
     })
     .catch((err) => {
       console.error('[상세 실패]', err.response?.data || err.message)
@@ -142,15 +178,17 @@ const fetchDetail = () => {
     })
 }
 
+/* =========================
+   ✅ 좋아요
+========================= */
 const toggleLike = () => {
-  if (!auth.isLoggedIn) {
-    router.push('/login')
-    return
-  }
-  const token = localStorage.getItem('access_token')
+  const token = requireTokenOrGoLogin()
+  if (!token) return
+
+  const c = apiCountry(country.value)
 
   api.post(
-    `/api/community/${country.value}/free/${postId.value}/like/`,
+    `/api/community/${c}/free/${postId.value}/like/`,
     {},
     { headers: { Authorization: `Bearer ${token}` } }
   )
@@ -163,7 +201,7 @@ const toggleLike = () => {
       console.error('[좋아요 실패]', err.response?.data || err.message)
 
       if (status === 401) {
-        auth.logout()
+        auth.logout?.()
         router.push('/login')
         return
       }
@@ -171,26 +209,150 @@ const toggleLike = () => {
     })
 }
 
+/* =========================
+   ✅ 게시글 수정/삭제 (말머리 건드리지 않음)
+========================= */
+const isEditing = ref(false)
+const saving = ref(false)
+const editError = ref('')
+
+const editTitle = ref('')
+const editContent = ref('')
+
+const startEdit = () => {
+  if (!post.value) return
+  isEditing.value = true
+  editError.value = ''
+  editTitle.value = post.value.title || ''
+  editContent.value = post.value.content || ''
+}
+
+const cancelEdit = () => {
+  isEditing.value = false
+  editError.value = ''
+}
+
+const saveEdit = () => {
+  const token = requireTokenOrGoLogin()
+  if (!token) return
+  if (!post.value) return
+
+  const t = editTitle.value.trim()
+  const ctt = editContent.value.trim()
+
+  if (!t || !ctt) {
+    editError.value = '제목/내용은 필수입니다.'
+    return
+  }
+
+  // ✅ 바뀐 값만 PATCH로 전송 (title, content만)
+  const body = {}
+  if (t !== (post.value.title || '')) body.title = t
+  if (ctt !== (post.value.content || '')) body.content = ctt
+
+  if (Object.keys(body).length === 0) {
+    isEditing.value = false
+    return
+  }
+
+  const c = apiCountry(country.value)
+
+  saving.value = true
+  editError.value = ''
+
+  api.patch(
+    `/api/community/${c}/free/${postId.value}/`,
+    body,
+    { headers: { Authorization: `Bearer ${token}` } }
+  )
+    .then(() => {
+      isEditing.value = false
+      fetchDetail() // ✅ 서버 데이터로 싱크
+    })
+    .catch((err) => {
+      const status = err.response?.status
+      console.error('[글 수정 실패]', err.response?.data || err.message)
+
+      if (status === 401) {
+        auth.logout?.()
+        router.push('/login')
+        return
+      }
+      if (status === 403) {
+        editError.value = '작성자만 수정할 수 있습니다.'
+        return
+      }
+      editError.value = '글 수정에 실패했습니다.'
+    })
+    .finally(() => {
+      saving.value = false
+    })
+}
+
+const deletePost = () => {
+  const token = requireTokenOrGoLogin()
+  if (!token) return
+
+  const ok = confirm('정말 삭제할까요?')
+  if (!ok) return
+
+  const c = apiCountry(country.value)
+
+  api.delete(
+    `/api/community/${c}/free/${postId.value}/`,
+    { headers: { Authorization: `Bearer ${token}` } }
+  )
+    .then(() => {
+      router.push(`/community/${country.value}/free`)
+    })
+    .catch((err) => {
+      const status = err.response?.status
+      console.error('[글 삭제 실패]', err.response?.data || err.message)
+
+      if (status === 401) {
+        auth.logout?.()
+        router.push('/login')
+        return
+      }
+      if (status === 403) {
+        alert('작성자만 삭제할 수 있습니다.')
+        return
+      }
+      alert('글 삭제에 실패했습니다.')
+    })
+}
+
+/* =========================
+   ✅ 댓글
+========================= */
+const syncCommentCountWithList = () => {
+  if (post.value) post.value.comment_count = comments.value.length
+}
+
 const fetchComments = () => {
   if (!auth.isLoggedIn) return
+  const token = requireTokenOrGoLogin()
+  if (!token) return
 
-  const token = localStorage.getItem('access_token')
+  const c = apiCountry(country.value)
+
   cLoading.value = true
   cError.value = ''
   comments.value = []
 
-  api.get(`/api/community/${country.value}/free/${postId.value}/comments/`, {
+  api.get(`/api/community/${c}/free/${postId.value}/comments/`, {
     headers: { Authorization: `Bearer ${token}` },
   })
     .then((res) => {
       comments.value = Array.isArray(res.data?.comments) ? res.data.comments : []
+      syncCommentCountWithList()
     })
     .catch((err) => {
       const status = err.response?.status
       console.error('[댓글 목록 실패]', err.response?.data || err.message)
 
       if (status === 401) {
-        auth.logout()
+        auth.logout?.()
         router.push('/login')
         return
       }
@@ -202,21 +364,19 @@ const fetchComments = () => {
 }
 
 const writeComment = (parentId) => {
-  if (!auth.isLoggedIn) {
-    router.push('/login')
-    return
-  }
+  const token = requireTokenOrGoLogin()
+  if (!token) return
 
   const text = parentId ? replyText.value.trim() : newComment.value.trim()
   if (!text) return
 
-  const token = localStorage.getItem('access_token')
+  const c = apiCountry(country.value)
   const body = parentId
     ? { content: text, parent_comment_id: parentId }
     : { content: text }
 
   api.post(
-    `/api/community/${country.value}/free/${postId.value}/comments/write`,
+    `/api/community/${c}/free/${postId.value}/comments/write`,
     body,
     { headers: { Authorization: `Bearer ${token}` } }
   )
@@ -224,6 +384,8 @@ const writeComment = (parentId) => {
       newComment.value = ''
       replyingTo.value = null
       replyText.value = ''
+
+      if (post.value) post.value.comment_count = (post.value.comment_count || 0) + 1
       fetchComments()
     })
     .catch((err) => {
@@ -231,7 +393,7 @@ const writeComment = (parentId) => {
       console.error('[댓글 작성 실패]', err.response?.data || err.message)
 
       if (status === 401) {
-        auth.logout()
+        auth.logout?.()
         router.push('/login')
         return
       }
@@ -240,16 +402,14 @@ const writeComment = (parentId) => {
 }
 
 const removeComment = (commentId) => {
-  if (!auth.isLoggedIn) {
-    router.push('/login')
-    return
-  }
-  const token = localStorage.getItem('access_token')
+  const token = requireTokenOrGoLogin()
+  if (!token) return
 
   api.delete(`/api/community/comments/${commentId}/`, {
     headers: { Authorization: `Bearer ${token}` },
   })
     .then(() => {
+      if (post.value && post.value.comment_count > 0) post.value.comment_count -= 1
       fetchComments()
     })
     .catch((err) => {
@@ -257,7 +417,7 @@ const removeComment = (commentId) => {
       console.error('[댓글 삭제 실패]', err.response?.data || err.message)
 
       if (status === 401) {
-        auth.logout()
+        auth.logout?.()
         router.push('/login')
         return
       }
@@ -266,11 +426,8 @@ const removeComment = (commentId) => {
 }
 
 const likeComment = (commentId) => {
-  if (!auth.isLoggedIn) {
-    router.push('/login')
-    return
-  }
-  const token = localStorage.getItem('access_token')
+  const token = requireTokenOrGoLogin()
+  if (!token) return
 
   api.post(
     `/api/community/comments/${commentId}/like/`,
@@ -285,7 +442,7 @@ const likeComment = (commentId) => {
       console.error('[댓글 좋아요 실패]', err.response?.data || err.message)
 
       if (status === 401) {
-        auth.logout()
+        auth.logout?.()
         router.push('/login')
         return
       }
@@ -340,12 +497,22 @@ watch(
 }
 .btn:hover { border-color: #1a73e8; color: #1a73e8; }
 
+.btn.danger { border-color: #f2b8b5; }
+.btn.danger:hover { border-color: #d33; color: #d33; }
+
 .line { border: none; border-top: 1px solid #eee; margin: 16px 0; }
 
 .need-login { color: #666; background: #fafafa; border: 1px solid #eee; padding: 10px; border-radius: 10px; }
 
 .comment-write { display: flex; gap: 8px; margin: 10px 0 14px; }
 .input { flex: 1; border: 1px solid #ddd; border-radius: 10px; padding: 8px 10px; }
+.textarea{
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 10px 12px;
+  min-height: 160px;
+  resize: vertical;
+}
 
 .clist { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px; }
 .citem { border: 1px solid #eee; border-radius: 12px; padding: 10px 12px; }
@@ -361,4 +528,6 @@ watch(
 
 .rlist { list-style: none; padding: 0; margin: 10px 0 0 18px; display: flex; flex-direction: column; gap: 10px; }
 .ritem { border: 1px dashed #e6e6e6; border-radius: 12px; padding: 10px 12px; background: #fcfcfc; }
+
+.editbox { margin-top: 12px; }
 </style>
