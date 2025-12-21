@@ -9,10 +9,10 @@ def seed_community(sender, **kwargs):
     from .models import Community, Board
 
     defaults = [
-        ("KR", "한국"),
-        ("JP", "일본"),
-        ("CN", "중화권"),
-        ("EN", "영미권"),
+        ("kr", "한국"),
+        ("jp", "일본"),
+        ("cn", "중화권"),
+        ("en", "영미권"),
     ]
 
     for country, name in defaults:
