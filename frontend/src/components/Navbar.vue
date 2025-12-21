@@ -36,10 +36,10 @@
         <span class="dropdown-title">커뮤니티</span>
 
         <ul class="dropdown-menu">
-          <li><router-link to="/community/kr">한국</router-link></li>
-          <li><router-link to="/community/jp">일본</router-link></li>
-          <li><router-link to="/community/cn">중화권</router-link></li>
-          <li><router-link to="/community/en">영미권</router-link></li>
+          <li><router-link to="/community/kr/free">한국</router-link></li>
+          <li><router-link to="/community/jp/free">일본</router-link></li>
+          <li><router-link to="/community/cn/free">중화권</router-link></li>
+          <li><router-link to="/community/en/free">영미권</router-link></li>
         </ul>
       </li>
 
