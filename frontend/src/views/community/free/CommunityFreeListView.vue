@@ -2,10 +2,7 @@
   <section>
     <div class="filters">
       <input v-model="q" class="input" placeholder="검색(제목+내용)" />
-      <select v-model="prefix" class="select">
-        <option value="">말머리 전체</option>
-        <option v-for="p in prefixes" :key="p.id" :value="p.name">{{ p.name }}</option>
-      </select>
+      <input v-model="prefix" class="input" placeholder="말머리(예: 잡담) - 선택" />
       <button class="btn" @click="fetchList">검색</button>
     </div>
 
@@ -45,43 +42,35 @@ import api from '@/api/axios'
 
 const route = useRoute()
 const country = computed(() => String(route.params.country || 'kr'))
+const apiCountry = (c) => String(c || 'kr').toLowerCase()
 
 const loading = ref(false)
 const errorMsg = ref('')
 const posts = ref([])
 
 const q = ref('')
-const prefix = ref('') // query key는 prefix, 값은 prefix_name(예: "잡담")
-const prefixes = ref([])
+const prefix = ref('') // query key: prefix, value: prefix_name (예: "잡담")
 
 const formatDate = (iso) => (typeof iso === 'string' ? iso.slice(0, 10) : '')
-
-const fetchPrefixes = () => {
-  api.get(`/api/community/${country.value}/free/prefixes/`)
-    .then((res) => {
-      prefixes.value = Array.isArray(res.data) ? res.data : []
-    })
-    .catch(() => {
-      prefixes.value = []
-    })
-}
 
 const fetchList = () => {
   loading.value = true
   errorMsg.value = ''
   posts.value = []
 
-  api.get(`/api/community/${country.value}/free/`, {
+  const c = apiCountry(country.value)
+
+  api.get(`/api/community/${c}/free/`, {   // ✅ trailing slash
     params: {
-      q: q.value || undefined,
-      prefix: prefix.value || undefined,
+      q: q.value.trim() || undefined,
+      prefix: prefix.value.trim() || undefined,
     },
   })
     .then((res) => {
       posts.value = Array.isArray(res.data) ? res.data : []
     })
     .catch((err) => {
-      console.error('[자유 목록 실패]', err.response?.data || err.message)
+      console.error('[자유 목록 실패]', err.response?.status, err.response?.data || err.message)
       errorMsg.value = '게시글을 불러오지 못했습니다.'
     })
     .finally(() => {
@@ -90,7 +79,6 @@ const fetchList = () => {
 }
 
 onMounted(() => {
-  fetchPrefixes()
   fetchList()
 })
 
@@ -99,7 +87,6 @@ watch(
   () => {
     q.value = ''
     prefix.value = ''
-    fetchPrefixes()
     fetchList()
   }
 )
@@ -114,11 +101,6 @@ watch(
 }
 .input {
   flex: 1;
-  padding: 8px 10px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-}
-.select {
   padding: 8px 10px;
   border: 1px solid #ddd;
   border-radius: 8px;

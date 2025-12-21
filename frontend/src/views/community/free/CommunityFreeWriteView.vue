@@ -6,13 +6,16 @@
     <p v-else-if="errorMsg" class="error">{{ errorMsg }}</p>
 
     <div class="form">
-      <!-- ✅ 말머리 직접 입력 -->
-      <input v-model="prefixName" class="input" placeholder="말머리(예: 잡담, 경제) - 선택" />
+      <input
+        v-model="prefixName"
+        class="input"
+        placeholder="말머리(예: 잡담, 경제) - 선택"
+      />
 
       <input v-model="title" class="input" placeholder="제목" />
       <textarea v-model="content" class="textarea" placeholder="내용"></textarea>
 
-      <button class="btn" @click="submit">등록</button>
+      <button class="btn" :disabled="loading" @click="submit">등록</button>
     </div>
   </section>
 </template>
@@ -28,17 +31,19 @@ const router = useRouter()
 const auth = useAuthStore()
 
 const country = computed(() => String(route.params.country || 'kr'))
-const apiCountry = (c) => String(c || 'kr').toUpperCase()
+const apiCountry = (c) => String(c || 'kr').toLowerCase()
 
 const loading = ref(false)
 const errorMsg = ref('')
 
-const prefixName = ref('') // ✅ 직접 입력
+const prefixName = ref('')
 const title = ref('')
 const content = ref('')
 
 const submit = () => {
-  if (!auth.isLoggedIn) {
+  // store에 isLoggedIn이 없거나 반응형일 수 있어서 토큰 기준이 제일 확실함
+  const token = localStorage.getItem('access_token')
+  if (!token) {
     router.push('/login')
     return
   }
@@ -50,14 +55,13 @@ const submit = () => {
     return
   }
 
-  const token = localStorage.getItem('access_token')
   const c = apiCountry(country.value)
 
   loading.value = true
   errorMsg.value = ''
 
   api.post(
-    `/api/community/${c}/free/write`,
+    `/api/community/${c}/free/write`,   // ✅ trailing slash
     {
       title: t,
       content: ctt,
@@ -72,11 +76,15 @@ const submit = () => {
     })
     .catch((err) => {
       const status = err.response?.status
-      console.error('[글 작성 실패]', err.response?.data || err.message)
+      console.error('[글 작성 실패]', status, err.response?.data || err.message)
 
       if (status === 401) {
-        auth.logout()
+        auth.logout?.()
         router.push('/login')
+        return
+      }
+      if (status === 404) {
+        errorMsg.value = 'API 주소가 맞지 않습니다. (write 경로/슬래시 확인)'
         return
       }
       errorMsg.value = '글 작성에 실패했습니다.'
@@ -104,5 +112,6 @@ const submit = () => {
   padding: 10px 12px;
   cursor: pointer;
 }
+.btn:disabled { opacity: 0.6; cursor: not-allowed; }
 .btn:hover { border-color: #1a73e8; color: #1a73e8; }
 </style>
