@@ -1,10 +1,8 @@
 # macOS
 .DS_Store
-**/.DS_Store
 
 # Python
 __pycache__/
-**/__pycache__/
 *.py[cod]
 
 # Virtualenv
@@ -17,6 +15,7 @@ venv/
 # Django
 *.log
 db.sqlite3
+backend/db.sqlite3
 
 # Node (frontend)
 node_modules/
