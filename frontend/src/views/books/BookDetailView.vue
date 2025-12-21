@@ -16,13 +16,21 @@
             <strong>카테고리</strong> {{ book.category_name }}
           </p>
 
-          <button
-            class="bookmark-btn"
-            :class="{ active: isBookmarked }"
-            @click="handleBookmark"
-          >
-            {{ isBookmarked ? '북마크 해제' : '북마크 추가' }}
-          </button>
+          <!-- ✅ 버튼 영역: 북마크 + 리뷰작성 -->
+          <div class="btn-row">
+            <button
+              class="bookmark-btn"
+              :class="{ active: isBookmarked }"
+              @click="handleBookmark"
+            >
+              {{ isBookmarked ? '북마크 해제' : '북마크 추가' }}
+            </button>
+
+            <!-- ✅ 추가: 같은 스타일의 리뷰 작성 버튼 -->
+            <button class="bookmark-btn" @click="goReviewWrite">
+              리뷰 작성
+            </button>
+          </div>
         </div>
       </div>
 
@@ -104,6 +112,23 @@ const handleBookmark = () => {
     })
 }
 
+/* ✅ 추가: 리뷰 작성 페이지로 이동(책 정보 미리 채우기) */
+const goReviewWrite = () => {
+  if (!book.value) return
+
+  router.push({
+    path: '/community/kr/review/write',
+    query: {
+      book_title: book.value.title || '',
+      book_author: book.value.author || '',
+      isbn13: book.value.isbn13 || isbn13.value || '',
+      publisher: book.value.publisher || '',
+      pub_date: book.value.pub_date || '',
+      cover: book.value.cover || '',
+    },
+  })
+}
+
 const loadPage = (isbn) => {
   fetchBookDetail(isbn)
   bookmarkStore.sync()
@@ -144,8 +169,14 @@ watch(
   margin-bottom: 6px;
 }
 
-.bookmark-btn {
+/* ✅ 버튼 두 개를 나란히 */
+.btn-row {
+  display: flex;
+  gap: 10px;
   margin-top: 12px;
+}
+
+.bookmark-btn {
   padding: 6px 14px;
   border: 1px solid #aaa;
   background: white;

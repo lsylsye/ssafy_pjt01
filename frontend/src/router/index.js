@@ -20,7 +20,13 @@ import CommunityFreeLayoutView from '@/views/community/free/CommunityFreeLayoutV
 import CommunityFreeListView from '@/views/community/free/CommunityFreeListView.vue'
 import CommunityFreeWriteView from '@/views/community/free/CommunityFreeWriteView.vue'
 import CommunityFreeDetailView from '@/views/community/free/CommunityFreeDetailView.vue'
-import CommunityReviewPlaceholderView from '@/views/community/review/CommunityReviewPlaceholderView.vue'
+
+// ✅ Review (추가)
+import CommunityReviewLayoutView from '@/views/community/review/CommunityReviewLayoutView.vue'
+import ReviewListView from '@/views/community/review/ReviewListView.vue'
+import ReviewWriteView from '@/views/community/review/ReviewWriteView.vue'
+import ReviewDetailView from '@/views/community/review/ReviewDetailView.vue'
+import ReviewEditView from '@/views/community/review/ReviewEditView.vue'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -52,13 +58,24 @@ const router = createRouter({
           path: 'free',
           component: CommunityFreeLayoutView,
           children: [
-            { path: '', component: CommunityFreeListView },           // /community/kr/free
-            { path: 'write', component: CommunityFreeWriteView },      // /community/kr/free/write
-            { path: ':postId', component: CommunityFreeDetailView },   // /community/kr/free/3
+            { path: '', component: CommunityFreeListView },          // /community/kr/free
+            { path: 'write', component: CommunityFreeWriteView },     // /community/kr/free/write
+            { path: ':postId', component: CommunityFreeDetailView },  // /community/kr/free/3
           ],
         },
 
-        { path: 'review', component: CommunityReviewPlaceholderView }, // /community/kr/review
+        {
+          path: 'review',
+          component: CommunityReviewLayoutView,
+          children: [
+            { path: '', component: ReviewListView },                 // /community/kr/review
+            { path: 'write', component: ReviewWriteView },           // /community/kr/review/write
+            { path: ':reviewId', component: ReviewDetailView },      // /community/kr/review/2
+            { path: ':reviewId/edit', component: ReviewEditView },
+            
+
+          ],
+        },
       ],
     },
   ],
