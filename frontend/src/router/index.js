@@ -36,6 +36,10 @@ import UserProfileView from "@/views/users/UserProfileView.vue";
 // grass
 import MyGrassView from "@/views/mypage/MyGrassView.vue";
 
+// ai_curator
+import SurveyView from "@/views/ai_curator/SurveyView.vue";
+import ResultView from "@/views/ai_curator/ResultView.vue";
+
 const router = createRouter({
   history: createWebHistory(),
   routes: [
@@ -46,8 +50,21 @@ const router = createRouter({
     { path: "/books/:isbn13", component: BookDetailView },
     { path: "/library", component: LibraryView },
     { path: "/users/:userId", component: UserProfileView },
-
-
+    {
+      path: '/survey',
+      children: [
+        { 
+          path: '', 
+          name: 'survey', 
+          component: SurveyView 
+        },
+        { 
+          path: 'result',
+          name: 'survey-result', 
+          component: ResultView 
+        }
+      ]
+    },
     {
       path: "/mypage",
       component: MyPageView,

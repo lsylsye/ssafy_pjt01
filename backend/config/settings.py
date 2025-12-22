@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "mypage",
     "community",
     "grass",
+    "ai_curator",
     
     # 기본설정
     'django.contrib.admin',
@@ -208,3 +209,6 @@ ALADIN_ITEMLIST_URL = "http://www.aladin.co.kr/ttb/api/ItemList.aspx"
 ALADIN_SEARCH_URL = "http://www.aladin.co.kr/ttb/api/ItemSearch.aspx"
 ALADIN_LOOKUP_URL = "http://www.aladin.co.kr/ttb/api/ItemLookUp.aspx"
 
+
+# OpenAI API 설정
+OPENAI_API_KEY = "S14P02EB10-3faa8e5a-1d7e-41b0-96bc-4b2b5cdd2ea9" 

@@ -42,7 +42,9 @@
           <li><router-link to="/community/en/free">영미권</router-link></li>
         </ul>
       </li>
-
+      <li>
+        <router-link to="/survey">도서 취향 테스트</router-link>
+      </li>
       <li>
         <router-link to="/library">근처 도서관 찾기</router-link>
       </li>

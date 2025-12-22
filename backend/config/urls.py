@@ -50,6 +50,8 @@ urlpatterns = [
     path("api/community/", include("community.urls")),
     # 잔디
     path("api/grass/", include("grass.urls")),
+    #AI 큐레이터
+    path("api/ai_curator/", include("ai_curator.urls")),
 ]
 
 
