@@ -17,7 +17,7 @@
       "favorite_country": "KR",
       "favorite_genre": "novel_poem_drama",
       "other_country": "",
-      "profile_image": "",
+      "profile_image": "profiles/default_profile.jpg",
       "groups": [],
       "user_permissions": []
     }
@@ -40,7 +40,7 @@
       "favorite_country": "JP",
       "favorite_genre": "business",
       "other_country": "",
-      "profile_image": "",
+      "profile_image": "profiles/default_profile.jpg",
       "groups": [],
       "user_permissions": []
     }
@@ -63,7 +63,7 @@
       "favorite_country": "CN",
       "favorite_genre": "self_help",
       "other_country": "",
-      "profile_image": "",
+      "profile_image": "profiles/default_profile.jpg",
       "groups": [],
       "user_permissions": []
     }
@@ -86,7 +86,7 @@
       "favorite_country": "EN",
       "favorite_genre": "humanities",
       "other_country": "",
-      "profile_image": "",
+      "profile_image": "profiles/default_profile.jpg",
       "groups": [],
       "user_permissions": []
     }
@@ -109,7 +109,7 @@
       "favorite_country": "KR",
       "favorite_genre": "hobby_practical",
       "other_country": "",
-      "profile_image": "",
+      "profile_image": "profiles/default_profile.jpg",
       "groups": [],
       "user_permissions": []
     }
@@ -132,7 +132,7 @@
       "favorite_country": "OTHER",
       "favorite_genre": "comic_ebook",
       "other_country": "Vietnam",
-      "profile_image": "",
+      "profile_image": "profiles/default_profile.jpg",
       "groups": [],
       "user_permissions": []
     }

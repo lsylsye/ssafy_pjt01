@@ -54,3 +54,29 @@ def following_list(request, user_id):
     )
     users = [rel.to_user for rel in qs]
     return Response(SimpleUserSerializer(users, many=True).data)
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def profile_detail(request, user_id):
+    target = User.objects.filter(id=user_id).first()
+    if not target:
+        return Response({"detail": "User not found"}, status=404)
+
+    followers_count = Follow.objects.filter(to_user=target).count()
+    following_count = Follow.objects.filter(from_user=target).count()
+
+    is_following = False
+    if request.user.is_authenticated:
+        is_following = Follow.objects.filter(from_user=request.user, to_user=target).exists()
+
+    return Response({
+        "id": target.id,
+        "username": target.username,
+        "nickname": getattr(target, "nickname", ""),
+        "favorite_country": getattr(target, "favorite_country", None),
+        "favorite_genre": getattr(target, "favorite_genre", None),
+        "profile_image": target.profile_image.url if getattr(target, "profile_image", None) else "",
+        "followers_count": followers_count,
+        "following_count": following_count,
+        "is_following": is_following,
+    })
