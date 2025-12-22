@@ -1,24 +1,14 @@
 <template>
   <section class="main">
-    <h2 class="title">베스트셀러 TOP 10</h2>
+    <!-- ✅ 타이틀 스타일 변경 -->
+    <h2 class="section-title">베스트셀러 TOP 10</h2>
 
     <ul class="bestseller-list">
-      <li
-        v-for="book in top10"
-        :key="book.id"
-        class="bestseller-item"
-      >
-        <router-link
-          :to="`/books/${book.isbn13}`"
-          class="bestseller-link"
-        >
+      <li v-for="book in top10" :key="book.id" class="bestseller-item">
+        <router-link :to="`/books/${book.isbn13}`" class="bestseller-link">
           <span class="rank">{{ book.best_rank }}</span>
 
-          <img
-            :src="book.cover"
-            alt="표지"
-            class="cover"
-          />
+          <img :src="book.cover" alt="표지" class="cover" />
 
           <span class="book-title">
             {{ book.title }}
@@ -26,41 +16,51 @@
         </router-link>
       </li>
     </ul>
+
+    <!-- ✅ 주목할 만한 신간 5권(가로 스크롤) 추가 -->
+    <NewSpecialSection />
+
   </section>
 </template>
 
-
 <script setup>
-import { ref, onMounted, computed } from 'vue'
-import api from '@/api/axios'
+import { ref, onMounted, computed } from "vue";
+import api from "@/api/axios";
+import NewSpecialSection from "@/components/books/NewSpecialSection.vue";
 
-const bestsellers = ref([])
+const bestsellers = ref([]);
 
 const fetchBestsellers = () => {
-  api.get('/api/books/bestsellers/')
+  api
+    .get("/api/books/bestsellers/")
     .then((res) => {
-      bestsellers.value = res.data
+      bestsellers.value = Array.isArray(res.data) ? res.data : [];
     })
     .catch((err) => {
-      console.error(err)
-    })
-}
+      console.error(err);
+    });
+};
 
-const top10 = computed(() => bestsellers.value.slice(0, 10))
+const top10 = computed(() => bestsellers.value.slice(0, 10));
 
 onMounted(() => {
-  fetchBestsellers()
-})
+  fetchBestsellers();
+});
 </script>
-
 
 <style scoped>
 .main {
   padding: 24px;
 }
 
-.title {
-  margin-bottom: 16px;
+/* ✅ 사진 느낌 타이틀 */
+.section-title {
+  margin: 0 0 18px;
+  font-size: 28px;
+  font-weight: 900;
+  letter-spacing: -0.5px;
+  line-height: 1.1;
+  color: #111;
 }
 
 .bestseller-list {
