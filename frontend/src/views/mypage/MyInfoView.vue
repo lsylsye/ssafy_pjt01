@@ -1,42 +1,34 @@
+<!-- src/views/mypage/MyInfoView.vue -->
 <template>
   <section class="myinfo">
     <h2>내 정보</h2>
 
-    <p v-if="loading">불러오는 중...</p>
-    <p v-else-if="errorMsg">{{ errorMsg }}</p>
+    <p v-if="my.loading">불러오는 중...</p>
+    <p v-else-if="my.error">{{ my.error }}</p>
 
-    <div v-else-if="me" class="card">
-      <p>아이디: {{ me.username }}</p>
-      <p>이메일: {{ me.email }}</p>
-      <p>닉네임: {{ me.nickname }}</p>
-      <p>선호 국가: {{ countryLabel(me.favorite_country) }}</p>
-      <p>선호 장르: {{ genreLabel(me.favorite_genre) }}</p>
+    <div v-else-if="my.me" class="card">
+      <div class="row">
+        <img :src="profileImageUrl" class="avatar" alt="profile" />
 
-      <!-- 나중에 수정 UI 들어갈 자리(편집모드) -->
-      <!--
-      <label>
-        닉네임
-        <input v-model="form.nickname" />
-      </label>
+        <div class="info">
+          <p>아이디: {{ my.me.username }}</p>
+          <p>이메일: {{ my.me.email }}</p>
+          <p>닉네임: {{ my.me.nickname }}</p>
+          <p>선호 국가: {{ countryLabel(my.me.favorite_country) }}</p>
+          <p>선호 장르: {{ genreLabel(my.me.favorite_genre) }}</p>
 
-      <label>
-        선호 국가
-        <select v-model="form.favorite_country">
-          <option v-for="c in countryOptions" :key="c.value" :value="c.value">
-            {{ c.label }}
-          </option>
-        </select>
-      </label>
-
-      <label>
-        선호 장르
-        <select v-model="form.favorite_genre">
-          <option v-for="g in genreOptions" :key="g.value" :value="g.value">
-            {{ g.label }}
-          </option>
-        </select>
-      </label>
-      -->
+          <!-- ✅ 클릭 가능한 팔로워/팔로잉 -->
+          <p class="follow-line">
+            <button class="link" @click="goFollowers">
+              팔로워 {{ my.me.followers_count ?? 0 }}
+            </button>
+            <span>·</span>
+            <button class="link" @click="goFollowing">
+              팔로잉 {{ my.me.following_count ?? 0 }}
+            </button>
+          </p>
+        </div>
+      </div>
     </div>
 
     <p v-else>정보가 없습니다.</p>
@@ -44,92 +36,96 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
-import api from '@/api/axios'
-import { useAuthStore } from '@/stores/auth'
+import { computed, onMounted } from "vue";
+import { useRouter } from "vue-router";
+import api from "@/api/axios";
+import { useAuthStore } from "@/stores/auth";
+import { useMyPageStore } from "@/stores/mypage";
+import defaultProfile from "@/assets/default_profile.jpg";
 
-const router = useRouter()
-const auth = useAuthStore()
+const router = useRouter();
+const auth = useAuthStore();
+const my = useMyPageStore();
 
-const loading = ref(false)
-const errorMsg = ref('')
-const me = ref(null)
-
-/* ===============================
-   코드 -> 한글 라벨 매핑
-================================ */
-const countryMap = {
-  KR: '한국',
-  JP: '일본',
-  CN: '중화권',
-  EN: '영미권',
-  OTHER: '기타',
-}
-
+const countryMap = { KR: "한국", JP: "일본", CN: "중화권", EN: "영미권", OTHER: "기타" };
 const genreMap = {
-  novel_poem_drama: '소설/시/희곡',
-  business: '경제/경영',
-  self_help: '자기계발',
-  humanities: '인문',
-  hobby_practical: '취미/실용',
-  comic_ebook: '만화/eBook',
-  science: '과학',
-}
+  novel_poem_drama: "소설/시/희곡",
+  business: "경제/경영",
+  self_help: "자기계발",
+  humanities: "인문",
+  hobby_practical: "취미/실용",
+  comic_ebook: "만화/eBook",
+  science: "과학",
+};
 
-const countryLabel = (code) => countryMap[code] || code || '-'
-const genreLabel = (code) => genreMap[code] || code || '-'
+const countryLabel = (code) => countryMap[code] || code || "-";
+const genreLabel = (code) => genreMap[code] || code || "-";
 
-/* ===============================
-   내 정보 조회
-================================ */
-const fetchMe = () => {
-  const token = localStorage.getItem('access_token')
-  if (!token) {
-    router.push('/login')
-    return
+const profileImageUrl = computed(() => {
+  const p = my.me?.profile_image;
+
+  if (!p) return defaultProfile;
+  if (p.startsWith("http")) return p;
+
+  const base = api.defaults.baseURL || "http://127.0.0.1:8000";
+  return `${base}${p}`;
+});
+
+const goFollowers = () => {
+  if (!auth.isLoggedIn) {
+    router.push("/login");
+    return;
   }
+  router.push("/mypage/followers");
+};
 
-  loading.value = true
-  errorMsg.value = ''
-  me.value = null
-
-  api.get('/api/mypage/me/', {
-    headers: { Authorization: `Bearer ${token}` },
-  })
-    .then((res) => {
-      me.value = res.data
-    })
-    .catch((err) => {
-      const status = err.response?.status
-      console.error('[내 정보 조회 실패]', err.response?.data || err.message)
-
-      if (status === 401) {
-        auth.logout()
-        router.push('/login')
-        return
-      }
-
-      errorMsg.value = '내 정보를 불러오지 못했습니다.'
-    })
-    .finally(() => {
-      loading.value = false
-    })
-}
+const goFollowing = () => {
+  if (!auth.isLoggedIn) {
+    router.push("/login");
+    return;
+  }
+  router.push("/mypage/following");
+};
 
 onMounted(() => {
-  fetchMe()
-})
+  if (!auth.isLoggedIn) {
+    router.push("/login");
+    return;
+  }
+
+  if (!my.me) {
+    my.fetchMe().catch((err) => {
+      if (err.response?.status === 401) router.push("/login");
+    });
+  }
+});
 </script>
 
 <style scoped>
-.myinfo {
-  padding: 4px 0;
+.myinfo { padding: 4px 0; }
+.card { border: 1px solid #eee; border-radius: 12px; padding: 14px; }
+.row { display: flex; gap: 16px; align-items: flex-start; }
+
+.avatar {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid #eee;
+  background: #fafafa;
+  flex: 0 0 auto;
 }
 
-.card {
-  border: 1px solid #eee;
-  border-radius: 12px;
-  padding: 14px;
+.info p { margin: 8px 0; }
+
+.follow-line { margin-top: 10px; color: #444; display:flex; gap:8px; align-items:center; }
+.link {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  color: #111;
+  font-weight: 600;
 }
+.link:hover { text-decoration: underline; }
 </style>

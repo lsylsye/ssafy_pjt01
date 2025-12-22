@@ -11,6 +11,8 @@ import LibraryView from "@/views/library/LibraryView.vue";
 import MyPageView from "@/views/mypage/MyPageView.vue";
 import MyInfoView from "@/views/mypage/MyInfoView.vue";
 import MyBookmarksView from "@/views/mypage/MyBookmarksView.vue";
+import FollowersView from "@/views/mypage/FollowersView.vue";
+import FollowingView from "@/views/mypage/FollowingView.vue";
 
 // ✅ community
 import CommunityLayoutView from "@/views/community/CommunityLayoutView.vue";
@@ -28,6 +30,9 @@ import ReviewWriteView from "@/views/community/review/ReviewWriteView.vue";
 import ReviewDetailView from "@/views/community/review/ReviewDetailView.vue";
 import ReviewEditView from "@/views/community/review/ReviewEditView.vue";
 
+// follow
+import UserProfileView from "@/views/users/UserProfileView.vue";
+
 const router = createRouter({
   history: createWebHistory(),
   routes: [
@@ -37,6 +42,8 @@ const router = createRouter({
     { path: "/search", component: SearchView },
     { path: "/books/:isbn13", component: BookDetailView },
     { path: "/library", component: LibraryView },
+    { path: "/users/:userId", component: UserProfileView },
+
 
     {
       path: "/mypage",
@@ -44,6 +51,8 @@ const router = createRouter({
       children: [
         { path: "", component: MyInfoView },
         { path: "bookmarks", component: MyBookmarksView },
+        { path: "followers", name: "mypage-followers", component: FollowersView },
+        { path: "following", name: "mypage-following", component: FollowingView },
       ],
     },
 
