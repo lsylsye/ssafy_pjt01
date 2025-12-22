@@ -2,7 +2,7 @@
   <div class="wrap">
     <h3>리뷰 수정</h3>
 
-    <div v-if="!isLogin" class="need-login">
+    <div v-if="!auth.isLoggedIn" class="need-login">
       로그인 후 수정할 수 있어요.
       <button @click="goLogin">로그인</button>
     </div>
@@ -53,10 +53,8 @@ const route = useRoute();
 const router = useRouter();
 const auth = useAuthStore();
 
-const country = computed(() => route.params.country);
-const reviewId = computed(() => route.params.reviewId);
-
-const isLogin = computed(() => !!auth.isLogin);
+const country = computed(() => String(route.params.country || "kr"));
+const reviewId = computed(() => String(route.params.reviewId || ""));
 
 const loading = ref(false);
 const saving = ref(false);
@@ -104,6 +102,7 @@ const submit = () => {
   }
 
   saving.value = true;
+
   patchReview(country.value, reviewId.value, payload)
     .then(() => {
       router.replace(`/community/${country.value}/review/${reviewId.value}`);
@@ -122,9 +121,13 @@ const goLogin = () => {
   router.push({ path: "/login", query: { redirect: route.fullPath } });
 };
 
-watch([country, reviewId], () => {
-  if (isLogin.value) fetchDetail();
-}, { immediate: true });
+watch(
+  [country, reviewId, () => auth.isLoggedIn],
+  () => {
+    if (auth.isLoggedIn) fetchDetail();
+  },
+  { immediate: true }
+);
 </script>
 
 <style scoped>

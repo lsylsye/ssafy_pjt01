@@ -1,84 +1,81 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHistory } from "vue-router";
 
-import MainView from '@/views/main/MainView.vue'
+// ✅ 너 프로젝트 기존 라우트들(경로는 네 프로젝트에 맞게 유지)
+import MainView from "@/views/main/MainView.vue";
+import LoginView from "@/views/auth/LoginView.vue";
+import SignupView from "@/views/auth/SignupView.vue";
+import SearchView from "@/views/books/SearchView.vue";
+import BookDetailView from "@/views/books/BookDetailView.vue";
+import LibraryView from "@/views/library/LibraryView.vue";
 
-import LoginView from '@/views/auth/LoginView.vue'
-import SignupView from '@/views/auth/SignupView.vue'
+import MyPageView from "@/views/mypage/MyPageView.vue";
+import MyInfoView from "@/views/mypage/MyInfoView.vue";
+import MyBookmarksView from "@/views/mypage/MyBookmarksView.vue";
 
-import SearchView from '@/views/books/SearchView.vue'
-import BookDetailView from '@/views/books/BookDetailView.vue'
+// ✅ community
+import CommunityLayoutView from "@/views/community/CommunityLayoutView.vue";
 
-import LibraryView from '@/views/library/LibraryView.vue'
+// free
+import FreeLayoutView from "@/views/community/free/FreeLayoutView.vue";
+import FreeListView from "@/views/community/free/FreeListView.vue";
+import FreeWriteView from "@/views/community/free/FreeWriteView.vue";
+import FreeDetailView from "@/views/community/free/FreeDetailView.vue";
 
-import MyPageView from '@/views/mypage/MyPageView.vue'
-import MyInfoView from '@/views/mypage/MyInfoView.vue'
-import MyBookmarksView from '@/views/mypage/MyBookmarksView.vue'
-
-// ✅ Community
-import CommunityLayoutView from '@/views/community/CommunityLayoutView.vue'
-import CommunityFreeLayoutView from '@/views/community/free/CommunityFreeLayoutView.vue'
-import CommunityFreeListView from '@/views/community/free/CommunityFreeListView.vue'
-import CommunityFreeWriteView from '@/views/community/free/CommunityFreeWriteView.vue'
-import CommunityFreeDetailView from '@/views/community/free/CommunityFreeDetailView.vue'
-
-// ✅ Review (추가)
-import CommunityReviewLayoutView from '@/views/community/review/CommunityReviewLayoutView.vue'
-import ReviewListView from '@/views/community/review/ReviewListView.vue'
-import ReviewWriteView from '@/views/community/review/ReviewWriteView.vue'
-import ReviewDetailView from '@/views/community/review/ReviewDetailView.vue'
-import ReviewEditView from '@/views/community/review/ReviewEditView.vue'
+// review
+import ReviewLayoutView from "@/views/community/review/ReviewLayoutView.vue";
+import ReviewListView from "@/views/community/review/ReviewListView.vue";
+import ReviewWriteView from "@/views/community/review/ReviewWriteView.vue";
+import ReviewDetailView from "@/views/community/review/ReviewDetailView.vue";
+import ReviewEditView from "@/views/community/review/ReviewEditView.vue";
 
 const router = createRouter({
   history: createWebHistory(),
   routes: [
-    { path: '/', component: MainView },
-    { path: '/login', component: LoginView },
-    { path: '/signup', component: SignupView },
-    { path: '/search', component: SearchView },
-    { path: '/books/:isbn13', component: BookDetailView },
-    { path: '/library', component: LibraryView },
+    { path: "/", component: MainView },
+    { path: "/login", component: LoginView },
+    { path: "/signup", component: SignupView },
+    { path: "/search", component: SearchView },
+    { path: "/books/:isbn13", component: BookDetailView },
+    { path: "/library", component: LibraryView },
 
     {
-      path: '/mypage',
+      path: "/mypage",
       component: MyPageView,
       children: [
-        { path: '', component: MyInfoView },
-        { path: 'bookmarks', component: MyBookmarksView },
+        { path: "", component: MyInfoView },
+        { path: "bookmarks", component: MyBookmarksView },
       ],
     },
 
-    // ✅ /community/:country 아래에 free / review 탭 중첩
     {
-      path: '/community/:country',
+      path: "/community/:country",
       component: CommunityLayoutView,
       children: [
-        { path: '', redirect: 'free' },
+        { path: "", redirect: "free" },
 
         {
-          path: 'free',
-          component: CommunityFreeLayoutView,
+          path: "free",
+          component: FreeLayoutView,
           children: [
-            { path: '', component: CommunityFreeListView },          // /community/kr/free
-            { path: 'write', component: CommunityFreeWriteView },     // /community/kr/free/write
-            { path: ':postId', component: CommunityFreeDetailView },  // /community/kr/free/3
+            { path: "", name: "free-list", component: FreeListView },
+            { path: "write", name: "free-write", component: FreeWriteView },
+            { path: ":postId", name: "free-detail", component: FreeDetailView },
           ],
         },
 
         {
-          path: 'review',
-          component: CommunityReviewLayoutView,
+          path: "review",
+          component: ReviewLayoutView,
           children: [
-            { path: '', component: ReviewListView },                 // /community/kr/review
-            { path: 'write', component: ReviewWriteView },           // /community/kr/review/write
-            { path: ':reviewId', component: ReviewDetailView },      // /community/kr/review/2
-            { path: ':reviewId/edit', component: ReviewEditView },
-            
-
+            { path: "", name: "review-list", component: ReviewListView },
+            { path: "write", name: "review-write", component: ReviewWriteView },
+            { path: ":reviewId", name: "review-detail", component: ReviewDetailView },
+            { path: ":reviewId/edit", name: "review-edit", component: ReviewEditView },
           ],
         },
       ],
     },
   ],
-})
+});
 
-export default router
+export default router;

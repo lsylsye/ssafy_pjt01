@@ -1,7 +1,8 @@
 <template>
   <section>
     <div class="filters">
-      <input v-model="q" class="input" placeholder="검색(책제목/저자/리뷰내용)" />
+      <input v-model="q" class="input" placeholder="검색(제목+내용)" />
+      <input v-model="prefix" class="input" placeholder="말머리(예: 잡담) - 선택" />
       <button class="btn" :disabled="loading" @click="search">검색</button>
     </div>
 
@@ -9,14 +10,14 @@
     <p v-else-if="errorMsg" class="error">{{ errorMsg }}</p>
 
     <div v-else>
-      <p v-if="reviews.length === 0">게시글이 없습니다.</p>
+      <p v-if="posts.length === 0">게시글이 없습니다.</p>
 
       <ul v-else class="list">
-        <ReviewCard
-          v-for="r in reviews"
-          :key="r.id"
-          :review="r"
-          :to="`/community/${country}/review/${r.id}`"
+        <FreePostCard
+          v-for="p in posts"
+          :key="p.id"
+          :post="p"
+          :to="`/community/${country}/free/${p.id}`"
         />
       </ul>
     </div>
@@ -27,20 +28,23 @@
 import { ref, onMounted, watch } from "vue";
 import { storeToRefs } from "pinia";
 import useCountry from "@/composables/useCountry";
-import { useReviewStore } from "@/stores/community/review";
-import ReviewCard from "@/components/community/review/ReviewCard.vue";
+import { useFreeStore } from "@/stores/community/free";
+import FreePostCard from "@/components/community/free/FreePostCard.vue";
 
 const { country } = useCountry();
-const store = useReviewStore();
-const { loading, errorMsg, reviews } = storeToRefs(store);
+const store = useFreeStore();
+const { loading, errorMsg, posts } = storeToRefs(store);
 
 const q = ref("");
+const prefix = ref("");
 
 const fetch = () => {
   store.fetchList(country.value, {
     q: q.value.trim() || undefined,
+    prefix: prefix.value.trim() || undefined,
   });
 };
+
 const search = () => fetch();
 
 onMounted(fetch);
@@ -49,6 +53,7 @@ watch(
   () => country.value,
   () => {
     q.value = "";
+    prefix.value = "";
     fetch();
   }
 );
