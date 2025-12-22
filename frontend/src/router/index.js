@@ -33,6 +33,9 @@ import ReviewEditView from "@/views/community/review/ReviewEditView.vue";
 // follow
 import UserProfileView from "@/views/users/UserProfileView.vue";
 
+// grass
+import MyGrassView from "@/views/mypage/MyGrassView.vue";
+
 const router = createRouter({
   history: createWebHistory(),
   routes: [
@@ -53,6 +56,7 @@ const router = createRouter({
         { path: "bookmarks", component: MyBookmarksView },
         { path: "followers", name: "mypage-followers", component: FollowersView },
         { path: "following", name: "mypage-following", component: FollowingView },
+        { path: "grass", name: "mypage-grass", component: MyGrassView },
       ],
     },
 
