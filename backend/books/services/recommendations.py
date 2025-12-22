@@ -1,139 +1,153 @@
 import random
 import requests
 from django.conf import settings
+from django.utils import timezone
 from django.db.models import Count
-
-from books.models import Bookmark
-from users.models import Follow 
-
-
-def _norm_author(author_str: str) -> str:
-    if not author_str:
-        return ""
-    s = str(author_str).strip()
-    s = s.replace("(지은이)", "").replace("(저자)", "").replace("(옮긴이)", "").strip()
-    if "," in s:
-        s = s.split(",")[0].strip()
-    return s
+from datetime import timedelta
+from users.models import Follow
+from books.models import Book, Bookmark, AladinSync, AladinListItem
 
 
-def _fetch_author_books_salespoint(author: str, max_results: int = 30):
-    """
-    알라딘 ItemSearch: QueryType=Author, Sort=SalesPoint
-    """
+def _is_fresh(key: str, ttl_hours: int = 24) -> bool:
+    sync = AladinSync.objects.filter(query_type=key).first()
+    if not sync:
+        return False
+    return timezone.now() - sync.updated_at < timedelta(hours=ttl_hours)
+
+
+def _touch(key: str):
+    AladinSync.objects.update_or_create(query_type=key)
+
+
+def _fetch_itemsearch_author_sales(author: str, max_results: int = 20, start: int = 1):
     params = {
         "ttbkey": settings.ALADIN_TTB_KEY,
         "Query": author,
-        "QueryType": "Author",
+        "QueryType": "Author",        # 핵심
         "SearchTarget": "Book",
+        "Sort": "SalesPoint",         # 판매지표 정렬
         "MaxResults": max_results,
-        "start": 1,
-        "Sort": "SalesPoint",
+        "Start": start,
         "Output": "JS",
         "Version": settings.ALADIN_API_VERSION,
     }
     res = requests.get(settings.ALADIN_SEARCH_URL, params=params, timeout=10)
     res.raise_for_status()
     data = res.json()
-    return data.get("item", []) or []
+    return data.get("item", [])
 
 
-def recommend_bookmark_based(user, need=5, recent_n=5, fetch_n=30):
-    """
-    북마크 기반:
-    1) 사용자 최근 북마크 recent_n권 조회
-    2) 그 안에서 '작가' 중복 제거 후 랜덤 1명 선택
-    3) 해당 작가 인기책(SalesPoint) 목록에서 내 북마크 제외 후 5권 추천
-    반환: Book이 아니라 "알라딘 item dict" 리스트
-    """
-    recent = (
+def _get_cached_author_sales(author: str, limit: int = 20, ttl_hours: int = 24):
+    key = f"AuthorSales:{author}"
+
+    if not _is_fresh(key, ttl_hours=ttl_hours):
+        items = _fetch_itemsearch_author_sales(author, max_results=limit, start=1)
+
+        alive_item_ids = []
+        for it in items:
+            item_id = it.get("itemId")
+            if not item_id:
+                continue
+            alive_item_ids.append(item_id)
+
+            defaults = {
+                "category_id": it.get("categoryId"),
+                "category_name": it.get("categoryName", "") or "",
+                "mall_type": it.get("mallType", "") or "",
+                "isbn": it.get("isbn", "") or "",
+                "isbn13": it.get("isbn13", "") or "",
+                "title": it.get("title", "") or "",
+                "author": it.get("author", "") or "",
+                "publisher": it.get("publisher", "") or "",
+                "pub_date": None,  # 필요하면 기존 _parse_iso_date 써도 됨
+                "description": it.get("description", "") or "",
+                "cover": it.get("cover", "") or "",
+                "best_rank": it.get("bestRank"),
+                "sales_point": it.get("salesPoint") or 0,
+                "customer_review_rank": it.get("customerReviewRank"),
+            }
+
+            AladinListItem.objects.update_or_create(
+                query_type=key,
+                item_id=item_id,
+                defaults=defaults,
+            )
+
+        AladinListItem.objects.filter(query_type=key).exclude(item_id__in=alive_item_ids).delete()
+        _touch(key)
+
+    return AladinListItem.objects.filter(query_type=key).order_by("-sales_point", "-id")[:limit]
+
+
+def recommend_bookmark_based_aladin(user, limit=5):
+    recent = list(
         Bookmark.objects.filter(user=user)
         .select_related("book")
-        .order_by("-created_at")[:recent_n]
+        .order_by("-created_at")[:5]
     )
     if not recent:
-        return []
+        return {"picked_author": None, "items": []}
 
-    # 내 북마크 ISBN
-    my_isbns = set(
-        Bookmark.objects.filter(user=user).values_list("book__isbn13", flat=True)
+    picked = random.choice(recent).book
+    author = (picked.author or "").strip()
+    if not author:
+        return {"picked_author": None, "items": []}
+
+    # 이미 북마크한 isbn13 제외
+    bookmarked_isbn13 = set(
+        Bookmark.objects.filter(user=user)
+        .select_related("book")
+        .values_list("book__isbn13", flat=True)
     )
 
-    # 최근 북마크에서 작가 후보 만들기(중복 제거)
-    authors = []
-    for bm in recent:
-        a = _norm_author(getattr(bm.book, "author", ""))
-        if a:
-            authors.append(a)
+    # 알라딘(캐시)에서 author 인기책 가져오기
+    cand = _get_cached_author_sales(author, limit=30, ttl_hours=24)
 
-    authors = list(set(authors))
-    if not authors:
-        return []
-
-    picked_author = random.choice(authors)
-
-    items = _fetch_author_books_salespoint(picked_author, max_results=fetch_n)
-
-    # 내 북마크 제외 + 5권 채우기
-    picked = []
-    seen = set()
-    for it in items:
-        isbn13 = (it.get("isbn13") or "").strip()
-        item_id = it.get("itemId")
-        key = isbn13 or str(item_id)
-
-        if not key or key in seen:
+    items = []
+    for it in cand:
+        if not it.isbn13:
             continue
-        seen.add(key)
-
-        if isbn13 and isbn13 in my_isbns:
+        if it.isbn13 in bookmarked_isbn13:
             continue
-
-        picked.append(it)
-        if len(picked) == need:
+        items.append(it)
+        if len(items) == limit:
             break
 
-    return picked
+    # 5권 못 채우면 빈 배열 정책 유지(너 설계대로)
+    if len(items) != limit:
+        return {"picked_author": author, "items": []}
+
+    return {"picked_author": author, "items": items}
 
 
-def recommend_follow_based(user, need=5, top_follow_limit=5, bookmark_pool=20):
-    """
-    팔로우 기반(최적화 버전):
-    1) 내가 팔로우한 유저 중 bookmark_count >= need
-    2) 팔로우 최신순으로 TOP top_follow_limit명(5명) 뽑기 (5명 미만이면 있는 만큼)
-    3) 랜덤 셔플
-    4) 셔플 순서대로 '그 유저 북마크 최신 bookmark_pool개 중 랜덤 need권' 추천
-       - 내 북마크 ISBN 제외
-       - need권 못 채우면 다음 후보로
-    반환: Book 객체 리스트
-    """
-    my_isbns = set(
-        Bookmark.objects.filter(user=user).values_list("book__isbn13", flat=True)
+def recommend_follow_based(user, limit=5, pool_limit=5):
+    candidates = (
+        Follow.objects
+        .filter(from_user=user)
+        .values("to_user_id")
+        .annotate(bookmark_count=Count("to_user__bookmarks"))  # related_name 맞아야 함
+        .filter(bookmark_count__gte=limit)
+        .order_by("-bookmark_count")[:pool_limit]
     )
 
-    follows = (
-        Follow.objects.filter(from_user=user)
-        .annotate(bookmark_count=Count("to_user__bookmarks", distinct=True))
-        .filter(bookmark_count__gte=need)
-        .order_by("-created_at")[:top_follow_limit]
+    candidate_ids = [c["to_user_id"] for c in candidates]
+    if not candidate_ids:
+        return {"type": "follow_based", "picked_user_id": None, "items": []}
+
+    picked_user_id = random.choice(candidate_ids)
+
+    my_book_ids = Bookmark.objects.filter(user=user).values_list("book_id", flat=True)
+
+    picked_bookmarks = (
+        Bookmark.objects
+        .filter(user_id=picked_user_id)
+        .exclude(book_id__in=my_book_ids)
+        .select_related("book")
+        .order_by("-created_at")[:limit]
     )
 
-    target_ids = [f.to_user_id for f in follows]
-    if not target_ids:
-        return []
-
-    random.shuffle(target_ids)
-
-    for uid in target_ids:
-        qs = (
-            Bookmark.objects.filter(user_id=uid)
-            .exclude(book__isbn13__in=my_isbns)
-            .select_related("book")
-            .order_by("-created_at")[:bookmark_pool]
-        )
-        books = [bm.book for bm in qs]
-        if len(books) < need:
-            continue
-        return random.sample(books, need)
-
-    return []
+    return {
+        "type": "follow_based",
+        "picked_user_id": picked_user_id,
+        "items": [bm.book for bm in picked_bookmarks],
+    }

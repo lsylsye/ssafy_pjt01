@@ -43,3 +43,20 @@ class BookDetailSerializer(serializers.ModelSerializer):
         if request is None or not request.user.is_authenticated:
             return False
         return Bookmark.objects.filter(user=request.user, book=obj).exists()
+    
+    
+
+class BookSimpleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Book
+        fields = [
+            "id",
+            "isbn13",
+            "title",
+            "author",
+            "publisher",
+            "pub_date",
+            "cover",
+            "sales_point",
+            "category_name",
+        ]
