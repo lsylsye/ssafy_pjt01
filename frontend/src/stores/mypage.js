@@ -18,7 +18,7 @@ export const useMyPageStore = defineStore("mypage", {
       this.error = "";
 
       return api
-        .get("/api/mypage/me/") // 인터셉터가 토큰 자동 첨부
+        .get("/api/mypage/me/") // 인터셉터가 토큰 자동 첨부d
         .then((res) => {
           this.me = res.data;
           return this.me;
