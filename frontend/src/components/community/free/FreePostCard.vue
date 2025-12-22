@@ -2,28 +2,28 @@
   <li class="item">
     <router-link :to="to" class="link">
       <div class="row">
-        <span class="title">{{ review.book_title }}</span>
-        <span class="author">({{ review.book_author }})</span>
+        <span v-if="post.prefix_name" class="prefix">[{{ post.prefix_name }}]</span>
+        <span class="title">{{ post.title }}</span>
       </div>
 
       <div class="meta">
-        <span>{{ review.user_nickname }}</span>
-        <span>· {{ formatDate(review.created_at) }}</span>
-        <span>· 평점 {{ review.rating ?? "-" }}</span>
-        <span>· 좋아요 {{ review.like_count }}</span>
-        <span>· 댓글 {{ review.comment_count }}</span>
+        <span>{{ post.user_nickname }}</span>
+        <span>· {{ formatDate(post.created_at) }}</span>
+        <span>· 좋아요 {{ post.like_count }}</span>
+        <span>· 댓글 {{ post.comment_count }}</span>
       </div>
 
-      <p class="content">{{ review.content }}</p>
+      <p class="content">{{ post.content }}</p>
     </router-link>
   </li>
 </template>
 
 <script setup>
-defineProps({
-  review: { type: Object, required: true },
+const props = defineProps({
+  post: { type: Object, required: true },
   to: { type: String, required: true },
 });
+
 const formatDate = (iso) => (typeof iso === "string" ? iso.slice(0, 10) : "");
 </script>
 
@@ -31,11 +31,8 @@ const formatDate = (iso) => (typeof iso === "string" ? iso.slice(0, 10) : "");
 .item { border:1px solid #eee; border-radius:12px; padding:12px 14px; }
 .link { text-decoration:none; color:inherit; display:block; }
 .row { display:flex; gap:8px; align-items:center; margin-bottom:6px; }
+.prefix { color:#1a73e8; font-weight:700; }
 .title { font-weight:800; }
-.author { color:#666; font-weight:600; }
 .meta { color:#666; font-size:14px; display:flex; gap:8px; flex-wrap:wrap; margin-bottom:8px; }
-.content {
-  margin:0; color:#333;
-  overflow:hidden; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;
-}
+.content { margin:0; color:#333; }
 </style>
