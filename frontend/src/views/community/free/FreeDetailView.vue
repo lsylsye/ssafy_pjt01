@@ -11,7 +11,11 @@
         </div>
 
         <div class="meta">
-          <span>{{ post.user_nickname }}</span>
+          <!-- ✅ 작성자 닉네임 클릭 → 유저 프로필 이동 -->
+          <router-link class="user-link" :to="`/users/${post.user_id}`">
+            {{ post.user_nickname }}
+          </router-link>
+
           <span>· {{ formatDate(post.created_at) }}</span>
           <span>· 좋아요 {{ likeCount }}</span>
           <span>· 댓글 {{ post.comment_count }}</span>
@@ -239,6 +243,16 @@ const likeComment = (commentId) => {
 .prefix { color:#1a73e8; font-weight:800; }
 .title { margin:0; }
 .meta { margin-top:6px; color:#666; font-size:14px; display:flex; gap:8px; flex-wrap:wrap; }
+
+.user-link{
+  color:#1a73e8;
+  text-decoration:none;
+  cursor:pointer;
+}
+.user-link:hover{
+  text-decoration:underline;
+}
+
 .content { margin:12px 0 0; line-height:1.6; white-space:pre-wrap; }
 .actions { margin-top:12px; display:flex; gap:8px; align-items:center; }
 .btn { border:1px solid #ddd; background:white; border-radius:10px; padding:8px 12px; cursor:pointer; }
