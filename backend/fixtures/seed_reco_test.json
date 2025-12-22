@@ -1,0 +1,425 @@
+[
+  {
+    "model": "users.user",
+    "pk": 1,
+    "fields": {
+      "password": "pbkdf2_sha256$600000$testsalt$j9vytcZuViytLifvU8eAgcfHGueHo5Fu14uK+Q4zS7c=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "user1",
+      "first_name": "",
+      "last_name": "",
+      "email": "user1@email.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2025-12-01T00:00:00Z",
+      "nickname": "u1",
+      "favorite_country": "KR",
+      "favorite_genre": "novel_poem_drama",
+      "other_country": "",
+      "profile_image": "",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "users.user",
+    "pk": 2,
+    "fields": {
+      "password": "pbkdf2_sha256$600000$testsalt$j9vytcZuViytLifvU8eAgcfHGueHo5Fu14uK+Q4zS7c=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "user2",
+      "first_name": "",
+      "last_name": "",
+      "email": "user2@email.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2025-12-01T00:00:00Z",
+      "nickname": "u2",
+      "favorite_country": "JP",
+      "favorite_genre": "business",
+      "other_country": "",
+      "profile_image": "",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "users.user",
+    "pk": 3,
+    "fields": {
+      "password": "pbkdf2_sha256$600000$testsalt$j9vytcZuViytLifvU8eAgcfHGueHo5Fu14uK+Q4zS7c=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "user3",
+      "first_name": "",
+      "last_name": "",
+      "email": "user3@email.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2025-12-01T00:00:00Z",
+      "nickname": "u3",
+      "favorite_country": "CN",
+      "favorite_genre": "self_help",
+      "other_country": "",
+      "profile_image": "",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "users.user",
+    "pk": 4,
+    "fields": {
+      "password": "pbkdf2_sha256$600000$testsalt$j9vytcZuViytLifvU8eAgcfHGueHo5Fu14uK+Q4zS7c=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "user4",
+      "first_name": "",
+      "last_name": "",
+      "email": "user4@email.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2025-12-01T00:00:00Z",
+      "nickname": "u4",
+      "favorite_country": "EN",
+      "favorite_genre": "humanities",
+      "other_country": "",
+      "profile_image": "",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "users.user",
+    "pk": 5,
+    "fields": {
+      "password": "pbkdf2_sha256$600000$testsalt$j9vytcZuViytLifvU8eAgcfHGueHo5Fu14uK+Q4zS7c=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "user5",
+      "first_name": "",
+      "last_name": "",
+      "email": "user5@email.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2025-12-01T00:00:00Z",
+      "nickname": "u5",
+      "favorite_country": "KR",
+      "favorite_genre": "hobby_practical",
+      "other_country": "",
+      "profile_image": "",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "users.user",
+    "pk": 6,
+    "fields": {
+      "password": "pbkdf2_sha256$600000$testsalt$j9vytcZuViytLifvU8eAgcfHGueHo5Fu14uK+Q4zS7c=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "user6",
+      "first_name": "",
+      "last_name": "",
+      "email": "user6@email.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2025-12-01T00:00:00Z",
+      "nickname": "u6",
+      "favorite_country": "OTHER",
+      "favorite_genre": "comic_ebook",
+      "other_country": "Vietnam",
+      "profile_image": "",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "books.book",
+    "pk": 1,
+    "fields": {
+      "isbn13": "9791193790960",
+      "title": "해리 포터와 불의 잔 (인터랙티브 에디션)",
+      "author": "J.K. 롤링 (지은이), 칼 제임스 마운트퍼드 (그림), 강동혁 (옮긴이)",
+      "publisher": "문학수첩",
+      "pub_date": "2025-10-14",
+      "description": "",
+      "cover": "https://image.aladin.co.kr/product/37296/99/coversum/k852031541_1.jpg",
+      "sales_point": 12255,
+      "category_id": null,
+      "category_name": "",
+      "created_at": "2025-12-10T00:00:00Z"
+    }
+  },
+  {
+    "model": "books.book",
+    "pk": 2,
+    "fields": {
+      "isbn13": "9788936439743",
+      "title": "혼모노",
+      "author": "성해나",
+      "publisher": "창비",
+      "pub_date": "2025-03-28",
+      "description": "...",
+      "cover": "https://image.aladin.co.kr/product/36101/66/coversum/k152033655_2.jpg",
+      "sales_point": 353740,
+      "category_id": 50993,
+      "category_name": "국내도서>소설/시/희곡>한국소설>2000년대 이후 한국소설",
+      "created_at": "2025-12-10T00:00:00Z"
+    }
+  },
+  {
+    "model": "books.book",
+    "pk": 3,
+    "fields": {
+      "isbn13": "9791194530701",
+      "title": "괴테는 모든 것을 말했다 - 제172회 아쿠타가와상 수상작",
+      "author": "스즈키 유이",
+      "publisher": "리프",
+      "pub_date": "2025-11-18",
+      "description": "...",
+      "cover": "https://image.aladin.co.kr/product/37676/59/coversum/k212032349_2.jpg",
+      "sales_point": 120010,
+      "category_id": 50998,
+      "category_name": "국내도서>소설/시/희곡>일본소설>1950년대 이후 일본소설",
+      "created_at": "2025-12-10T00:00:00Z"
+    }
+  },
+  {
+    "model": "books.book",
+    "pk": 4,
+    "fields": {
+      "isbn13": "9791193904619",
+      "title": "삼체 X : 관상지주",
+      "author": "바오수",
+      "publisher": "서삼독",
+      "pub_date": "2025-12-24",
+      "description": "...",
+      "cover": "https://image.aladin.co.kr/product/37709/51/coversum/k682033066_1.jpg",
+      "sales_point": 22385,
+      "category_id": 89481,
+      "category_name": "국내도서>소설/시/희곡>과학소설(SF)>외국 과학소설",
+      "created_at": "2025-12-10T00:00:00Z"
+    }
+  },
+  {
+    "model": "books.book",
+    "pk": 5,
+    "fields": {
+      "isbn13": "9791130672656",
+      "title": "기차의 꿈",
+      "author": "데니스 존슨",
+      "publisher": "다산책방",
+      "pub_date": "2025-12-10",
+      "description": "...",
+      "cover": "https://image.aladin.co.kr/product/37710/61/coversum/k402033169_3.jpg",
+      "sales_point": 20860,
+      "category_id": 50919,
+      "category_name": "국내도서>소설/시/희곡>영미소설",
+      "created_at": "2025-12-10T00:00:00Z"
+    }
+  },
+  {
+    "model": "books.book",
+    "pk": 6,
+    "fields": {
+      "isbn13": "9791141602451",
+      "title": "절창",
+      "author": "구병모",
+      "publisher": "문학동네",
+      "pub_date": "2025-09-17",
+      "description": "...",
+      "cover": "https://image.aladin.co.kr/product/37172/36/coversum/k662031678_3.jpg",
+      "sales_point": 153935,
+      "category_id": 50993,
+      "category_name": "국내도서>소설/시/희곡>한국소설>2000년대 이후 한국소설",
+      "created_at": "2025-12-10T00:00:00Z"
+    }
+  },
+  {
+    "model": "books.book",
+    "pk": 7,
+    "fields": {
+      "isbn13": "9791141602376",
+      "title": "안녕이라 그랬어",
+      "author": "김애란",
+      "publisher": "문학동네",
+      "pub_date": "2025-06-20",
+      "description": "...",
+      "cover": "https://image.aladin.co.kr/product/36566/52/coversum/k462039240_2.jpg",
+      "sales_point": 181743,
+      "category_id": 50993,
+      "category_name": "국내도서>소설/시/희곡>한국소설>2000년대 이후 한국소설",
+      "created_at": "2025-12-10T00:00:00Z"
+    }
+  },
+  {
+    "model": "books.book",
+    "pk": 8,
+    "fields": {
+      "isbn13": "9788998441012",
+      "title": "모순 - 개정판",
+      "author": "양귀자",
+      "publisher": "쓰다",
+      "pub_date": "2013-04-01",
+      "description": "...",
+      "cover": "https://image.aladin.co.kr/product/2584/37/coversum/8998441012_3.jpg",
+      "sales_point": 262540,
+      "category_id": 50994,
+      "category_name": "국내도서>소설/시/희곡>한국소설>2000년대 이전 한국소설",
+      "created_at": "2025-12-10T00:00:00Z"
+    }
+  },
+  {
+    "model": "books.book",
+    "pk": 9,
+    "fields": {
+      "isbn13": "9791173830235",
+      "title": "비밀 속의 비밀 1",
+      "author": "댄 브라운",
+      "publisher": "문학수첩",
+      "pub_date": "2025-11-27",
+      "description": "...",
+      "cover": "https://image.aladin.co.kr/product/37715/47/coversum/k212033164_1.jpg",
+      "sales_point": 34265,
+      "category_id": 51062,
+      "category_name": "국내도서>소설/시/희곡>추리/미스터리소설>영미 추리/미스터리소설",
+      "created_at": "2025-12-10T00:00:00Z"
+    }
+  },
+  {
+    "model": "books.book",
+    "pk": 10,
+    "fields": {
+      "isbn13": "9791173830242",
+      "title": "비밀 속의 비밀 2",
+      "author": "댄 브라운",
+      "publisher": "문학수첩",
+      "pub_date": "2025-12-05",
+      "description": "...",
+      "cover": "https://image.aladin.co.kr/product/37715/63/coversum/k562033164_1.jpg",
+      "sales_point": 29905,
+      "category_id": 51062,
+      "category_name": "국내도서>소설/시/희곡>추리/미스터리소설>영미 추리/미스터리소설",
+      "created_at": "2025-12-10T00:00:00Z"
+    }
+  },
+  {
+    "model": "books.book",
+    "pk": 11,
+    "fields": {
+      "isbn13": "9791171715503",
+      "title": "죽은 왕녀를 위한 파반느 (양장 특별판)",
+      "author": "박민규",
+      "publisher": "위즈덤하우스",
+      "pub_date": "2025-11-19",
+      "description": "...",
+      "cover": "https://image.aladin.co.kr/product/37794/24/coversum/k002033083_1.jpg",
+      "sales_point": 25450,
+      "category_id": 50993,
+      "category_name": "국내도서>소설/시/희곡>한국소설>2000년대 이후 한국소설",
+      "created_at": "2025-12-10T00:00:00Z"
+    }
+  },
+  {
+    "model": "books.book",
+    "pk": 12,
+    "fields": {
+      "isbn13": "9788925588735",
+      "title": "프로젝트 헤일메리",
+      "author": "앤디 위어",
+      "publisher": "알에이치코리아(RHK)",
+      "pub_date": "2021-05-04",
+      "description": "...",
+      "cover": "https://image.aladin.co.kr/product/27045/43/coversum/8925588730_2.jpg",
+      "sales_point": 76802,
+      "category_id": 89481,
+      "category_name": "국내도서>소설/시/희곡>과학소설(SF)>외국 과학소설",
+      "created_at": "2025-12-10T00:00:00Z"
+    }
+  },
+
+  {
+    "model": "users.follow",
+    "pk": 1,
+    "fields": { "from_user": 1, "to_user": 5, "created_at": "2025-12-21T23:00:00Z" }
+  },
+  {
+    "model": "users.follow",
+    "pk": 2,
+    "fields": { "from_user": 1, "to_user": 4, "created_at": "2025-12-21T19:00:00Z" }
+  },
+  {
+    "model": "users.follow",
+    "pk": 3,
+    "fields": { "from_user": 1, "to_user": 3, "created_at": "2025-12-21T15:00:00Z" }
+  },
+  {
+    "model": "users.follow",
+    "pk": 4,
+    "fields": { "from_user": 1, "to_user": 2, "created_at": "2025-12-21T11:00:00Z" }
+  },
+  {
+    "model": "users.follow",
+    "pk": 5,
+    "fields": { "from_user": 1, "to_user": 6, "created_at": "2025-12-21T07:00:00Z" }
+  },
+  {
+    "model": "users.follow",
+    "pk": 6,
+    "fields": { "from_user": 2, "to_user": 3, "created_at": "2025-12-20T18:00:00Z" }
+  },
+  {
+    "model": "users.follow",
+    "pk": 7,
+    "fields": { "from_user": 2, "to_user": 4, "created_at": "2025-12-20T17:00:00Z" }
+  },
+  {
+    "model": "users.follow",
+    "pk": 8,
+    "fields": { "from_user": 3, "to_user": 2, "created_at": "2025-12-20T08:00:00Z" }
+  },
+
+  {
+    "model": "books.bookmark",
+    "pk": 1,
+    "fields": { "user": 1, "book": 1, "created_at": "2025-12-21T22:00:00Z" }
+  },
+  { "model": "books.bookmark", "pk": 2, "fields": { "user": 1, "book": 2, "created_at": "2025-12-21T21:00:00Z" } },
+  { "model": "books.bookmark", "pk": 3, "fields": { "user": 1, "book": 3, "created_at": "2025-12-21T20:00:00Z" } },
+  { "model": "books.bookmark", "pk": 4, "fields": { "user": 1, "book": 4, "created_at": "2025-12-21T19:00:00Z" } },
+  { "model": "books.bookmark", "pk": 5, "fields": { "user": 1, "book": 5, "created_at": "2025-12-21T18:00:00Z" } },
+  { "model": "books.bookmark", "pk": 6, "fields": { "user": 1, "book": 6, "created_at": "2025-12-21T17:00:00Z" } },
+
+  { "model": "books.bookmark", "pk": 7, "fields": { "user": 2, "book": 7, "created_at": "2025-12-19T12:00:00Z" } },
+  { "model": "books.bookmark", "pk": 8, "fields": { "user": 2, "book": 8, "created_at": "2025-12-19T11:00:00Z" } },
+  { "model": "books.bookmark", "pk": 9, "fields": { "user": 2, "book": 9, "created_at": "2025-12-19T10:00:00Z" } },
+  { "model": "books.bookmark", "pk": 10, "fields": { "user": 2, "book": 10, "created_at": "2025-12-19T09:00:00Z" } },
+  { "model": "books.bookmark", "pk": 11, "fields": { "user": 2, "book": 11, "created_at": "2025-12-19T08:00:00Z" } },
+  { "model": "books.bookmark", "pk": 12, "fields": { "user": 2, "book": 12, "created_at": "2025-12-19T07:00:00Z" } },
+  { "model": "books.bookmark", "pk": 13, "fields": { "user": 2, "book": 1, "created_at": "2025-12-19T06:00:00Z" } },
+
+  { "model": "books.bookmark", "pk": 14, "fields": { "user": 3, "book": 3, "created_at": "2025-12-16T00:00:00Z" } },
+  { "model": "books.bookmark", "pk": 15, "fields": { "user": 3, "book": 4, "created_at": "2025-12-15T23:00:00Z" } },
+  { "model": "books.bookmark", "pk": 16, "fields": { "user": 3, "book": 7, "created_at": "2025-12-15T22:00:00Z" } },
+  { "model": "books.bookmark", "pk": 17, "fields": { "user": 3, "book": 8, "created_at": "2025-12-15T21:00:00Z" } },
+
+  { "model": "books.bookmark", "pk": 18, "fields": { "user": 4, "book": 9, "created_at": "2025-12-13T12:00:00Z" } },
+  { "model": "books.bookmark", "pk": 19, "fields": { "user": 4, "book": 10, "created_at": "2025-12-13T11:00:00Z" } },
+  { "model": "books.bookmark", "pk": 20, "fields": { "user": 4, "book": 11, "created_at": "2025-12-13T10:00:00Z" } },
+  { "model": "books.bookmark", "pk": 21, "fields": { "user": 4, "book": 12, "created_at": "2025-12-13T09:00:00Z" } },
+  { "model": "books.bookmark", "pk": 22, "fields": { "user": 4, "book": 5, "created_at": "2025-12-13T08:00:00Z" } },
+
+  { "model": "books.bookmark", "pk": 23, "fields": { "user": 5, "book": 2, "created_at": "2025-12-12T12:00:00Z" } },
+  { "model": "books.bookmark", "pk": 24, "fields": { "user": 5, "book": 6, "created_at": "2025-12-12T11:00:00Z" } },
+  { "model": "books.bookmark", "pk": 25, "fields": { "user": 5, "book": 7, "created_at": "2025-12-12T10:00:00Z" } },
+  { "model": "books.bookmark", "pk": 26, "fields": { "user": 5, "book": 8, "created_at": "2025-12-12T09:00:00Z" } },
+  { "model": "books.bookmark", "pk": 27, "fields": { "user": 5, "book": 9, "created_at": "2025-12-12T08:00:00Z" } },
+  { "model": "books.bookmark", "pk": 28, "fields": { "user": 5, "book": 10, "created_at": "2025-12-12T07:00:00Z" } },
+
+  { "model": "books.bookmark", "pk": 29, "fields": { "user": 6, "book": 11, "created_at": "2025-12-10T12:00:00Z" } },
+  { "model": "books.bookmark", "pk": 30, "fields": { "user": 6, "book": 12, "created_at": "2025-12-10T11:00:00Z" } }
+]

@@ -6,9 +6,11 @@ from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from .models import Book, Bookmark
-from .serializers import BookDetailSerializer, AladinListItemSerializer
+from .serializers import BookDetailSerializer, AladinListItemSerializer, BookSimpleSerializer
 from .services import get_or_create_book_by_isbn13, get_cached_aladin_list
+from .services.recommendations import recommend_bookmark_based_aladin, recommend_follow_based
 
 
 # 베스트셀러 TOP10
@@ -121,28 +123,50 @@ def bookmark_toggle(request, isbn13):
 
 
 
-# 내 북마크 목록
-@api_view(["GET"])
-@permission_classes([IsAuthenticated])
-def my_bookmarks(request):
-    bookmarks = (
-        Bookmark.objects
-        .filter(user=request.user)
-        .select_related("book")
-        .order_by("-created_at")
-    )
+# 책 추천 알고리즘
 
-    data = [
-        {
-            "isbn13": b.book.isbn13,
-            "title": b.book.title,
-            "author": b.book.author,
-            "publisher": b.book.publisher,
-            "pub_date": b.book.pub_date,
-            "cover": b.book.cover,
-            "bookmarked_at": b.created_at,
-        }
-        for b in bookmarks
-    ]
+class RecommendBookmarkBasedView(APIView):
+    permission_classes = [IsAuthenticated]
 
-    return Response(data)
+    def get(self, request):
+        data = recommend_bookmark_based_aladin(request.user, limit=5)
+        return Response({
+            "type": "bookmark_based",
+            "picked_author": data["picked_author"],
+            "items": AladinListItemSerializer(data["items"], many=True).data,
+        })
+
+
+class RecommendFollowBasedView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        data = recommend_follow_based(request.user, limit=5, pool_limit=5)
+        items = BookSimpleSerializer(data["items"], many=True).data
+        return Response({
+            "type": "follow_based",
+            "picked_user_id": data["picked_user_id"],
+            "items": items,
+        })
+
+
+class RecommendDebugView(APIView):
+    """
+    한 번에 둘 다 확인용
+    """
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        b = recommend_bookmark_based(request.user, limit=5)
+        f = recommend_follow_based(request.user, limit=5, pool_limit=5)
+
+        return Response({
+            "bookmark_based": {
+                "picked_author": b["picked_author"],
+                "items": BookSimpleSerializer(b["items"], many=True).data,
+            },
+            "follow_based": {
+                "picked_user_id": f["picked_user_id"],
+                "items": BookSimpleSerializer(f["items"], many=True).data,
+            },
+        })
