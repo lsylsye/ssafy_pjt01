@@ -5,6 +5,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 
+from grass.services import add_points
 from .models import Community, Board, Prefix, Post, Review, Comment, Like
 from .serializers import (
     BoardSerializer,
@@ -184,6 +185,8 @@ def free_write(request, country):
         title=s.validated_data["title"],
         content=s.validated_data["content"],
     )
+
+    add_points(request.user, "POST") 
 
     row = PostListSerializer(post, context={"liked_ids": set()}).data
     row["like_count"] = 0
@@ -405,6 +408,8 @@ def free_comments_write(request, country, post_id):
         content=s.validated_data["content"],
     )
 
+    add_points(request.user, "COMMENT")
+
     row = CommentSerializer(comment, context={"liked_ids": set()}).data
     row["like_count"] = 0
     return Response(row, status=status.HTTP_201_CREATED)
@@ -475,6 +480,8 @@ def review_write(request, country):
         pub_date=v.get("pub_date", ""),
         cover=v.get("cover", ""),
     )
+
+    add_points(request.user, "REVIEW")
 
     row = ReviewListSerializer(review, context={"liked_ids": set()}).data
     row["like_count"] = 0
@@ -622,6 +629,8 @@ def review_comments_write(request, country, review_id):
         parent_comment=parent_obj,
         content=s.validated_data["content"],
     )
+
+    add_points(request.user, "COMMENT")
 
     row = CommentSerializer(comment, context={"liked_ids": set()}).data
     row["like_count"] = 0

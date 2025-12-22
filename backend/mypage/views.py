@@ -7,8 +7,9 @@ from books.models import Bookmark
 from .serializers import MyBookmarkSerializer
 
 from users.models import Follow
+from grass.services import get_level_payload
 
-# 프로필 조회
+# 내 정보 조회
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def my_profile(request):
@@ -25,6 +26,8 @@ def my_profile(request):
         except Exception:
             profile_image_url = user.profile_image.url
 
+    level_payload = get_level_payload(user)
+
     return Response({
         "id": user.id,
         "username": user.username,
@@ -35,6 +38,9 @@ def my_profile(request):
         "profile_image": profile_image_url,
         "followers_count": followers_count,
         "following_count": following_count,
+        "exp_total": level_payload["exp_total"],
+        "level": level_payload["level"],
+        "level_progress": level_payload["progress"],
     })
 
 

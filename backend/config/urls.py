@@ -48,6 +48,8 @@ urlpatterns = [
     path("api/mypage/", include("mypage.urls")),
     # 커뮤니티
     path("api/community/", include("community.urls")),
+    # 잔디
+    path("api/grass/", include("grass.urls")),
 ]
 
 
