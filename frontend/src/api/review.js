@@ -1,8 +1,5 @@
 import api from "@/api/axios";
 
-// ✅ 반드시 /api/community 로 맞춰야 함 (지금 404 원인)
-const base = (country) => `/api/community/${String(country).toLowerCase()}`;
-
 // 목록 (q 옵션) - 인증 X
 export const getReviews = (country, q = "") => {
   const params = {};
@@ -10,9 +7,9 @@ export const getReviews = (country, q = "") => {
   return api.get(`${base(country)}/review/`, { params, auth: false });
 };
 
-// 작성 - 인증 O (write 뒤 슬래시 없음)
+// 작성 - 인증 O 
 export const createReview = (country, payload) =>
-  api.post(`${base(country)}/review/write`, payload);
+  api.post(`${base(country)}/review/write/`, payload);
 
 // 상세 - 인증 X
 export const getReviewDetail = (country, reviewId) =>
@@ -36,7 +33,7 @@ export const getReviewComments = (country, reviewId) =>
 
 // 댓글 작성(대댓글 포함) - 인증 O (write 뒤 슬래시 없음)
 export const createReviewComment = (country, reviewId, payload) =>
-  api.post(`${base(country)}/review/${reviewId}/comments/write`, payload);
+  api.post(`${base(country)}/review/${reviewId}/comments/write/`, payload);
 
 // 댓글 삭제(공통) - 인증 O
 export const deleteComment = (commentId) =>

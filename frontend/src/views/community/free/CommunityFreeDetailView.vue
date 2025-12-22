@@ -376,7 +376,7 @@ const writeComment = (parentId) => {
     : { content: text }
 
   api.post(
-    `/api/community/${c}/free/${postId.value}/comments/write`,
+    `/api/community/${c}/free/${postId.value}/comments/write/`,
     body,
     { headers: { Authorization: `Bearer ${token}` } }
   )

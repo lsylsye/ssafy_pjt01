@@ -21,78 +21,72 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
-import api from '@/api/axios'
-import { useAuthStore } from '@/stores/auth'
+import { ref, computed } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import api from "@/api/axios";
+import { useAuthStore } from "@/stores/auth";
 
-const route = useRoute()
-const router = useRouter()
-const auth = useAuthStore()
+const route = useRoute();
+const router = useRouter();
+const auth = useAuthStore();
 
-const country = computed(() => String(route.params.country || 'kr'))
-const apiCountry = (c) => String(c || 'kr').toLowerCase()
+const country = computed(() => String(route.params.country || "kr"));
 
-const loading = ref(false)
-const errorMsg = ref('')
+const loading = ref(false);
+const errorMsg = ref("");
 
-const prefixName = ref('')
-const title = ref('')
-const content = ref('')
+const prefixName = ref("");
+const title = ref("");
+const content = ref("");
 
 const submit = () => {
-  // store에 isLoggedIn이 없거나 반응형일 수 있어서 토큰 기준이 제일 확실함
-  const token = localStorage.getItem('access_token')
+  const token = localStorage.getItem("access_token");
   if (!token) {
-    router.push('/login')
-    return
+    router.push("/login");
+    return;
   }
 
-  const t = title.value.trim()
-  const ctt = content.value.trim()
+  const t = title.value.trim();
+  const ctt = content.value.trim();
   if (!t || !ctt) {
-    alert('제목/내용은 필수입니다.')
-    return
+    alert("제목/내용은 필수입니다.");
+    return;
   }
 
-  const c = apiCountry(country.value)
+  const c = String(country.value || "kr");
 
-  loading.value = true
-  errorMsg.value = ''
+  loading.value = true;
+  errorMsg.value = "";
 
-  api.post(
-    `/api/community/${c}/free/write`,   // ✅ trailing slash
-    {
+  api
+    .post(`/api/community/${c}/free/write/`, {
       title: t,
       content: ctt,
       prefix_name: prefixName.value.trim() || null,
-    },
-    { headers: { Authorization: `Bearer ${token}` } }
-  )
+    })
     .then((res) => {
-      const id = res.data?.id
-      if (id) router.push(`/community/${country.value}/free/${id}`)
-      else router.push(`/community/${country.value}/free`)
+      const id = res.data?.id;
+      router.push(id ? `/community/${c}/free/${id}` : `/community/${c}/free`);
     })
     .catch((err) => {
-      const status = err.response?.status
-      console.error('[글 작성 실패]', status, err.response?.data || err.message)
+      const status = err.response?.status;
+      console.error("[글 작성 실패]", status, err.response?.data || err.message);
 
       if (status === 401) {
-        auth.logout?.()
-        router.push('/login')
-        return
+        auth.logout?.();
+        router.push("/login");
+        return;
       }
       if (status === 404) {
-        errorMsg.value = 'API 주소가 맞지 않습니다. (write 경로/슬래시 확인)'
-        return
+        errorMsg.value = "API 주소가 맞지 않습니다. (write 경로/슬래시 확인)";
+        return;
       }
-      errorMsg.value = '글 작성에 실패했습니다.'
+      errorMsg.value = "글 작성에 실패했습니다.";
     })
     .finally(() => {
-      loading.value = false
-    })
-}
+      loading.value = false;
+    });
+};
 </script>
 
 <style scoped>

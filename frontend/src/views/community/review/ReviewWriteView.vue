@@ -1,6 +1,5 @@
 <template>
   <section class="wrap">
-    <!-- ✅ 도서 검색 영역 (선택된 책이 있으면 기본 숨김) -->
     <div v-if="showSearch">
       <h2 class="h2">도서 검색</h2>
 
@@ -44,7 +43,6 @@
       <hr class="hr" />
     </div>
 
-    <!-- ✅ 선택된 책이 있으면 요약 + 다시 검색 버튼 -->
     <div v-else class="selectedBar">
       <div class="selectedText">
         선택된 도서: {{ book_title || "-" }} / {{ book_author || "-" }}
@@ -67,14 +65,7 @@
 
       <div class="row">
         <label class="label">평점(선택)</label>
-        <input
-          v-model.number="rating"
-          class="input"
-          type="number"
-          min="1"
-          max="5"
-          placeholder="1~5"
-        />
+        <input v-model.number="rating" class="input" type="number" min="1" max="5" placeholder="1~5" />
       </div>
 
       <div class="row">
@@ -106,35 +97,28 @@ import { createReview } from "@/api/review";
 
 const route = useRoute();
 const router = useRouter();
-const country = computed(() => String(route.params.country || "kr"));
-const apiCountry = (c) => String(c || "kr").toLowerCase();
 
-// ✅ 검색영역 표시 여부 (query로 책이 들어오면 기본 false)
+const country = computed(() => String(route.params.country || "kr"));
 const showSearch = ref(true);
 
-// 도서 검색 상태
 const bookQ = ref("");
 const bookSearching = ref(false);
 const bookError = ref("");
 const bookResults = ref([]);
 
-// 리뷰 입력값
 const book_title = ref("");
 const book_author = ref("");
 const rating = ref(null);
 const content = ref("");
 
-// 자동 채움 옵션
 const isbn13 = ref("");
 const publisher = ref("");
 const pub_date = ref("");
 const cover = ref("");
 
-// 저장 상태
 const saving = ref(false);
 const errorMsg = ref("");
 
-// ✅ 다양한 응답 키를 흡수해서 통일
 const normalizeBook = (raw) => {
   const title = raw.title || raw.book_title || raw.bookTitle || "";
   const author = raw.author || raw.book_author || raw.bookAuthor || "";
@@ -143,32 +127,16 @@ const normalizeBook = (raw) => {
   const cover = raw.cover || raw.cover_url || raw.coverUrl || "";
   const isbn13 = raw.isbn13 || raw.isbn || raw.isbn_13 || "";
 
-  return {
-    _key: isbn13 || `${title}_${author}`,
-    title,
-    author,
-    publisher,
-    pub_date,
-    cover,
-    isbn13,
-  };
+  return { _key: isbn13 || `${title}_${author}`, title, author, publisher, pub_date, cover, isbn13 };
 };
 
-// ✅ 200 OK인데 안 뜨는 원인: res.data가 배열이 아닐 때가 많음
 const extractArray = (raw) => {
   if (!raw) return [];
   if (Array.isArray(raw)) return raw;
-
-  // DRF pagination
   if (Array.isArray(raw.results)) return raw.results;
-
-  // 흔한 케이스들
   if (Array.isArray(raw.items)) return raw.items;
   if (Array.isArray(raw.item)) return raw.item;
-
-  // 감싸진 data
   if (raw.data && Array.isArray(raw.data)) return raw.data;
-
   return [];
 };
 
@@ -180,15 +148,9 @@ const searchBook = () => {
   bookError.value = "";
   bookResults.value = [];
 
-  api
-    .get("/api/books/search/", { params: { q }, auth: false })
+  api.get("/api/books/search/", { params: { q }, auth: false })
     .then((res) => {
-      const raw = res.data;
-      const arr = extractArray(raw);
-
-      console.log("books search raw:", raw);
-      console.log("books search arr length:", arr.length);
-
+      const arr = extractArray(res.data);
       bookResults.value = arr.map(normalizeBook);
     })
     .catch((err) => {
@@ -209,7 +171,6 @@ const selectBook = (b) => {
   pub_date.value = b.pub_date || "";
   cover.value = b.cover || "";
 
-  // ✅ 클릭하면 검색 결과/검색창 정리 + 검색영역 닫기
   bookResults.value = [];
   bookQ.value = "";
   bookError.value = "";
@@ -223,7 +184,6 @@ const openSearch = () => {
 const applyQueryPrefill = () => {
   const q = route.query || {};
 
-  // BookDetailView에서 보내는 키 기준
   const qt = String(q.book_title || "");
   const qa = String(q.book_author || "");
 
@@ -236,7 +196,6 @@ const applyQueryPrefill = () => {
     pub_date.value = String(q.pub_date || "");
     cover.value = String(q.cover || "");
 
-    // ✅ query로 들어오면 검색영역 기본 숨김
     showSearch.value = false;
     bookResults.value = [];
     bookQ.value = "";
@@ -261,7 +220,6 @@ const submit = () => {
   if (rating.value !== null && rating.value !== "" && !Number.isNaN(Number(rating.value))) {
     payload.rating = Number(rating.value);
   }
-
   if (isbn13.value) payload.isbn13 = isbn13.value;
   if (publisher.value) payload.publisher = publisher.value;
   if (pub_date.value) payload.pub_date = pub_date.value;
@@ -269,7 +227,8 @@ const submit = () => {
 
   saving.value = true;
 
-  const c = apiCountry(country.value);
+  const c = String(country.value || "kr");
+
   createReview(c, payload)
     .then((res) => {
       const newId = res.data?.id;
@@ -293,93 +252,33 @@ onMounted(() => {
 
 <style scoped>
 .wrap { max-width: 860px; }
-
 .h2 { font-size: 44px; margin: 0 0 16px; }
 .h3 { margin: 0 0 12px; }
-
 .searchbar { display: flex; gap: 8px; align-items: center; margin-bottom: 16px; }
-.searchInput {
-  flex: 1;
-  height: 42px;
-  padding: 0 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-}
-.searchBtn {
-  height: 42px;
-  padding: 0 12px;
-  border: 1px solid #aaa;
-  background: #f5f5f5;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
+.searchInput { flex: 1; height: 42px; padding: 0 10px; border: 1px solid #ddd; border-radius: 4px; }
+.searchBtn { height: 42px; padding: 0 12px; border: 1px solid #aaa; background: #f5f5f5; border-radius: 4px; cursor: pointer; }
 .msg { margin: 8px 0; }
 .hint { margin: 8px 0; color: #666; }
-
 .error { color: #d33; margin: 8px 0; }
-
 .resultList { list-style: none; padding: 0; margin: 0; }
-.resultItem {
-  display: flex;
-  gap: 16px;
-  padding: 18px 0;
-  border-bottom: 1px solid #eee;
-  cursor: pointer;
-}
+.resultItem { display: flex; gap: 16px; padding: 18px 0; border-bottom: 1px solid #eee; cursor: pointer; }
 .resultItem:hover { background: #fafafa; }
-
 .cover { width: 90px; height: 120px; object-fit: cover; }
 .cover.placeholder { background: #e9e9e9; }
-
 .info { min-width: 0; }
 .title { font-size: 22px; font-weight: 800; margin-bottom: 8px; }
 .author { font-size: 16px; color: #333; margin-bottom: 8px; }
 .pub { font-size: 16px; color: #666; }
-
 .hr { margin: 24px 0; }
-
-.selectedBar{
-  display:flex;
-  align-items:center;
-  justify-content: space-between;
-  gap: 10px;
-  margin: 0 0 16px;
-  padding: 12px 14px;
-  border: 1px solid #eee;
-  border-radius: 12px;
-  background: #fafafa;
-}
+.selectedBar{ display:flex; align-items:center; justify-content: space-between; gap: 10px; margin: 0 0 16px; padding: 12px 14px; border: 1px solid #eee; border-radius: 12px; background: #fafafa; }
 .selectedText{ color:#333; }
-
 .form { border: 1px solid #eee; border-radius: 12px; padding: 12px 14px; }
 .row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px; }
 .label { font-size: 13px; color: #444; }
-
-.input, .textarea {
-  padding: 8px 10px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-}
+.input, .textarea { padding: 8px 10px; border: 1px solid #ddd; border-radius: 8px; }
 .textarea { min-height: 160px; resize: vertical; }
-
-.extra {
-  border: 1px solid #eee;
-  border-radius: 12px;
-  padding: 10px;
-  background: #fafafa;
-  color: #555;
-  font-size: 13px;
-  margin-top: 10px;
-}
-
+.extra { border: 1px solid #eee; border-radius: 12px; padding: 10px; background: #fafafa; color: #555; font-size: 13px; margin-top: 10px; }
 .actions { display: flex; gap: 10px; margin-top: 12px; }
-.btn {
-  border: 1px solid #ddd;
-  background: white;
-  border-radius: 8px;
-  padding: 8px 12px;
-  cursor: pointer;
-}
+.btn { border: 1px solid #ddd; background: white; border-radius: 8px; padding: 8px 12px; cursor: pointer; }
 .btn:hover { border-color: #1a73e8; color: #1a73e8; }
 </style>

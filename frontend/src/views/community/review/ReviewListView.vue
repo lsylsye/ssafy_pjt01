@@ -76,6 +76,7 @@ const fetchList = () => {
     .finally(() => {
       loading.value = false;
     });
+    
 };
 
 onMounted(() => {
