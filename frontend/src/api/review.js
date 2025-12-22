@@ -1,44 +1,38 @@
 import api from "@/api/axios";
 
-// 목록 (q 옵션) - 인증 X
-export const getReviews = (country, q = "") => {
-  const params = {};
-  if (q) params.q = q;
-  return api.get(`${base(country)}/review/`, { params, auth: false });
-};
+const c = (country) => String(country || "kr").toLowerCase();
 
-// 작성 - 인증 O 
-export const createReview = (country, payload) =>
-  api.post(`${base(country)}/review/write/`, payload);
+// list/detail
+export const getReviewList = (country, params = {}) =>
+  api.get(`/api/community/${c(country)}/review/`, { params, auth: false });
 
-// 상세 - 인증 X
 export const getReviewDetail = (country, reviewId) =>
-  api.get(`${base(country)}/review/${reviewId}/`, { auth: false });
+  api.get(`/api/community/${c(country)}/review/${reviewId}/`, { auth: false });
 
-// 수정 - 인증 O
+// write/edit/delete
+export const createReview = (country, payload) =>
+  api.post(`/api/community/${c(country)}/review/write/`, payload);
+
 export const patchReview = (country, reviewId, payload) =>
-  api.patch(`${base(country)}/review/${reviewId}/`, payload);
+  api.patch(`/api/community/${c(country)}/review/${reviewId}/`, payload);
 
-// 삭제 - 인증 O
 export const deleteReview = (country, reviewId) =>
-  api.delete(`${base(country)}/review/${reviewId}/`);
+  api.delete(`/api/community/${c(country)}/review/${reviewId}/`);
 
-// 좋아요 토글 - 인증 O
+// likes
 export const toggleReviewLike = (country, reviewId) =>
-  api.post(`${base(country)}/review/${reviewId}/like/`);
+  api.post(`/api/community/${c(country)}/review/${reviewId}/like/`, {});
 
-// 댓글 목록 - 인증 X
+// comments (review)
 export const getReviewComments = (country, reviewId) =>
-  api.get(`${base(country)}/review/${reviewId}/comments/`, { auth: false });
+  api.get(`/api/community/${c(country)}/review/${reviewId}/comments/`);
 
-// 댓글 작성(대댓글 포함) - 인증 O (write 뒤 슬래시 없음)
 export const createReviewComment = (country, reviewId, payload) =>
-  api.post(`${base(country)}/review/${reviewId}/comments/write/`, payload);
+  api.post(`/api/community/${c(country)}/review/${reviewId}/comments/write/`, payload);
 
-// 댓글 삭제(공통) - 인증 O
+// shared comment endpoints
 export const deleteComment = (commentId) =>
   api.delete(`/api/community/comments/${commentId}/`);
 
-// 댓글 좋아요(공통) - 인증 O
 export const toggleCommentLike = (commentId) =>
-  api.post(`/api/community/comments/${commentId}/like/`);
+  api.post(`/api/community/comments/${commentId}/like/`, {});
