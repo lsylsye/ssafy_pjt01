@@ -31,7 +31,7 @@ class User(AbstractUser):
     favorite_country = models.CharField(max_length=5, choices=FAVORITE_COUNTRIES, null=True, blank=True)
     other_country = models.CharField(max_length=50, null=True, blank=True)
     favorite_genre = models.CharField(max_length=20, choices=FAVORITE_GENRES, null=True, blank=True)
-
+    exp_total = models.PositiveIntegerField(default=0)
     profile_image = models.ImageField(
         upload_to=profile_image_path,
         null=True,

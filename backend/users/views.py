@@ -55,6 +55,7 @@ def following_list(request, user_id):
     users = [rel.to_user for rel in qs]
     return Response(SimpleUserSerializer(users, many=True).data)
 
+
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def profile_detail(request, user_id):
