@@ -1,10 +1,15 @@
 import json
 import random
 from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
+from rest_framework.decorators import api_view
 from django.conf import settings
 from openai import OpenAI
-from .models import Book
+from .models import Book, AIReviewAnalysis
+from .services import (
+    get_aladin_data_complete, 
+    analyze_book_complete, 
+    get_wikipedia_author_info
+)
 
 # API 키 설정
 client = OpenAI(
@@ -12,7 +17,7 @@ client = OpenAI(
     base_url="https://gms.ssafy.io/gmsapi/api.openai.com/v1",
 )
 
-@csrf_exempt
+@api_view(["GET"])
 def recommend_book(request):
     if request.method == 'POST':
         try:
@@ -129,3 +134,62 @@ def recommend_book(request):
             return JsonResponse({"error": str(e)}, status=500)
 
     return JsonResponse({"error": "POST required"}, status=400)
+
+@api_view(["GET"])
+def book_ai_review(request, isbn13):
+    isbn13 = (isbn13 or "").strip()
+
+    # 간단 검증(원하면 더 엄격히)
+    if not isbn13:
+        return JsonResponse({"error": "isbn13 is required"}, status=400)
+
+    # 1) 캐시 확인
+    cached = AIReviewAnalysis.objects.filter(isbn13=isbn13).first()
+    if cached:
+        return JsonResponse({
+            "story_summary": cached.story_summary or "",
+            "summary_reviews": cached.summary_reviews or [],
+            "keywords": cached.keywords or [],
+            "recommend_targets": cached.recommend_targets or [],
+            "author_info": cached.author_info or "",
+            "author_works": cached.author_works or [],
+            "author_image": cached.author_image or "",
+        })
+
+    # 2) 알라딘 데이터 수집
+    aladin_data = get_aladin_data_complete(isbn13)
+    if not aladin_data:
+        return JsonResponse({"message": "도서 정보를 찾을 수 없습니다."}, status=404)
+
+    # 3) 위키(작가 소개/사진/링크)
+    wiki_intro, wiki_img, wiki_url = get_wikipedia_author_info(aladin_data.get("author", ""))
+
+    # 4) GPT 분석(줄거리/리뷰/키워드/추천대상) 
+    ai_result = analyze_book_complete(aladin_data)
+    if not isinstance(ai_result, dict):
+        return JsonResponse({"error": "AI 분석 실패"}, status=500)
+
+    # 5) 저장
+    obj = AIReviewAnalysis.objects.create(
+        isbn13=isbn13,
+        story_summary=ai_result.get("story_summary", "") or "",
+        summary_reviews=ai_result.get("summary_reviews", []) or [],
+        keywords=ai_result.get("keywords", []) or [],
+        recommend_targets=ai_result.get("recommend_targets", []) or [],
+
+        # ✅ 작가정보/사진은 위키로 고정
+        author_info=wiki_intro or "",
+        author_image=wiki_img or "",
+
+    )
+
+    # 6) 반환
+    return JsonResponse({
+        "story_summary": obj.story_summary,
+        "summary_reviews": obj.summary_reviews,
+        "keywords": obj.keywords,
+        "recommend_targets": obj.recommend_targets,
+        "author_info": obj.author_info,          # 위키 소개글
+        "author_works": obj.author_works,        # (선택) GPT 기반 대표작
+        "author_image": obj.author_image,        # 위키 이미지
+    })

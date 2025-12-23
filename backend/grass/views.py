@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
-
+from datetime import date
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
@@ -24,7 +24,7 @@ class GrassMeView(APIView):
         return Response({
             "user_id": request.user.id,
             "days": days,
-            "end_date": items[-1]["date"] if items else None,
+            "end_date": date.today().isoformat(),
             "values": [{"date": x["date"], "count": x["count"]} for x in items],
             "legend": ["0", "1-2", "3-5", "6-9", "10+"],
             "cap": 10,

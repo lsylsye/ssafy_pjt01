@@ -22,6 +22,7 @@ class AladinListItemSerializer(serializers.ModelSerializer):
 # 도서 상세 페이지
 class BookDetailSerializer(serializers.ModelSerializer):
     is_bookmarked = serializers.SerializerMethodField()
+    customerReviewRank = serializers.SerializerMethodField()
     
     class Meta:
         model = Book
@@ -36,6 +37,7 @@ class BookDetailSerializer(serializers.ModelSerializer):
             "category_id",
             "category_name",
             "is_bookmarked",
+            "customerReviewRank",
         ]
         
     def get_is_bookmarked(self, obj):
@@ -44,6 +46,12 @@ class BookDetailSerializer(serializers.ModelSerializer):
             return False
         return Bookmark.objects.filter(user=request.user, book=obj).exists()
     
+    def get_customerReviewRank(self, obj):
+        item = AladinListItem.objects.filter(isbn13=obj.isbn13).first()  # Meta.ordering=-id 적용
+        if not item or item.customer_review_rank is None:
+            return 0
+        return int(item.customer_review_rank)
+
     
 
 class BookSimpleSerializer(serializers.ModelSerializer):
