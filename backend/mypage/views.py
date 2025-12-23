@@ -145,7 +145,7 @@ def my_comments(request):
                     "comment_id": c.id,
                     "content": c.content,
                     "created_at": c.created_at,
-                    "type": "FREE",
+                    "type": "",
                     "post_id": c.object_id,
                     "post_title": "삭제된 글",
                     "country": "",

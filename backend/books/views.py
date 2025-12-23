@@ -124,7 +124,6 @@ def bookmark_toggle(request, isbn13):
 
 
 # 책 추천 알고리즘
-
 class RecommendBookmarkBasedView(APIView):
     permission_classes = [IsAuthenticated]
 
