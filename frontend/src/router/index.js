@@ -34,7 +34,7 @@ import ReviewEditView from "@/views/community/review/ReviewEditView.vue";
 import UserProfileView from "@/views/users/UserProfileView.vue";
 
 // grass
-import MyGrassView from "@/views/mypage/MyGrassView.vue";
+import MyActivityView from "@/views/mypage/MyActivityView.vue";
 
 // ai_curator
 import SurveyView from "@/views/ai_curator/SurveyView.vue";
@@ -73,7 +73,8 @@ const router = createRouter({
         { path: "bookmarks", component: MyBookmarksView },
         { path: "followers", name: "mypage-followers", component: FollowersView },
         { path: "following", name: "mypage-following", component: FollowingView },
-        { path: "grass", name: "mypage-grass", component: MyGrassView },
+        { path: "activity", name: "mypage-activity", component: MyActivityView },
+  
       ],
     },
 

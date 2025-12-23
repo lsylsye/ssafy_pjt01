@@ -7,7 +7,7 @@
 
       <router-link to="/mypage/bookmarks" active-class="active">북마크</router-link>
 
-      <router-link to="/mypage/grass" active-class="active">내 활동</router-link>
+      <router-link to="/mypage/activity" active-class="active">내 활동</router-link>
     </nav>
 
     <div class="content">
