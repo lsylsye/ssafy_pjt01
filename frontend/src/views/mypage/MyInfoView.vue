@@ -17,7 +17,19 @@
           <p>선호 국가: {{ countryLabel(my.me.favorite_country) }}</p>
           <p>선호 장르: {{ genreLabel(my.me.favorite_genre) }}</p>
 
-          <!-- ✅ 클릭 가능한 팔로워/팔로잉 -->
+          <p class="level-row">현재 레벨: {{ my.me.level ?? 1 }}</p>
+
+          <div class="progress-wrap">
+            <div class="progress-head">
+              <span>진행률</span>
+              <span>{{ progressPercent }}%</span>
+            </div>
+
+            <div class="progress-bar">
+              <div class="progress-fill" :style="{ width: progressPercent + '%' }"></div>
+            </div>
+          </div>
+
           <p class="follow-line">
             <button class="link" @click="goFollowers">
               팔로워 {{ my.me.followers_count ?? 0 }}
@@ -36,14 +48,16 @@
 </template>
 
 <script setup>
-import { computed, onMounted } from "vue";
-import { useRouter } from "vue-router";
+import { computed, onMounted, watch } from "vue";
+import { useRoute, useRouter } from "vue-router";
 import api from "@/api/axios";
 import { useAuthStore } from "@/stores/auth";
 import { useMyPageStore } from "@/stores/mypage";
 import defaultProfile from "@/assets/default_profile.jpg";
 
+const route = useRoute();
 const router = useRouter();
+
 const auth = useAuthStore();
 const my = useMyPageStore();
 
@@ -65,10 +79,19 @@ const profileImageUrl = computed(() => {
   const p = my.me?.profile_image;
 
   if (!p) return defaultProfile;
-  if (p.startsWith("http")) return p;
+  if (String(p).startsWith("http")) return p;
 
   const base = api.defaults.baseURL || "http://127.0.0.1:8000";
   return `${base}${p}`;
+});
+
+const progressPercent = computed(() => {
+  const v = my.me?.level_progress;
+  const num = typeof v === "number" ? v : Number(v || 0);
+  const pct = Math.round(num * 100);
+  if (pct < 0) return 0;
+  if (pct > 100) return 100;
+  return pct;
 });
 
 const goFollowers = () => {
@@ -87,18 +110,30 @@ const goFollowing = () => {
   router.push("/mypage/following");
 };
 
-onMounted(() => {
+const syncMeIfNeeded = () => {
   if (!auth.isLoggedIn) {
     router.push("/login");
     return;
   }
 
-  if (!my.me) {
+  // "내 정보" 탭(= /mypage) 들어올 때만 최신화
+  if (route.path === "/mypage") {
     my.fetchMe().catch((err) => {
       if (err.response?.status === 401) router.push("/login");
     });
   }
+};
+
+onMounted(() => {
+  syncMeIfNeeded();
 });
+
+watch(
+  () => route.path,
+  () => {
+    syncMeIfNeeded();
+  }
+);
 </script>
 
 <style scoped>
@@ -128,4 +163,25 @@ onMounted(() => {
   font-weight: 600;
 }
 .link:hover { text-decoration: underline; }
+
+.progress-wrap { margin-top: 10px; max-width: 360px; }
+.progress-head {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  color: #555;
+  margin-bottom: 6px;
+}
+.progress-bar {
+  width: 100%;
+  height: 10px;
+  border-radius: 999px;
+  background: #eee;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: #1a73e8;
+}
 </style>
