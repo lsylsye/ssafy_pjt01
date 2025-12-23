@@ -99,101 +99,107 @@ const submitResult = async () => {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
-  background-color: #F2F4F6;
-  font-family: -apple-system, BlinkMacSystemFont, "Pretendard", sans-serif;
-  padding: 20px;
+  min-height: calc(100vh - 80px);
+  background: linear-gradient(135deg, var(--primary-lighter) 0%, var(--bg-secondary) 100%);
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  padding: 40px 20px;
 }
 
 .survey-box {
   width: 100%;
-  max-width: 500px;
-  background: white;
-  padding: 40px 32px;
-  border-radius: 24px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.06);
+  max-width: 520px;
+  background: var(--bg-primary);
+  padding: 48px 40px;
+  border-radius: 20px;
+  box-shadow: var(--shadow-lg);
   position: relative;
   overflow: hidden;
-  min-height: 620px;
+  min-height: 660px;
   display: flex;
   flex-direction: column;
+  border: 1px solid rgba(34, 197, 94, 0.1);
+  backdrop-filter: var(--blur-sm);
 }
 
-/* 진행 바 */
 .progress-bar-bg {
   width: 100%;
   height: 6px;
-  background-color: #E5E8EB;
+  background-color: var(--border-color);
   border-radius: 10px;
   margin-bottom: 40px;
+  overflow: hidden;
 }
 
 .progress-bar-fill {
   height: 100%;
-  background-color: #3182F6;
+  background: linear-gradient(90deg, var(--primary-color), var(--primary-dark));
   transition: width 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+  box-shadow: 0 0 12px rgba(34, 197, 94, 0.3);
 }
 
-/* 헤더 */
 .header {
   margin-bottom: 40px;
 }
+
 .q-badge {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-size: 20px;
+  font-size: 13px;
   font-weight: 700;
-  color: #3182F6;
-  background: #EEF4FF;
-  padding: 6px 10px;
+  color: var(--primary-dark);
+  background: var(--primary-lighter);
+  padding: 8px 12px;
   border-radius: 999px;
-  margin-bottom: 14px;
+  margin-bottom: 16px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
+
 .scenario {
-  font-size: 24px;
+  font-size: 28px;
   font-weight: 700;
-  color: #191F28;
-  line-height: 1.35;
+  color: var(--text-primary);
+  line-height: 1.4;
   margin-bottom: 12px;
   letter-spacing: -0.5px;
   word-break: keep-all;
 }
 
 .question-text {
-  font-size: 17px;
+  font-size: 16px;
   font-weight: 500;
-  color: #6B7684;
-  line-height: 1.5;
+  color: var(--text-secondary);
+  line-height: 1.6;
 }
 
-/* 옵션 */
 .options-group {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 12px;
   flex-grow: 1;
+  margin: 28px 0;
 }
 
 .option-card {
   width: 100%;
-  padding: 22px 24px;
-  border: 1px solid #E5E8EB;
-  background-color: #fff;
-  border-radius: 18px;
+  padding: 20px 24px;
+  border: 2px solid var(--border-color);
+  background: var(--bg-secondary);
+  border-radius: 14px;
   cursor: pointer;
   text-align: left;
-  transition: all 0.2s ease;
+  transition: var(--transition);
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
 
 .option-card:hover {
-  border-color: #3182F6;
-  background-color: #F8F9FA;
+  border-color: var(--primary-color);
+  background: var(--primary-lighter);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(49, 130, 246, 0.08);
+  box-shadow: var(--shadow-md);
 }
 
 .option-card:active {
@@ -201,46 +207,44 @@ const submitResult = async () => {
 }
 
 .option-label {
-  font-size: 17px;
+  font-size: 16px;
   font-weight: 700;
-  color: #333;
+  color: var(--text-primary);
 }
 
 .option-desc {
-  font-size: 14px;
-  color: #8B95A1;
+  font-size: 13px;
+  color: var(--text-light);
   line-height: 1.4;
   font-weight: 400;
 }
 
-/* 하단 번호 */
 .footer-indicator {
-  margin-top: 30px;
+  margin-top: 20px;
   text-align: center;
-  color: #8B95A1;
-  font-size: 14px;
+  color: var(--text-light);
+  font-size: 13px;
+  font-weight: 500;
 }
 
-/* 로딩 & 애니메이션 */
 .loading-view {
   text-align: center;
-  margin-top: 100px;
+  margin-top: 80px;
 }
 
 .spinner {
   width: 40px;
   height: 40px;
-  border: 4px solid #E5E8EB;
-  border-top-color: #3182F6;
+  border: 3px solid var(--border-color);
+  border-top-color: var(--primary-color);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
   margin: 0 auto 20px;
+  box-shadow: 0 0 12px rgba(34, 197, 94, 0.2);
 }
 
 @keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
+  to { transform: rotate(360deg); }
 }
 
 .slide-fade-enter-active,

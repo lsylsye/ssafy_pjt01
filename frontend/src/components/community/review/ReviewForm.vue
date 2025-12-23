@@ -94,15 +94,98 @@ const submit = () => {
 </script>
 
 <style scoped>
-.error { color:#d33; margin:8px 0; }
-.form { border:1px solid #eee; border-radius:12px; padding:12px 14px; max-width:860px; }
-.row { display:flex; flex-direction:column; gap:6px; margin-bottom:10px; }
-.label { font-size:13px; color:#444; }
-.input, .textarea { padding:8px 10px; border:1px solid #ddd; border-radius:8px; }
-.textarea { min-height:160px; resize:vertical; }
-.extra { border:1px solid #eee; border-radius:12px; padding:10px; background:#fafafa; color:#555; font-size:13px; margin-top:10px; }
-.actions { display:flex; gap:10px; margin-top:12px; }
-.btn { border:1px solid #ddd; background:white; border-radius:8px; padding:8px 12px; cursor:pointer; }
-.btn:hover { border-color:#1a73e8; color:#1a73e8; }
-.btn:disabled { opacity:.6; cursor:not-allowed; }
+.error {
+  color: #dc2626;
+  background: #fee2e2;
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin: 12px 0;
+}
+
+.form {
+  border: 1px solid #f0f0f0;
+  border-radius: 8px;
+  padding: 18px;
+  max-width: 900px;
+  background: #ffffff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.label {
+  font-size: 13px;
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.input,
+.textarea {
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 13px;
+  font-family: inherit;
+  transition: var(--transition);
+  background: #ffffff;
+  color: var(--text-primary);
+}
+
+.input:focus,
+.textarea:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.1);
+}
+
+.textarea {
+  min-height: 160px;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.extra {
+  border: 1px solid #f0f0f0;
+  border-radius: 6px;
+  padding: 10px 12px;
+  background: #f9f9f9;
+  color: #666;
+  font-size: 12px;
+  margin-top: 12px;
+  line-height: 1.5;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.btn {
+  border: 1px solid #ddd;
+  background: #ffffff;
+  border-radius: 6px;
+  padding: 10px 16px;
+  cursor: pointer;
+  color: var(--text-primary);
+  font-weight: 500;
+  transition: var(--transition);
+  font-size: 13px;
+}
+
+.btn:hover {
+  border-color: var(--primary-color);
+  background: #f5f5f5;
+  color: var(--primary-color);
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
 </style>

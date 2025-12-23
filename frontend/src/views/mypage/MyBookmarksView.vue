@@ -137,27 +137,34 @@ onMounted(() => {
   padding: 0;
   margin: 12px 0 0;
   display: flex;
-  flex-direction: column;
-  gap: 12px;
+  flex-wrap: wrap;
+  gap: 16px;
 }
 
 .item {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
   align-items: center;
   border: 1px solid #eee;
   border-radius: 12px;
-  padding: 10px 12px;
+  padding: 12px;
+  flex: 1;
+  min-width: 140px;
+  max-width: 180px;
 }
 
 .left {
   display: flex;
-  gap: 12px;
+  flex-direction: column;
+  gap: 8px;
   align-items: center;
   text-decoration: none;
   color: inherit;
   flex: 1;
   min-width: 0;
+  width: 100%;
+  text-align: center;
+  width: 100%;
 }
 
 .cover {
@@ -174,9 +181,9 @@ onMounted(() => {
 .title {
   margin: 0;
   font-weight: 700;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  font-size: 13px;
+  line-height: 1.3;
+  word-break: break-word;
 }
 
 .sub {
@@ -191,8 +198,11 @@ onMounted(() => {
   border-radius: 8px;
   padding: 6px 10px;
   cursor: pointer;
-  margin-left: 12px;
+  margin-left: 0;
+  margin-top: 8px;
   flex-shrink: 0;
+  width: 100%;
+  font-size: 12px;
 }
 
 .btn:hover {

@@ -1,7 +1,7 @@
 <template>
   <section>
-    <TopTabs :country="country" board="free" />
     <router-view />
+    <TopTabs :country="country" board="free" />
   </section>
 </template>
 

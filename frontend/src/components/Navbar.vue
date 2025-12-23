@@ -77,55 +77,144 @@ const handleLogout = () => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 14px 24px;
-  border-bottom: 1px solid #e0e0e0;
+  padding: 16px 32px;
+  border-bottom: 1px solid var(--border-color);
+  background: var(--bg-primary);
+  backdrop-filter: var(--blur-sm);
+  box-shadow: var(--shadow-sm);
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
 .logo {
-  font-size: 20px;
-  font-weight: bold;
+  font-size: 24px;
+  font-weight: 700;
   text-decoration: none;
-  color: #2c2c2c;
+  color: var(--primary-color);
+  transition: var(--transition);
+  letter-spacing: -0.5px;
+}
+
+.logo:hover {
+  color: var(--primary-dark);
+  transform: scale(1.05);
 }
 
 .menu {
   display: flex;
-  gap: 18px;
+  gap: 32px;
   list-style: none;
   margin: 0;
   padding: 0;
+  align-items: center;
 }
 
 .menu a {
   text-decoration: none;
-  color: #444;
+  color: var(--text-secondary);
+  font-weight: 500;
+  font-size: 15px;
+  transition: var(--transition);
+  position: relative;
+}
+
+.menu a:hover {
+  color: var(--primary-color);
+}
+
+.menu a::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--primary-color);
+  transition: width 0.3s ease;
+}
+
+.menu a:hover::after {
+  width: 100%;
 }
 
 .menu a.router-link-active {
-  font-weight: bold;
+  color: var(--primary-color);
+  font-weight: 600;
 }
 
-/* ✅ 로그아웃 버튼(링크처럼 보이게) */
+.menu a.router-link-active::after {
+  width: 100%;
+}
+
+/* ✅ 로그아웃 버튼 */
 .logout-btn {
   border: none;
   background: none;
   padding: 0;
-  color: #444;
+  color: var(--text-secondary);
+  font-weight: 500;
+  font-size: 15px;
   cursor: pointer;
-  font-size: 16px;
+  transition: var(--transition);
+  position: relative;
 }
 
 .logout-btn:hover {
-  color: #1a73e8;
+  color: var(--primary-color);
+}
+
+.logout-btn::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--primary-color);
+  transition: width 0.3s ease;
+}
+
+.logout-btn:hover::after {
+  width: 100%;
 }
 
 /* 드롭다운 */
 .dropdown {
   position: relative;
+  padding: 12px 0;
+  margin: 0 -8px;
+  padding-left: 8px;
+  padding-right: 8px;
 }
 
 .dropdown-title {
   cursor: pointer;
+  color: var(--text-secondary);
+  font-weight: 500;
+  font-size: 15px;
+  transition: var(--transition);
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-title:hover {
+  color: var(--primary-color);
+}
+
+.dropdown-title::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--primary-color);
+  transition: width 0.3s ease;
+}
+
+.dropdown-title:hover::after {
+  width: 100%;
 }
 
 /* 서브메뉴 */
@@ -134,19 +223,45 @@ const handleLogout = () => {
   position: absolute;
   top: 100%;
   left: 0;
-  background: white;
-  border: 1px solid #ddd;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
   padding: 8px 0;
-  min-width: 120px;
+  min-width: 140px;
+  box-shadow: var(--shadow-lg);
+  backdrop-filter: var(--blur-sm);
+  animation: slideDown 0.3s ease;
+  margin-top: 0;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .dropdown-menu li {
-  padding: 8px 16px;
+  padding: 0;
 }
 
 .dropdown-menu li a {
   display: block;
-  color: #333;
+  padding: 10px 16px;
+  color: var(--text-secondary);
+  font-weight: 500;
+  font-size: 14px;
+  border-radius: 8px;
+  margin: 0 4px;
+  position: relative;
+}
+
+.dropdown-menu li a::after {
+  display: none;
 }
 
 /* 호버 시 서브메뉴 표시 */
@@ -155,11 +270,8 @@ const handleLogout = () => {
 }
 
 /* ✅ 호버 효과 */
-.dropdown-menu li:hover {
-  background-color: #f5f7fa;
-}
-
 .dropdown-menu li:hover a {
-  color: #1a73e8;
+  color: var(--primary-color);
+  background-color: var(--primary-lighter);
 }
 </style>

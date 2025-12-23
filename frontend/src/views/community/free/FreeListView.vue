@@ -60,10 +60,93 @@ watch(
 </script>
 
 <style scoped>
-.filters { display:flex; gap:10px; margin-bottom:12px; align-items:center; }
-.input { flex:1; padding:8px 10px; border:1px solid #ddd; border-radius:8px; }
-.btn { border:1px solid #ddd; background:white; border-radius:8px; padding:8px 12px; cursor:pointer; }
-.btn:hover { border-color:#1a73e8; color:#1a73e8; }
-.error { color:#d33; }
-.list { list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:12px; }
+section {
+  padding: 0;
+  min-height: auto;
+}
+
+.page {
+  padding: 32px;
+  background: var(--bg-secondary);
+  min-height: calc(100vh - 80px);
+}
+
+.filters {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 28px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.input {
+  flex: 1;
+  min-width: 200px;
+  padding: 12px 16px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  color: var(--text-primary);
+  background: #ffffff;
+  transition: var(--transition);
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1);
+}
+
+.btn {
+  border: 1px solid var(--border-color);
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 12px 20px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--text-primary);
+  transition: var(--transition);
+  box-shadow: none;
+}
+
+.btn:hover {
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+  background: #ffffff;
+}
+
+.error {
+  color: #dc2626;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 12px;
+  background: #fee2e2;
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+
+.list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+@media (max-width: 640px) {
+  .page {
+    padding: 20px 16px;
+  }
+
+  .filters {
+    flex-direction: column;
+  }
+
+  .input {
+    min-width: auto;
+  }
+}
 </style>

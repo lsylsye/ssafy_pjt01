@@ -65,12 +65,77 @@ const submit = () => {
 </script>
 
 <style scoped>
-.error { color:#d33; }
-.form { display:flex; flex-direction:column; gap:10px; max-width:680px; }
-.input, .textarea { border:1px solid #ddd; border-radius:10px; padding:10px 12px; }
-.textarea { min-height:180px; resize:vertical; }
-.actions { display:flex; gap:8px; }
-.btn { border:1px solid #ddd; background:white; border-radius:10px; padding:10px 12px; cursor:pointer; }
-.btn:hover { border-color:#1a73e8; color:#1a73e8; }
-.btn:disabled { opacity:.6; cursor:not-allowed; }
+.error {
+  color: #dc2626;
+  background: #fee2e2;
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin: 12px 0;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 800px;
+  padding: 18px;
+  background: #ffffff;
+  border: 1px solid #f0f0f0;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.input,
+.textarea {
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 10px 12px;
+  font-size: 13px;
+  font-family: inherit;
+  transition: var(--transition);
+  background: #ffffff;
+  color: var(--text-primary);
+}
+
+.input:focus,
+.textarea:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.1);
+}
+
+.textarea {
+  min-height: 180px;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.btn {
+  border: 1px solid #ddd;
+  background: #ffffff;
+  border-radius: 6px;
+  padding: 10px 16px;
+  cursor: pointer;
+  color: var(--text-primary);
+  font-weight: 500;
+  transition: var(--transition);
+  font-size: 13px;
+}
+
+.btn:hover {
+  border-color: var(--primary-color);
+  background: #f5f5f5;
+  color: var(--primary-color);
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
 </style>

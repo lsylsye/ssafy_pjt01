@@ -1,10 +1,10 @@
 <template>
   <div class="top">
-    <router-link :to="`/community/${country}/${board}`" exact-active-class="active">
+    <router-link :to="`/community/${country}/${board}`" exact-active-class="active" class="list-btn">
       목록
     </router-link>
 
-    <router-link :to="`/community/${country}/${board}/write`" exact-active-class="active">
+    <router-link :to="`/community/${country}/${board}/write`" exact-active-class="active" class="write-btn">
       글쓰기
     </router-link>
   </div>
@@ -18,7 +18,44 @@ defineProps({
 </script>
 
 <style scoped>
-.top { display:flex; gap:10px; margin-bottom:12px; }
-.top a { text-decoration:none; color:#444; padding:6px 10px; border:1px solid #ddd; border-radius:8px; }
-.top a.active { border-color:#1a73e8; color:#1a73e8; font-weight:700; }
+.top {
+  display: flex;
+  gap: 12px;
+  margin-top: 28px;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  padding: 0;
+}
+
+.top a {
+  text-decoration: none;
+  color: var(--text-primary);
+  padding: 10px 24px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 13px;
+  transition: var(--transition);
+  cursor: pointer;
+  background: #ffffff;
+  display: inline-block;
+}
+
+.list-btn {
+  background: #ffffff !important;
+  color: var(--text-primary) !important;
+}
+
+.write-btn {
+  background: var(--primary-color) !important;
+  color: #ffffff !important;
+  border-color: var(--primary-color) !important;
+}
+
+.write-btn.active {
+  background: var(--primary-color) !important;
+  color: #ffffff !important;
+  border-color: var(--primary-color) !important;
+}
 </style>

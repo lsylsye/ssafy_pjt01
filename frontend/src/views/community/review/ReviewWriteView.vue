@@ -111,13 +111,60 @@ onMounted(applyQueryPrefill);
 </script>
 
 <style scoped>
-.wrap { max-width: 860px; }
-.h3 { margin: 0 0 12px; }
-.selectedBar{
-  display:flex; align-items:center; justify-content: space-between; gap: 10px;
-  margin: 0 0 16px; padding: 12px 14px;
-  border: 1px solid #eee; border-radius: 12px; background: #fafafa;
+section {
+  padding: 24px;
+  min-height: auto;
+  max-width: 900px;
+  margin: 0 auto;
+  background: #ffffff;
 }
-.btn { border:1px solid #ddd; background:white; border-radius:8px; padding:8px 12px; cursor:pointer; }
-.btn:hover { border-color:#1a73e8; color:#1a73e8; }
+
+.wrap {
+  max-width: 900px;
+}
+
+h3 {
+  margin: 0 0 14px;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.selectedBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0 0 16px;
+  padding: 12px 14px;
+  border: 1px solid #f0f0f0;
+  border-radius: 8px;
+  background: #f9f9f9;
+  flex-wrap: wrap;
+}
+
+.selectedText {
+  color: var(--text-primary);
+  font-size: 13px;
+  flex: 1;
+  min-width: 200px;
+}
+
+.btn {
+  border: 1px solid #ddd;
+  background: #ffffff;
+  border-radius: 6px;
+  padding: 8px 12px;
+  cursor: pointer;
+  color: var(--text-primary);
+  font-weight: 500;
+  transition: var(--transition);
+  font-size: 12px;
+}
+
+.btn:hover {
+  border-color: var(--primary-color);
+  background: #f5f5f5;
+  color: var(--primary-color);
+}
 </style>

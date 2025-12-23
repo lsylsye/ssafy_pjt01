@@ -83,54 +83,66 @@ onMounted(() => {
 </script>
 
 <style scoped>
-/* 전체 페이지 레이아웃 */
 .page-container {
-  max-width: 600px; /* 너무 퍼지지 않게 중앙 정렬 */
+  max-width: 700px;
   margin: 0 auto;
-  padding: 20px;
-  background-color: #fff;
-  min-height: 100vh;
+  padding: 32px 20px;
+  background: linear-gradient(135deg, var(--primary-lighter) 0%, var(--bg-secondary) 100%);
+  min-height: calc(100vh - 80px);
 }
 
-/* 헤더 & 뒤로가기 */
 .header {
-  margin-bottom: 20px;
-}
-.back-btn {
-  background: none;
-  border: none;
-  font-size: 16px;
-  color: #3182f6; /* 토스 블루 */
-  cursor: pointer;
-  padding: 0;
-  font-weight: 600;
+  margin-bottom: 28px;
 }
 
-/* 타이틀 영역 */
+.back-btn {
+  background: var(--primary-color);
+  border: none;
+  font-size: 15px;
+  color: white;
+  cursor: pointer;
+  padding: 10px 16px;
+  font-weight: 600;
+  border-radius: 10px;
+  transition: var(--transition);
+  box-shadow: var(--shadow-sm);
+}
+
+.back-btn:hover {
+  background: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
 .title-area {
-  margin-bottom: 24px;
+  margin-bottom: 32px;
+  text-align: center;
 }
+
 .page-title {
-  font-size: 28px;
-  font-weight: 800;
-  color: #191f28; /* 진한 검정 */
-  margin: 0 0 8px 0;
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 12px;
+  letter-spacing: -0.5px;
 }
+
 .sub-title {
   font-size: 15px;
-  color: #8b95a1; /* 회색 */
+  color: var(--text-secondary);
   margin: 0;
+  font-weight: 500;
 }
 
-/* 지도 카드 디자인 (둥글고 그림자 있게) */
 .map-card {
   width: 100%;
-  height: 500px;
-  background-color: #f2f4f6;
-  border-radius: 24px; /* 애플/토스 스타일의 둥근 모서리 */
-  overflow: hidden;    /* 내용이 둥근 모서리 밖으로 나가지 않게 */
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); /* 부드러운 그림자 */
+  height: 520px;
+  background: var(--bg-primary);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
   position: relative;
+  border: 1px solid var(--border-color);
 }
 
 .map-frame {
@@ -139,38 +151,70 @@ onMounted(() => {
   border: none;
 }
 
-/* 로딩 & 에러 상태 디자인 */
 .status-box {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   height: 100%;
-  color: #6b7684;
+  color: var(--text-secondary);
+  background: var(--bg-secondary);
+  gap: 16px;
 }
 
 .spinner {
-  width: 30px;
-  height: 30px;
-  border: 3px solid #e5e8eb;
-  border-top-color: #3182f6;
+  width: 36px;
+  height: 36px;
+  border: 3px solid var(--border-color);
+  border-top-color: var(--primary-color);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
-  margin-bottom: 16px;
 }
 
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
 
+.status-box p {
+  margin: 0;
+  font-weight: 500;
+  font-size: 16px;
+}
+
+.status-box.error {
+  color: #ef4444;
+}
+
 .retry-btn {
-  margin-top: 12px;
-  padding: 8px 16px;
-  background-color: #3182f6;
+  padding: 12px 24px;
+  background: var(--primary-color);
   color: white;
   border: none;
-  border-radius: 8px;
+  border-radius: 10px;
   font-weight: 600;
+  font-size: 14px;
   cursor: pointer;
+  transition: var(--transition);
+  box-shadow: 0 2px 8px rgba(34, 197, 94, 0.2);
+}
+
+.retry-btn:hover {
+  background: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+@media (max-width: 600px) {
+  .page-container {
+    padding: 20px 16px;
+  }
+
+  .page-title {
+    font-size: 28px;
+  }
+
+  .map-card {
+    height: 400px;
+  }
 }
 </style>

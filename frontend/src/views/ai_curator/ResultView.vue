@@ -94,31 +94,33 @@ if (!history.state.resultData) {
 
 <style scoped>
 .result-container {
-  min-height: 100vh;
-  background-color: #F2F4F6;
-  padding: 40px 20px;
+  min-height: calc(100vh - 80px);
+  background: linear-gradient(135deg, var(--primary-lighter) 0%, var(--bg-secondary) 100%);
+  padding: 48px 20px;
   display: flex;
   justify-content: center;
-  align-items: flex-start; /* 내용이 길어질 수 있으므로 상단 정렬 */
-  font-family: "Pretendard", sans-serif;
+  align-items: flex-start;
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
 .result-card {
   width: 100%;
-  max-width: 600px; /* 2권이라 폭을 좀 더 넓게 */
-  background: white;
-  border-radius: 24px;
-  padding: 40px 30px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.06);
-  text-align: center;
+  max-width: 640px;
+  background: var(--bg-primary);
+  border-radius: 20px;
+  padding: 48px 40px;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid rgba(34, 197, 94, 0.1);
+  backdrop-filter: var(--blur-sm);
 }
 
-/* 분석 섹션 */
 .section-title {
-  font-size: 16px;
-  color: #8B95A1;
-  font-weight: 600;
-  margin-bottom: 32px;
+  font-size: 14px;
+  color: var(--text-light);
+  font-weight: 700;
+  margin-bottom: 24px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .keywords {
@@ -126,41 +128,41 @@ if (!history.state.resultData) {
   flex-wrap: wrap;
   justify-content: center;
   gap: 8px;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
 }
 
 .keyword-tag {
-  background-color: #E8F3FF;
-  color: #3182F6;
-  padding: 8px 16px;
+  background: var(--primary-lighter);
+  color: var(--primary-dark);
+  padding: 8px 14px;
   border-radius: 20px;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 700;
+  border: 1px solid var(--primary-color);
 }
 
 .analysis-desc {
-  font-size: 16px;
-  color: #333;
-  line-height: 1.5;
+  font-size: 15px;
+  color: var(--text-secondary);
+  line-height: 1.7;
   font-weight: 500;
+  text-align: center;
 }
 
 .divider {
   height: 1px;
-  background-color: #E5E8EB;
-  margin: 30px 0;
+  background: linear-gradient(90deg, transparent, var(--border-color), transparent);
+  margin: 32px 0;
 }
 
-/* 책 카드 영역 */
 .books-wrapper {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 28px;
   margin-bottom: 40px;
 }
 
-/* 데스크탑(태블릿)에서는 가로 배치 */
-@media (min-width: 600px) {
+@media (min-width: 680px) {
   .books-wrapper {
     flex-direction: row;
     align-items: stretch;
@@ -169,114 +171,133 @@ if (!history.state.resultData) {
 
 .book-card {
   flex: 1;
-  background-color: #F9FAFB;
-  border: 1px solid #E5E8EB;
-  border-radius: 20px;
-  padding: 24px 20px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 28px 24px;
   position: relative;
   cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition: var(--transition);
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
 .book-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
-  border-color: #3182F6;
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--primary-light);
+  background: var(--bg-primary);
 }
 
-/* 뱃지 스타일 */
 .badge {
   position: absolute;
   top: 16px;
   left: 16px;
   padding: 6px 12px;
-  border-radius: 12px;
-  font-size: 12px;
+  border-radius: 8px;
+  font-size: 11px;
   font-weight: 800;
   color: white;
   z-index: 1;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
-.badge-primary { background-color: #3182F6; } /* 파란색 */
-.badge-secondary { background-color: #FF6B6B; } /* 붉은색 포인트 */
+.badge-primary {
+  background: var(--primary-color);
+  box-shadow: 0 2px 8px rgba(34, 197, 94, 0.3);
+}
 
-/* 책 표지 */
+.badge-secondary {
+  background: #ef4444;
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+}
+
 .cover-area {
-  margin-top: 20px;
-  margin-bottom: 20px;
+  margin-top: 24px;
+  margin-bottom: 24px;
 }
 
 .book-cover {
-  width: 120px;
+  width: 130px;
   height: 180px;
   object-fit: cover;
-  border-radius: 6px;
-  box-shadow: 4px 4px 12px rgba(0,0,0,0.15);
+  border-radius: 10px;
+  box-shadow: var(--shadow-lg);
 }
 
 .book-cover-placeholder {
-  width: 120px;
+  width: 130px;
   height: 180px;
-  background-color: #eee;
+  background: linear-gradient(135deg, var(--primary-lighter) 0%, var(--bg-tertiary) 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 6px;
-  color: #aaa;
+  border-radius: 10px;
+  color: var(--text-light);
+  border: 2px dashed var(--border-color);
 }
 
-/* 책 정보 */
 .info-area {
   width: 100%;
 }
 
 .book-title {
-  font-size: 18px;
+  font-size: 17px;
   font-weight: 700;
-  color: #191F28;
-  margin-bottom: 6px;
+  color: var(--text-primary);
+  margin-bottom: 8px;
   line-height: 1.3;
   word-break: keep-all;
 }
 
 .book-author {
-  font-size: 14px;
-  color: #8B95A1;
+  font-size: 13px;
+  color: var(--text-light);
   margin-bottom: 16px;
+  font-weight: 500;
 }
 
-/* AI 코멘트 */
 .ai-reason-box {
-  background-color: white;
+  background: var(--primary-lighter);
   border-radius: 12px;
-  padding: 12px;
+  padding: 14px;
   text-align: left;
   font-size: 13px;
-  color: #4E5968;
-  line-height: 1.5;
+  color: var(--text-secondary);
+  line-height: 1.6;
   display: flex;
-  gap: 8px;
+  gap: 10px;
   align-items: flex-start;
+  border: 1px solid var(--primary-color);
 }
 
-.ai-icon { font-size: 16px; }
+.ai-icon {
+  font-size: 18px;
+  flex-shrink: 0;
+}
 
-/* 버튼 */
 .retry-btn {
   width: 100%;
-  padding: 18px;
-  background-color: #3182F6;
+  padding: 16px 24px;
+  background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
   color: white;
   border: none;
-  border-radius: 16px;
+  border-radius: 12px;
   font-size: 16px;
   font-weight: 700;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: var(--transition);
+  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.2);
 }
 
-.retry-btn:hover { background-color: #1B64DA; }
+.retry-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.retry-btn:active {
+  transform: translateY(0);
+}
 </style>

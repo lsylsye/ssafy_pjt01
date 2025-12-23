@@ -17,27 +17,67 @@
 </template>
 
 <style scoped>
-.mypage { padding: 24px; }
+.mypage {
+  padding: 32px;
+  background: var(--bg-secondary);
+  min-height: calc(100vh - 80px);
+}
 
 .tabs {
   display: flex;
   gap: 12px;
-  margin: 12px 0 16px;
+  margin-bottom: 32px;
+  border-bottom: 2px solid var(--border-color);
+  padding-bottom: 0;
 }
 
 .tabs a {
   text-decoration: none;
-  color: #444;
-  padding: 6px 10px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
+  color: var(--text-secondary);
+  padding: 12px 16px;
+  border: none;
+  border-radius: 0;
+  font-weight: 600;
+  font-size: 15px;
+  transition: var(--transition);
+  position: relative;
+  cursor: pointer;
+}
+
+.tabs a:hover {
+  color: var(--primary-color);
 }
 
 .tabs a.active {
-  font-weight: bold;
-  border-color: #1a73e8;
-  color: #1a73e8;
+  color: var(--primary-color);
+  border-bottom: 3px solid var(--primary-color);
+  margin-bottom: -2px;
 }
 
-.content { margin-top: 12px; }
+.content {
+  margin-top: 0;
+  background: var(--bg-primary);
+  border-radius: 16px;
+  padding: 32px;
+  box-shadow: var(--shadow-sm);
+}
+
+@media (max-width: 640px) {
+  .mypage {
+    padding: 20px 16px;
+  }
+
+  .tabs {
+    gap: 8px;
+  }
+
+  .tabs a {
+    padding: 10px 12px;
+    font-size: 14px;
+  }
+
+  .content {
+    padding: 20px;
+  }
+}
 </style>

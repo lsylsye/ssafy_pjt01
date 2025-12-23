@@ -32,31 +32,62 @@ onMounted(() => {
 
 <style scoped>
 .section {
-  margin-top: 28px;
+  margin-top: 48px;
+  background: var(--bg-primary);
+  border-radius: 16px;
+  padding: 32px;
+  box-shadow: var(--shadow-sm);
 }
 
-/* ✅ MainView의 베스트셀러 타이틀과 동일 */
 .section-title {
-  margin: 0 0 18px;
+  margin: 0 0 24px;
   font-size: 28px;
-  font-weight: 900;
+  font-weight: 700;
   letter-spacing: -0.5px;
-  line-height: 1.1;
-  color: #111;
+  line-height: 1.2;
+  color: var(--text-primary);
+  position: relative;
+  padding-bottom: 16px;
+  border-bottom: 2px solid var(--primary-color);
+  display: inline-block;
 }
 
-.msg { margin: 8px 0; color: #666; }
-.msg.error { color: #d33; }
+.msg {
+  margin: 20px 0;
+  color: var(--text-secondary);
+  text-align: center;
+  font-weight: 500;
+}
 
-/* ✅ 가로 카드 */
+.msg.error {
+  color: #ef4444;
+}
+
 .row {
   display: flex;
-  gap: 22px;
+  gap: 20px;
   overflow-x: auto;
-  padding: 6px 2px 10px;
+  overflow-y: hidden;
+  padding: 4px 0 12px;
   -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
 }
 
-.row::-webkit-scrollbar { height: 8px; }
-.row::-webkit-scrollbar-thumb { background: #e6e6e6; border-radius: 999px; }
+.row::-webkit-scrollbar {
+  height: 6px;
+}
+
+.row::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+  border-radius: 3px;
+}
+
+.row::-webkit-scrollbar-thumb {
+  background: var(--primary-color);
+  border-radius: 999px;
+}
+
+.row::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-dark);
+}
 </style>

@@ -63,5 +63,26 @@ const submit = (payload) => {
 </script>
 
 <style scoped>
-.error { color:#d33; }
+section {
+  padding: 24px;
+  min-height: auto;
+  max-width: 900px;
+  margin: 0 auto;
+  background: #ffffff;
+}
+
+h2 {
+  margin: 0 0 20px;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.error {
+  color: #dc2626;
+  background: #fee2e2;
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin: 12px 0;
+}
 </style>

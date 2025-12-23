@@ -41,14 +41,27 @@ const authorOrDash = computed(() => props.book?.author || props.book?.book_autho
 
 <style scoped>
 .card {
-  width: 170px;            /* ✅ 카드 폭(원하면 160~190 조절) */
+  width: 170px;
   flex: 0 0 auto;
+  transition: var(--transition);
 }
 
 .link {
   display: block;
   text-decoration: none;
   color: inherit;
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+}
+
+.link:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--primary-light);
 }
 
 .link.disabled {
@@ -57,11 +70,11 @@ const authorOrDash = computed(() => props.book?.author || props.book?.book_autho
 
 .thumb {
   width: 100%;
-  aspect-ratio: 3 / 4;     /* ✅ 책 표지 비율 */
-  border-radius: 10px;
+  aspect-ratio: 3 / 4;
+  border-radius: 0;
   overflow: hidden;
-  border: 1px solid #eee;
-  background: #fafafa;
+  border: none;
+  background: var(--bg-secondary);
 }
 
 .img {
@@ -74,31 +87,39 @@ const authorOrDash = computed(() => props.book?.author || props.book?.book_autho
 .placeholder {
   width: 100%;
   height: 100%;
-  background: #f0f0f0;
+  background: linear-gradient(135deg, var(--primary-lighter) 0%, var(--bg-tertiary) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .meta {
-  margin-top: 10px;
+  padding: 12px;
 }
 
 .title {
-  font-size: 14px;
-  font-weight: 800;
-  line-height: 1.35;
-
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.4;
   overflow: hidden;
   display: -webkit-box;
-  -webkit-line-clamp: 2;   /* ✅ 제목 2줄 */
+  -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
-  min-height: 38px;
+  min-height: 36px;
+  color: var(--text-primary);
 }
 
 .author {
   margin-top: 6px;
   font-size: 12px;
-  color: #777;
+  color: var(--text-light);
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;     /* ✅ 저자 1줄 */
+  white-space: nowrap;
+  font-weight: 500;
+}
+
+.link:hover .title {
+  color: var(--primary-color);
 }
 </style>

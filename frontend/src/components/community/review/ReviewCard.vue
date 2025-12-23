@@ -28,14 +28,69 @@ const formatDate = (iso) => (typeof iso === "string" ? iso.slice(0, 10) : "");
 </script>
 
 <style scoped>
-.item { border:1px solid #eee; border-radius:12px; padding:12px 14px; }
-.link { text-decoration:none; color:inherit; display:block; }
-.row { display:flex; gap:8px; align-items:center; margin-bottom:6px; }
-.title { font-weight:800; }
-.author { color:#666; font-weight:600; }
-.meta { color:#666; font-size:14px; display:flex; gap:8px; flex-wrap:wrap; margin-bottom:8px; }
+.item {
+  border: none;
+  border-radius: 8px;
+  padding: 16px;
+  background: #ffffff;
+  transition: var(--transition);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  border-left: 4px solid #f0f0f0;
+}
+
+.item:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  border-left-color: var(--primary-color);
+  transform: translateY(-2px);
+}
+
+.link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+
+.title {
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--text-primary);
+  flex: 1;
+  word-break: break-word;
+}
+
+.author {
+  color: #999;
+  font-weight: 500;
+  font-size: 12px;
+}
+
+.meta {
+  color: #999;
+  font-size: 12px;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+  margin-top: 6px;
+}
+
 .content {
-  margin:0; color:#333;
-  overflow:hidden; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;
+  margin: 0;
+  color: #666;
+  font-size: 13px;
+  line-height: 1.5;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  word-break: break-word;
 }
 </style>
