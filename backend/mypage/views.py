@@ -42,7 +42,7 @@ def my_profile(request):
         "following_count": following_count,
         "exp_total": level_payload["exp_total"],
         "level": level_payload["level"],
-        "level_progress": level_payload["progress"],
+        "level_progress": level_payload["level_progress"],
     })
 
 

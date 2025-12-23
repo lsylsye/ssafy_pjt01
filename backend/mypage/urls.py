@@ -7,5 +7,5 @@ urlpatterns = [
     path("bookmarks/", my_bookmarks),
     path("posts/", my_posts),
     path("comments/", my_comments),
-
 ]
+
