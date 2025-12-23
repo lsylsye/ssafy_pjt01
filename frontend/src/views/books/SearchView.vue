@@ -6,7 +6,7 @@
     <div class="search-box">
       <input
         v-model="query"
-        placeholder="책 제목을 입력하세요"
+        placeholder="책 제목 혹은 저자를 입력하세요"
         @keyup.enter="searchBooks"
       />
       <button @click="searchBooks">검색</button>

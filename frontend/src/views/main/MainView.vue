@@ -1,25 +1,23 @@
+<!-- src/views/main/MainView.vue -->
 <template>
   <section class="main">
-    <!-- ✅ 타이틀 스타일 변경 -->
     <h2 class="section-title">베스트셀러 TOP 10</h2>
 
     <ul class="bestseller-list">
       <li v-for="book in top10" :key="book.id" class="bestseller-item">
         <router-link :to="`/books/${book.isbn13}`" class="bestseller-link">
           <span class="rank">{{ book.best_rank }}</span>
-
           <img :src="book.cover" alt="표지" class="cover" />
-
-          <span class="book-title">
-            {{ book.title }}
-          </span>
+          <span class="book-title">{{ book.title }}</span>
         </router-link>
       </li>
     </ul>
 
-    <!-- ✅ 주목할 만한 신간 5권(가로 스크롤) 추가 -->
+    <!-- ✅ 주목할 만한 신간 5권(가로 스크롤) -->
     <NewSpecialSection />
 
+    <!-- ✅ 추천 시스템1(작가버전): 신간 아래에 추가 -->
+    <RecommendBookmarkSection />
   </section>
 </template>
 
@@ -27,12 +25,13 @@
 import { ref, onMounted, computed } from "vue";
 import api from "@/api/axios";
 import NewSpecialSection from "@/components/books/NewSpecialSection.vue";
+import RecommendBookmarkSection from "@/components/home/RecommendBookmarkSection.vue";
 
 const bestsellers = ref([]);
 
 const fetchBestsellers = () => {
   api
-    .get("/api/books/bestsellers/")
+    .get("/api/books/bestsellers/", { auth: false })
     .then((res) => {
       bestsellers.value = Array.isArray(res.data) ? res.data : [];
     })
@@ -53,7 +52,6 @@ onMounted(() => {
   padding: 24px;
 }
 
-/* ✅ 사진 느낌 타이틀 */
 .section-title {
   margin: 0 0 18px;
   font-size: 28px;
