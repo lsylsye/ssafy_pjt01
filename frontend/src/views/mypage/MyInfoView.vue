@@ -53,6 +53,7 @@ import { useRoute, useRouter } from "vue-router";
 import api from "@/api/axios";
 import { useAuthStore } from "@/stores/auth";
 import { useMyPageStore } from "@/stores/mypage";
+import { useFollowListStore } from "@/stores/followList";
 import defaultProfile from "@/assets/default_profile.jpg";
 
 const route = useRoute();
@@ -60,6 +61,7 @@ const router = useRouter();
 
 const auth = useAuthStore();
 const my = useMyPageStore();
+const followList = useFollowListStore();
 
 const countryMap = { KR: "한국", JP: "일본", CN: "중화권", EN: "영미권", OTHER: "기타" };
 const genreMap = {
@@ -116,7 +118,7 @@ const syncMeIfNeeded = () => {
     return;
   }
 
-  // "내 정보" 탭(= /mypage) 들어올 때만 최신화
+  // "내 정보" 탭(= /mypage)일 때만 최신화
   if (route.path === "/mypage") {
     my.fetchMe().catch((err) => {
       if (err.response?.status === 401) router.push("/login");
@@ -128,10 +130,21 @@ onMounted(() => {
   syncMeIfNeeded();
 });
 
+// ✅ 탭 이동 시(/mypage 진입 시) 최신화
 watch(
   () => route.path,
   () => {
     syncMeIfNeeded();
+  }
+);
+
+// ✅ 팔로우/언팔 발생 시 자동 갱신 (followList.followSyncTick 변화 감지)
+watch(
+  () => followList.followSyncTick,
+  () => {
+    if (auth.isLoggedIn && route.path === "/mypage") {
+      my.fetchMe().catch(() => {});
+    }
   }
 );
 </script>

@@ -11,9 +11,15 @@ export const useFollowListStore = defineStore("followList", {
     errorFollowers: "",
     errorFollowing: "",
     togglingId: null, // 버튼 잠금용
+
+    followSyncTick: 0, // ✅ watch 트리거
   }),
 
   actions: {
+    bumpFollowSync() {
+      this.followSyncTick += 1;
+    },
+
     fetchFollowers(userId) {
       if (!userId) return Promise.reject(new Error("missing userId"));
 
@@ -70,13 +76,40 @@ export const useFollowListStore = defineStore("followList", {
           // 1) 즉시 UI 반영: 목록에서 제거
           this.following = this.following.filter((u) => String(u.id) !== String(targetUserId));
 
-          // 2) 더 안전하게 하려면 재조회(선택)
+          // ✅ 2) 내 정보(팔로워/팔로잉 카운트) 자동 갱신 트리거
+          this.bumpFollowSync();
+
+          // 3) 더 안전하게 하려면 재조회(선택)
           if (myIdForReload) {
-            return this.fetchFollowing(myIdForReload);
+            return this.fetchFollowing(myIdForReload).then(() => {
+              // 재조회 후에도 한 번 더 트리거(원하면 유지, 싫으면 삭제)
+              this.bumpFollowSync();
+            });
           }
         })
         .catch((err) => {
           console.error("[언팔로우 실패]", err.response?.data || err.message);
+          return Promise.reject(err);
+        })
+        .finally(() => {
+          this.togglingId = null;
+        });
+    },
+
+    // (선택) 팔로우 토글도 이 store에서 한다면 같은 방식으로 tick 올리면 됨
+    toggleFollow(targetUserId) {
+      if (!targetUserId) return Promise.reject(new Error("missing targetUserId"));
+
+      this.togglingId = targetUserId;
+
+      return api
+        .post(`/api/users/${targetUserId}/follow/`)
+        .then((res) => {
+          this.bumpFollowSync();
+          return res;
+        })
+        .catch((err) => {
+          console.error("[팔로우 토글 실패]", err.response?.data || err.message);
           return Promise.reject(err);
         })
         .finally(() => {
