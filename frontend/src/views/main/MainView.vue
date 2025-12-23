@@ -16,8 +16,11 @@
     <!-- ✅ 주목할 만한 신간 5권(가로 스크롤) -->
     <NewSpecialSection />
 
-    <!-- ✅ 추천 시스템1(작가버전): 신간 아래에 추가 -->
+    <!-- ✅ 추천 시스템1(작가버전): 신간 아래 -->
     <RecommendBookmarkSection />
+
+    <!-- ✅ 추천 시스템2(팔로잉버전): 작가추천 아래 -->
+    <RecommendFollowSection />
   </section>
 </template>
 
@@ -26,6 +29,7 @@ import { ref, onMounted, computed } from "vue";
 import api from "@/api/axios";
 import NewSpecialSection from "@/components/books/NewSpecialSection.vue";
 import RecommendBookmarkSection from "@/components/home/RecommendBookmarkSection.vue";
+import RecommendFollowSection from "@/components/home/RecommendFollowSection.vue";
 
 const bestsellers = ref([]);
 

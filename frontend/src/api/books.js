@@ -1,11 +1,17 @@
 // src/api/books.js
 import api from "@/api/axios";
 
+// (기존)
 export const getNewSpecial = () => {
   return api.get("/api/books/new/special/", { auth: false });
 };
 
-// ✅ 추천 시스템1(작가버전): 북마크 기반 (로그인 필요)
+// (기존 추천1)
 export const recommendBookmarkAuthor = () => {
-  return api.get("/api/books/recommend/bookmark/"); // auth 기본 true(토큰 첨부)
+  return api.get("/api/books/recommend/bookmark/");
+};
+
+// ✅ 추천2(팔로잉버전)
+export const recommendFollowBased = () => {
+  return api.get("/api/books/recommend/follow/");
 };
