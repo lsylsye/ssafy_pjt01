@@ -1,4 +1,4 @@
-<!-- src/components/search/SearchCapsule.vue -->
+<!-- src/components/ui/SearchCapsule.vue -->
 <template>
   <div class="wrap" ref="wrapRef">
     <div class="search-capsule" :class="{ open: open }">
