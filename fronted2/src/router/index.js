@@ -10,6 +10,7 @@ const routes = [
   { path: "/taste", component: () => import("@/views/TasteView.vue") },
   { path: "/taste/test", component: () => import("@/views/TasteTestView.vue") },
   { path: "/taste/result", component: () => import("@/views/TasteResultView.vue") },
+  { path: "/community", component: () => import("@/views/CommunityView.vue"),}
 ];
 
 const router = createRouter({
