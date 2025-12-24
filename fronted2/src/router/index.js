@@ -13,6 +13,7 @@ const routes = [
   { path: "/community/free/write", component: () => import("@/views/CommunityWriteView.vue"), meta: { hideHeader: true } },
   { path: "/community/free/:id", component: () => import("@/views/CommunityDetailView.vue") },
   { path: "/community", component: () => import("@/views/CommunityView.vue"), },
+  { path: "/profile/:id", component: () => import("@/views/ProfileView.vue") },
   { path: "/review/write", component: () => import("@/views/ReviewWriteView.vue") },
   { path: "/bestsellers", component: () => import("@/views/BestsellerListView.vue") },
   // { path: "/reviews", component: () => import("@/views/AllReviewsView.vue") },  // 제거됨
