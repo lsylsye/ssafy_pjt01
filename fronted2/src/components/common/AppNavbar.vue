@@ -18,7 +18,7 @@
 
       <!-- Right -->
       <div class="right">
-        <slot name="search" />
+        <SearchCapsule />
 
         <!-- 로그인 전 -->
         <template v-if="!isLoggedIn">
@@ -68,6 +68,7 @@ import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/auth.store";      // ✅ Pinia auth 단일 소스
 import { useMypageStore } from "@/stores/mypage.store";  // ✅ level/profile 단일 소스(/api/mypage/me/)
+import SearchCapsule from "@/components/ui/SearchCapsule.vue";
 
 const router = useRouter();
 const auth = useAuthStore();
@@ -149,7 +150,7 @@ watch(
 function logout() {
   closeMenu();
   auth.logout();          // ✅ 토큰/유저 상태는 auth.store가 관리
-  mypage.clear?.();       
+  mypage.clear?.();       // ✅ mypage 상태 초기화
   router.push("/");
 }
 </script>

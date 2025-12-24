@@ -1,3 +1,5 @@
+# backend/community/views.py
+
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Count, Q
 
@@ -6,7 +8,7 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from grass.services import add_points
-from .models import Community, Board, Prefix, Post, Review, Comment, Like
+from .models import Board, Prefix, Post, Review, Comment, Like
 from .serializers import (
     BoardSerializer,
     PrefixSerializer,
@@ -25,17 +27,8 @@ def _auth_required(request):
     return None
 
 
-def _normalize_country(country):
-    return (country or "").lower().strip()
-
-
-def _get_community(country):
-    country = _normalize_country(country)
-    return Community.objects.filter(country=country).first()
-
-
-def _get_board(community, board_slug):
-    return Board.objects.filter(community=community, slug=board_slug).first()
+def _get_board_by_slug(board_slug):
+    return Board.objects.filter(slug=board_slug).first()
 
 
 _CT_CACHE = {}
@@ -102,30 +95,26 @@ def _toggle_like(request, model_cls, obj_id):
     return Response({"liked": liked, "like_count": like_count})
 
 
-# 1) 커뮤니티별 게시판 목록: /api/community/<country>/
+# (옵션) 게시판 목록: /api/community/boards/
 @api_view(["GET"])
-def community_boards(request, country):
-    community = _get_community(country)
-    if community is None:
-        return Response({"error": "Community not found"}, status=status.HTTP_404_NOT_FOUND)
-
-    return Response(BoardSerializer(community.boards.all(), many=True).data)
+def boards_list(request):
+    qs = Board.objects.all().order_by("slug")
+    return Response(BoardSerializer(qs, many=True).data)
 
 
-# 2) 자유 게시판 목록: /api/community/<country>/free/
+# -----------------------------
+# FREE
+# -----------------------------
+
+# 1) 자유 게시판 목록: /api/community/free/
 @api_view(["GET"])
-def free_list(request, country):
-    community = _get_community(country)
-    if community is None:
-        return Response({"error": "Community not found"}, status=status.HTTP_404_NOT_FOUND)
-
-    board = _get_board(community, "free")
+def free_list(request):
+    board = _get_board_by_slug("free")
     if board is None:
         return Response({"error": "Board not found"}, status=status.HTTP_404_NOT_FOUND)
 
     qs = Post.objects.filter(board=board).select_related("user", "prefix").order_by("-id")
 
-    # 검색(옵션): q=제목+내용, prefix=말머리
     q = (request.query_params.get("q") or "").strip()
     if q:
         qs = qs.filter(Q(title__icontains=q) | Q(content__icontains=q))
@@ -135,7 +124,6 @@ def free_list(request, country):
         qs = qs.filter(prefix__name=prefix)
 
     post_ids = list(qs.values_list("id", flat=True))
-
     like_map = _like_count_map(Post, post_ids)
     comment_map = _comment_count_map(Post, post_ids)
     liked_ids = _bulk_liked_ids(request, Post, post_ids)
@@ -150,18 +138,14 @@ def free_list(request, country):
     return Response(data)
 
 
-# 3) 자유 글 작성: /api/community/<country>/free/write/
+# 2) 자유 글 작성: /api/community/free/write/
 @api_view(["POST"])
-def free_write(request, country):
+def free_write(request):
     auth_resp = _auth_required(request)
     if auth_resp:
         return auth_resp
 
-    community = _get_community(country)
-    if community is None:
-        return Response({"error": "Community not found"}, status=status.HTTP_404_NOT_FOUND)
-
-    board = _get_board(community, "free")
+    board = _get_board_by_slug("free")
     if board is None:
         return Response({"error": "Board not found"}, status=status.HTTP_404_NOT_FOUND)
 
@@ -186,7 +170,7 @@ def free_write(request, country):
         content=s.validated_data["content"],
     )
 
-    add_points(request.user, "POST") 
+    add_points(request.user, "POST")
 
     row = PostListSerializer(post, context={"liked_ids": set()}).data
     row["like_count"] = 0
@@ -194,14 +178,10 @@ def free_write(request, country):
     return Response(row, status=status.HTTP_201_CREATED)
 
 
-# 4) 자유 글 상세/수정/삭제: /api/community/<country>/free/<post_id>/
+# 3) 자유 글 상세/수정/삭제: /api/community/free/<post_id>/
 @api_view(["GET", "PATCH", "DELETE"])
-def free_detail(request, country, post_id):
-    community = _get_community(country)
-    if community is None:
-        return Response({"error": "Community not found"}, status=status.HTTP_404_NOT_FOUND)
-
-    board = _get_board(community, "free")
+def free_detail(request, post_id):
+    board = _get_board_by_slug("free")
     if board is None:
         return Response({"error": "Board not found"}, status=status.HTTP_404_NOT_FOUND)
 
@@ -230,7 +210,6 @@ def free_detail(request, country, post_id):
         post.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    # PATCH
     if "title" in request.data:
         post.title = request.data.get("title")
     if "content" in request.data:
@@ -259,14 +238,10 @@ def free_detail(request, country, post_id):
     return Response(row)
 
 
-# 5) 자유 글 좋아요 토글: /api/community/<country>/free/<post_id>/like/
+# 4) 자유 글 좋아요 토글: /api/community/free/<post_id>/like/
 @api_view(["POST"])
-def post_like_toggle(request, country, post_id):
-    community = _get_community(country)
-    if community is None:
-        return Response({"error": "Community not found"}, status=status.HTTP_404_NOT_FOUND)
-
-    board = _get_board(community, "free")
+def post_like_toggle(request, post_id):
+    board = _get_board_by_slug("free")
     if board is None:
         return Response({"error": "Board not found"}, status=status.HTTP_404_NOT_FOUND)
 
@@ -276,14 +251,10 @@ def post_like_toggle(request, country, post_id):
     return _toggle_like(request, Post, post_id)
 
 
-# 6) 자유 말머리 목록(옵션): /api/community/<country>/free/prefixes/
+# 5) 자유 말머리 목록: /api/community/free/prefixes/
 @api_view(["GET"])
-def free_prefixes(request, country):
-    community = _get_community(country)
-    if community is None:
-        return Response({"error": "Community not found"}, status=status.HTTP_404_NOT_FOUND)
-
-    board = _get_board(community, "free")
+def free_prefixes(request):
+    board = _get_board_by_slug("free")
     if board is None:
         return Response({"error": "Board not found"}, status=status.HTTP_404_NOT_FOUND)
 
@@ -316,7 +287,6 @@ def _comment_tree_response(request, target_model, target_id):
     )
     like_map = {row["object_id"]: row["cnt"] for row in like_qs}
 
-    # 베스트(좋아요 10개 이상) Top3
     best_candidates = []
     for c in qs:
         lc = like_map.get(c.id, 0)
@@ -349,14 +319,10 @@ def _comment_tree_response(request, target_model, target_id):
     return {"best": best, "comments": [build_node(c) for c in roots]}
 
 
-# 7) 자유 댓글 목록: /api/community/<country>/free/<post_id>/comments/
+# 6) 자유 댓글 목록: /api/community/free/<post_id>/comments/
 @api_view(["GET"])
-def free_comments_list(request, country, post_id):
-    community = _get_community(country)
-    if community is None:
-        return Response({"error": "Community not found"}, status=status.HTTP_404_NOT_FOUND)
-
-    board = _get_board(community, "free")
+def free_comments_list(request, post_id):
+    board = _get_board_by_slug("free")
     if board is None:
         return Response({"error": "Board not found"}, status=status.HTTP_404_NOT_FOUND)
 
@@ -366,18 +332,14 @@ def free_comments_list(request, country, post_id):
     return Response(_comment_tree_response(request, Post, post_id))
 
 
-# 8) 자유 댓글 작성: /api/community/<country>/free/<post_id>/comments/write/
+# 7) 자유 댓글 작성: /api/community/free/<post_id>/comments/write/
 @api_view(["POST"])
-def free_comments_write(request, country, post_id):
+def free_comments_write(request, post_id):
     auth_resp = _auth_required(request)
     if auth_resp:
         return auth_resp
 
-    community = _get_community(country)
-    if community is None:
-        return Response({"error": "Community not found"}, status=status.HTTP_404_NOT_FOUND)
-
-    board = _get_board(community, "free")
+    board = _get_board_by_slug("free")
     if board is None:
         return Response({"error": "Board not found"}, status=status.HTTP_404_NOT_FOUND)
 
@@ -416,17 +378,13 @@ def free_comments_write(request, country, post_id):
 
 
 # -----------------------------
-# 리뷰 게시판
+# REVIEW
 # -----------------------------
 
-# 1) 리뷰 목록: /api/community/<country>/review/
+# 1) 리뷰 목록: /api/community/review/
 @api_view(["GET"])
-def review_list(request, country):
-    community = _get_community(country)
-    if community is None:
-        return Response({"error": "Community not found"}, status=status.HTTP_404_NOT_FOUND)
-
-    board = _get_board(community, "review")
+def review_list(request):
+    board = _get_board_by_slug("review")
     if board is None:
         return Response({"error": "Board not found"}, status=status.HTTP_404_NOT_FOUND)
 
@@ -447,18 +405,14 @@ def review_list(request, country):
     return Response(data)
 
 
-# 2) 리뷰 작성: /api/community/<country>/review/write/
+# 2) 리뷰 작성: /api/community/review/write/
 @api_view(["POST"])
-def review_write(request, country):
+def review_write(request):
     auth_resp = _auth_required(request)
     if auth_resp:
         return auth_resp
 
-    community = _get_community(country)
-    if community is None:
-        return Response({"error": "Community not found"}, status=status.HTTP_404_NOT_FOUND)
-
-    board = _get_board(community, "review")
+    board = _get_board_by_slug("review")
     if board is None:
         return Response({"error": "Board not found"}, status=status.HTTP_404_NOT_FOUND)
 
@@ -489,14 +443,10 @@ def review_write(request, country):
     return Response(row, status=status.HTTP_201_CREATED)
 
 
-# 3) 리뷰 상세/수정/삭제: /api/community/<country>/review/<review_id>/
+# 3) 리뷰 상세/수정/삭제: /api/community/review/<review_id>/
 @api_view(["GET", "PATCH", "DELETE"])
-def review_detail(request, country, review_id):
-    community = _get_community(country)
-    if community is None:
-        return Response({"error": "Community not found"}, status=status.HTTP_404_NOT_FOUND)
-
-    board = _get_board(community, "review")
+def review_detail(request, review_id):
+    board = _get_board_by_slug("review")
     if board is None:
         return Response({"error": "Board not found"}, status=status.HTTP_404_NOT_FOUND)
 
@@ -525,7 +475,6 @@ def review_detail(request, country, review_id):
         review.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    # PATCH
     if "rating" in request.data:
         rating = request.data.get("rating")
         if rating is not None and rating != "":
@@ -554,14 +503,10 @@ def review_detail(request, country, review_id):
     return Response(row)
 
 
-# 4) 리뷰 좋아요 토글: /api/community/<country>/review/<review_id>/like/
+# 4) 리뷰 좋아요 토글: /api/community/review/<review_id>/like/
 @api_view(["POST"])
-def review_like_toggle(request, country, review_id):
-    community = _get_community(country)
-    if community is None:
-        return Response({"error": "Community not found"}, status=status.HTTP_404_NOT_FOUND)
-
-    board = _get_board(community, "review")
+def review_like_toggle(request, review_id):
+    board = _get_board_by_slug("review")
     if board is None:
         return Response({"error": "Board not found"}, status=status.HTTP_404_NOT_FOUND)
 
@@ -571,14 +516,10 @@ def review_like_toggle(request, country, review_id):
     return _toggle_like(request, Review, review_id)
 
 
-# 5) 리뷰 댓글 목록: /api/community/<country>/review/<review_id>/comments/
+# 5) 리뷰 댓글 목록: /api/community/review/<review_id>/comments/
 @api_view(["GET"])
-def review_comments_list(request, country, review_id):
-    community = _get_community(country)
-    if community is None:
-        return Response({"error": "Community not found"}, status=status.HTTP_404_NOT_FOUND)
-
-    board = _get_board(community, "review")
+def review_comments_list(request, review_id):
+    board = _get_board_by_slug("review")
     if board is None:
         return Response({"error": "Board not found"}, status=status.HTTP_404_NOT_FOUND)
 
@@ -588,18 +529,14 @@ def review_comments_list(request, country, review_id):
     return Response(_comment_tree_response(request, Review, review_id))
 
 
-# 6) 리뷰 댓글 작성: /api/community/<country>/review/<review_id>/comments/write/
+# 6) 리뷰 댓글 작성: /api/community/review/<review_id>/comments/write/
 @api_view(["POST"])
-def review_comments_write(request, country, review_id):
+def review_comments_write(request, review_id):
     auth_resp = _auth_required(request)
     if auth_resp:
         return auth_resp
 
-    community = _get_community(country)
-    if community is None:
-        return Response({"error": "Community not found"}, status=status.HTTP_404_NOT_FOUND)
-
-    board = _get_board(community, "review")
+    board = _get_board_by_slug("review")
     if board is None:
         return Response({"error": "Board not found"}, status=status.HTTP_404_NOT_FOUND)
 
@@ -641,7 +578,6 @@ def review_comments_write(request, country, review_id):
 # 댓글 전역
 # -----------------------------
 
-# 댓글 삭제: /api/community/comments/<comment_id>/
 @api_view(["DELETE"])
 def comment_delete(request, comment_id):
     auth_resp = _auth_required(request)
@@ -659,7 +595,6 @@ def comment_delete(request, comment_id):
     return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-# 댓글 좋아요 토글: /api/community/comments/<comment_id>/like/
 @api_view(["POST"])
 def comment_like_toggle(request, comment_id):
     if not Comment.objects.filter(id=comment_id).exists():
