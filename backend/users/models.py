@@ -10,6 +10,7 @@ def profile_image_path(instance, filename):
 class User(AbstractUser):
     nickname = models.CharField(max_length=30, blank=True, unique=True)
     email = models.EmailField(unique=True)
+    bio = models.TextField(blank=True, default="")  # 소개글
 
     FAVORITE_COUNTRIES = [
         ('KR', '한국'),

@@ -13,12 +13,13 @@ const routes = [
   { path: "/community/free/write", component: () => import("@/views/CommunityWriteView.vue"), meta: { hideHeader: true } },
   { path: "/community/free/:id", component: () => import("@/views/CommunityDetailView.vue") },
   { path: "/community", component: () => import("@/views/CommunityView.vue"), },
-  { path: "/profile/:id", component: () => import("@/views/ProfileView.vue") },
   { path: "/review/write", component: () => import("@/views/ReviewWriteView.vue") },
   { path: "/bestsellers", component: () => import("@/views/BestsellerListView.vue") },
-  { path: "/reviews", component: () => import("@/views/AllReviewsView.vue") },
+  // { path: "/reviews", component: () => import("@/views/AllReviewsView.vue") },  // 제거됨
   { path: "/mylib", component: () => import("@/views/MyLibraryView.vue") },
-  { path: "/mypage", component: () => import("@/views/MyLibraryView.vue") }
+  { path: "/mypage", component: () => import("@/views/MyPageView.vue") },
+  { path: "/profile/:id", component: () => import("@/views/MyPageView.vue") },  // 다른 사용자 프로필
+  { path: "/travel", component: () => import("@/views/BookTravelView.vue") }
 ];
 
 const router = createRouter({

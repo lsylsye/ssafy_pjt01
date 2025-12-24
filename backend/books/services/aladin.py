@@ -140,3 +140,25 @@ def get_cached_aladin_list(query_type: str, limit: int, ttl_hours: int = 24):
         qs = qs.order_by("-pub_date", "-sales_point", "-id")
 
     return qs[:limit]
+
+
+def search_books_by_query(query: str, max_results: int = 1):
+    params = {
+        "ttbkey": settings.ALADIN_TTB_KEY,
+        "Query": query,
+        "QueryType": "Keyword",
+        "MaxResults": max_results,
+        "start": 1,
+        "SearchTarget": "Book",
+        "Output": "JS",
+        "Version": settings.ALADIN_API_VERSION,
+    }
+
+    try:
+        res = requests.get(settings.ALADIN_SEARCH_URL, params=params, timeout=10)
+        res.raise_for_status()
+        data = res.json()
+        return data.get("item", [])
+    except Exception as e:
+        print(f"🚨 알라딘 검색 API 에러: {e}")
+        return []

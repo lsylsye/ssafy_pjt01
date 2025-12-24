@@ -190,3 +190,53 @@ def get_wikipedia_author_info(author_name: str):
     except Exception as e:
         print(f"🚨 위키피디아 API 에러: {e}")
         return None, None, None
+
+
+def get_country_literature_info(country_name: str):
+    """
+    나라 이름을 바탕으로 AI 문학 가이드, 대표 작가 정보, 그리고 10권의 추천 도서 목록을 생성합니다.
+    """
+    prompt = f"""
+    당신은 세계 문학 여행 가이드이자 북 큐레이터입니다.
+    '{country_name}'을(를) 대표하는 문학적 특징과 대표 작가, 그리고 한국에서 읽을 수 있는 베스트셀러/대표 도서 10권을 추천해주세요.
+
+    [필수 요청 사항 (JSON 필드)]
+    1. "literary_guide" (문자열): 
+       - {country_name} 문학의 특징, 역사적 배경, 혹은 읽기 전에 알면 좋은 팁을 3~4줄로 매력적으로 작성하세요.
+    2. "representative_author" (객체):
+       - "name": {country_name}을 대표하는 작가 이름
+       - "description": 작가에 대한 짧은 소개 (1~2줄)
+    3. "recommended_books" (배열, 10개):
+       - 각 항목은 객체여야 합니다: {{"title": "책 제목", "author": "저자 이름"}}
+       - 한국의 알라딘 API에서 검색이 가능할 법한 유명한 책들로 구성하세요.
+
+    [응답 포맷 예시]
+    {{
+        "literary_guide": "영국 문학은 셰익스피어의 고전부터 현대 판타지까지...",
+        "representative_author": {{
+            "name": "J.K. 롤링",
+            "description": "전 세계를 매료시킨 판타지의 거장"
+        }},
+        "recommended_books": [
+            {{"title": "해리 포터와 마법사의 돌", "author": "J.K. 롤링"}},
+            ...
+        ]
+    }}
+
+    조건: 반드시 JSON 형식을 지키고, 한국어 존댓말(~해요)을 사용하세요.
+    """
+
+    try:
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[
+                {"role": "system", "content": "당신은 세계 문학 전문가입니다. JSON 형식으로만 응답하세요."},
+                {"role": "user", "content": prompt},
+            ],
+            response_format={"type": "json_object"},
+        )
+        return json.loads(response.choices[0].message.content)
+
+    except Exception as e:
+        print(f"🚨 GPT 호출 오류 (Book Travel): {e}")
+        return None

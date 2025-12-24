@@ -34,7 +34,7 @@ class MyProfileUpdateSerializer(serializers.ModelSerializer):
     """
     class Meta:
         model = User
-        fields = ["nickname", "favorite_country", "favorite_genre", "profile_image"]
+        fields = ["nickname", "bio", "favorite_country", "favorite_genre", "profile_image"]
 
     def validate_nickname(self, value):
         value = (value or "").strip()

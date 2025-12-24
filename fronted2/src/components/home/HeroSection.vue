@@ -15,7 +15,7 @@
 .hero-section { text-align:center; padding: 80px 0; }
 .hero-title {
   font-size: 3rem;
-  font-weight: 900;
+  font-weight: 700;
   margin-bottom: 12px;
   letter-spacing: -1px;
   line-height: 1.2;

@@ -40,6 +40,7 @@ def _build_profile_response(request, user):
         "username": user.username,
         "email": user.email,
         "nickname": getattr(user, "nickname", ""),
+        "bio": getattr(user, "bio", ""),
         "favorite_country": getattr(user, "favorite_country", None),
         "favorite_genre": getattr(user, "favorite_genre", None),
         "profile_image": profile_image_url,
@@ -49,11 +50,13 @@ def _build_profile_response(request, user):
         "reviews_this_month_count": reviews_this_month_count,
         "exp_total": level_payload["exp_total"],
         "level": level_payload["level"],
+        "level_title": level_payload["level_title"],
+        "level_icon": level_payload["level_icon"],
         "level_progress": level_payload["level_progress"],
     }
 
 
-# 내 정보 조회 + 수정(닉네임/선호국가/선호장르/프로필이미지)
+# 내 정보 조회 + 수정(닉네임/소개글/선호국가/선호장르/프로필이미지)
 @api_view(["GET", "PATCH"])
 @permission_classes([IsAuthenticated])
 @parser_classes([MultiPartParser, FormParser, JSONParser])
@@ -229,3 +232,122 @@ def my_comments(request):
             })
 
     return Response(items)
+
+
+# 팔로우/언팔로우 토글
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def follow_toggle(request, user_id):
+    from_user = request.user
+    
+    try:
+        to_user = from_user.__class__.objects.get(id=user_id)
+    except from_user.__class__.DoesNotExist:
+        return Response({"error": "사용자를 찾을 수 없습니다."}, status=404)
+    
+    if from_user.id == to_user.id:
+        return Response({"error": "자기 자신을 팔로우할 수 없습니다."}, status=400)
+    
+    follow_obj = Follow.objects.filter(from_user=from_user, to_user=to_user).first()
+    
+    if follow_obj:
+        follow_obj.delete()
+        return Response({"following": False, "message": "언팔로우했습니다."})
+    else:
+        Follow.objects.create(from_user=from_user, to_user=to_user)
+        return Response({"following": True, "message": "팔로우했습니다."})
+
+
+# 팔로워 리스트 조회
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def followers_list(request, user_id=None):
+    if user_id is None:
+        target_user = request.user
+    else:
+        try:
+            target_user = request.user.__class__.objects.get(id=user_id)
+        except request.user.__class__.DoesNotExist:
+            return Response({"error": "사용자를 찾을 수 없습니다."}, status=404)
+    
+    followers = Follow.objects.filter(to_user=target_user).select_related("from_user")
+    
+    result = []
+    for follow in followers:
+        user = follow.from_user
+        profile_image_url = ""
+        if getattr(user, "profile_image", None) and user.profile_image:
+            try:
+                profile_image_url = request.build_absolute_uri(user.profile_image.url)
+            except Exception:
+                profile_image_url = user.profile_image.url
+        
+        # 내가 이 사람을 팔로우하고 있는지 확인
+        is_following = Follow.objects.filter(from_user=request.user, to_user=user).exists()
+        
+        result.append({
+            "id": user.id,
+            "username": user.username,
+            "nickname": getattr(user, "nickname", ""),
+            "profile_image": profile_image_url,
+            "is_following": is_following,
+        })
+    
+    return Response(result)
+
+
+# 팔로잉 리스트 조회
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def following_list(request, user_id=None):
+    if user_id is None:
+        target_user = request.user
+    else:
+        try:
+            target_user = request.user.__class__.objects.get(id=user_id)
+        except request.user.__class__.DoesNotExist:
+            return Response({"error": "사용자를 찾을 수 없습니다."}, status=404)
+    
+    following = Follow.objects.filter(from_user=target_user).select_related("to_user")
+    
+    result = []
+    for follow in following:
+        user = follow.to_user
+        profile_image_url = ""
+        if getattr(user, "profile_image", None) and user.profile_image:
+            try:
+                profile_image_url = request.build_absolute_uri(user.profile_image.url)
+            except Exception:
+                profile_image_url = user.profile_image.url
+        
+        # 내가 이 사람을 팔로우하고 있는지 확인 (항상 True일 것)
+        is_following = Follow.objects.filter(from_user=request.user, to_user=user).exists()
+        
+        result.append({
+            "id": user.id,
+            "username": user.username,
+            "nickname": getattr(user, "nickname", ""),
+            "profile_image": profile_image_url,
+            "is_following": is_following,
+        })
+    
+    return Response(result)
+
+
+# 다른 사용자 프로필 조회
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def user_profile(request, user_id):
+    try:
+        user = request.user.__class__.objects.get(id=user_id)
+    except request.user.__class__.DoesNotExist:
+        return Response({"error": "사용자를 찾을 수 없습니다."}, status=404)
+    
+    # 내가 이 사람을 팔로우하고 있는지
+    is_following = Follow.objects.filter(from_user=request.user, to_user=user).exists()
+    
+    profile_data = _build_profile_response(request, user)
+    profile_data["is_following"] = is_following
+    profile_data["is_me"] = (request.user.id == user.id)
+    
+    return Response(profile_data)

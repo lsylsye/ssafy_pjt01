@@ -8,8 +8,10 @@ from .models import Book, AIReviewAnalysis
 from .services import (
     get_aladin_data_complete, 
     analyze_book_complete, 
-    get_wikipedia_author_info
+    get_wikipedia_author_info,
+    get_country_literature_info
 )
+from books.services.aladin import search_books_by_query, _to_cover500
 
 # API 키 설정
 client = OpenAI(
@@ -193,3 +195,69 @@ def book_ai_review(request, isbn13):
         "author_works": obj.author_works,        # (선택) GPT 기반 대표작
         "author_image": obj.author_image,        # 위키 이미지
     })
+
+
+@api_view(["POST"])
+def book_travel(request):
+    """
+    나라별 문학 가이드 + 대표 작가 + 도서 5권 검색 (사전 정의된 데이터 사용)
+    """
+    try:
+        from .country_books_data import COUNTRY_LITERATURE_DATA
+        from concurrent.futures import ThreadPoolExecutor
+        
+        data = json.loads(request.body)
+        country = data.get("country", "").strip()
+        if not country:
+            return JsonResponse({"error": "country is required"}, status=400)
+
+        # 1. 사전 정의된 데이터에서 해당 국가 정보 가져오기
+        country_data = COUNTRY_LITERATURE_DATA.get(country)
+        if not country_data:
+            return JsonResponse({"error": f"{country}에 대한 데이터가 없습니다."}, status=404)
+
+        # 2. 대표 작가 위키 정보 (이미지 등) 가져오기
+        author_name = country_data.get("representative_author", {}).get("name")
+        wiki_intro, wiki_img, wiki_url = get_wikipedia_author_info(author_name)
+
+        # 3. 추천 도서 목록에 대해 알라딘 API 검색 (병렬 처리)
+        recommended_books = country_data.get("books", [])
+        
+        def fetch_aladin_data(book_info):
+            query = f"{book_info['title']} {book_info['author']}"
+            search_results = search_books_by_query(query, max_results=1)
+            if search_results:
+                item = search_results[0]
+                cover = _to_cover500(item.get("cover", ""))
+                # 표지가 유효한 경우만 반환
+                if cover and "/img/no_image" not in cover:
+                    return {
+                        "title": item.get("title"),
+                        "author": item.get("author"),
+                        "publisher": item.get("publisher"),
+                        "isbn13": item.get("isbn13"),
+                        "cover": cover,
+                    }
+            return None
+
+        with ThreadPoolExecutor(max_workers=10) as executor:
+            raw_books = list(executor.map(fetch_aladin_data, recommended_books))
+
+        # 표지가 있는 책만 필터링하고 최대 5개만 추출
+        aladin_books = [b for b in raw_books if b is not None][:5]
+
+        return JsonResponse({
+            "country": country,
+            "literary_guide": country_data.get("literary_guide"),
+            "author": {
+                "name": author_name,
+                "description": country_data.get("representative_author", {}).get("description"),
+                "image": wiki_img or "",
+                "wiki_url": wiki_url or ""
+            },
+            "books": aladin_books
+        })
+
+    except Exception as e:
+        print(f"🚨 book_travel 에러: {e}")
+        return JsonResponse({"error": str(e)}, status=500)

@@ -14,11 +14,11 @@ from .services.aladin import _to_cover500
 from .services.recommendations import recommend_bookmark_based_aladin, recommend_follow_based
 
 
-# 베스트셀러 TOP10
+# 베스트셀러 TOP20
 @api_view(["GET"])
 @permission_classes([AllowAny]) 
 def bestseller_list(request):
-    qs = get_cached_aladin_list(query_type="Bestseller", limit=10, ttl_hours=24)
+    qs = get_cached_aladin_list(query_type="Bestseller", limit=20, ttl_hours=24)
     return Response(AladinListItemSerializer(qs, many=True).data)
 
 

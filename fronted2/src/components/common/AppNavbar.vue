@@ -11,7 +11,7 @@
         <nav class="gnb">
           <RouterLink class="gnb-link" to="/taste">취향 분석</RouterLink>
           <RouterLink class="gnb-link" to="/community">커뮤니티</RouterLink>
-          <RouterLink class="gnb-link" to="/map">지도</RouterLink>
+          <RouterLink class="gnb-link" to="/travel">문학 여행</RouterLink>
           <RouterLink class="gnb-link" to="/mylib">내 서재</RouterLink>
         </nav>
       </div>
