@@ -17,7 +17,7 @@ client = OpenAI(
     base_url="https://gms.ssafy.io/gmsapi/api.openai.com/v1",
 )
 
-@api_view(["GET"])
+@api_view(["POST"])
 def recommend_book(request):
     if request.method == 'POST':
         try:
