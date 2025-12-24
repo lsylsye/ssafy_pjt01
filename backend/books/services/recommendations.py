@@ -1,3 +1,5 @@
+# backend/books/services/recommendations.py
+
 import random
 import requests
 from django.conf import settings
@@ -6,6 +8,22 @@ from django.db.models import Count
 from datetime import timedelta
 from users.models import Follow
 from books.models import Book, Bookmark, AladinSync, AladinListItem
+
+
+def _author_for_search(raw: str) -> str:
+    if not raw:
+        return ""
+    s = str(raw).strip()
+
+    # "황석영 (지은이), 홍길동 (옮긴이)" 같은 경우 → 첫 덩어리만
+    if "," in s:
+        s = s.split(",", 1)[0].strip()
+
+    # "(지은이)" 같은 괄호 정보 제거
+    if "(" in s:
+        s = s.split("(", 1)[0].strip()
+
+    return s
 
 
 def _is_fresh(key: str, ttl_hours: int = 24) -> bool:
@@ -23,9 +41,9 @@ def _fetch_itemsearch_author_sales(author: str, max_results: int = 20, start: in
     params = {
         "ttbkey": settings.ALADIN_TTB_KEY,
         "Query": author,
-        "QueryType": "Author",        # 핵심
+        "QueryType": "Author",
         "SearchTarget": "Book",
-        "Sort": "SalesPoint",         # 판매지표 정렬
+        "Sort": "SalesPoint",
         "MaxResults": max_results,
         "Start": start,
         "Output": "JS",
@@ -59,7 +77,7 @@ def _get_cached_author_sales(author: str, limit: int = 20, ttl_hours: int = 24):
                 "title": it.get("title", "") or "",
                 "author": it.get("author", "") or "",
                 "publisher": it.get("publisher", "") or "",
-                "pub_date": None,  # 필요하면 기존 _parse_iso_date 써도 됨
+                "pub_date": None,
                 "description": it.get("description", "") or "",
                 "cover": it.get("cover", "") or "",
                 "best_rank": it.get("bestRank"),
@@ -89,18 +107,16 @@ def recommend_bookmark_based_aladin(user, limit=5):
         return {"picked_author": None, "items": []}
 
     picked = random.choice(recent).book
-    author = (picked.author or "").strip()
+    author = _author_for_search(picked.author)
     if not author:
         return {"picked_author": None, "items": []}
 
-    # 이미 북마크한 isbn13 제외
     bookmarked_isbn13 = set(
         Bookmark.objects.filter(user=user)
         .select_related("book")
         .values_list("book__isbn13", flat=True)
     )
 
-    # 알라딘(캐시)에서 author 인기책 가져오기
     cand = _get_cached_author_sales(author, limit=30, ttl_hours=24)
 
     items = []
@@ -113,7 +129,6 @@ def recommend_bookmark_based_aladin(user, limit=5):
         if len(items) == limit:
             break
 
-    # 5권 못 채우면 빈 배열 정책 유지(너 설계대로)
     if len(items) != limit:
         return {"picked_author": author, "items": []}
 
@@ -125,7 +140,7 @@ def recommend_follow_based(user, limit=5, pool_limit=5):
         Follow.objects
         .filter(from_user=user)
         .values("to_user_id")
-        .annotate(bookmark_count=Count("to_user__bookmarks"))  # related_name 맞아야 함
+        .annotate(bookmark_count=Count("to_user__bookmarks"))
         .filter(bookmark_count__gte=limit)
         .order_by("-bookmark_count")[:pool_limit]
     )
