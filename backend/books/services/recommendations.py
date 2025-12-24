@@ -8,6 +8,7 @@ from django.db.models import Count
 from datetime import timedelta
 from users.models import Follow
 from books.models import Book, Bookmark, AladinSync, AladinListItem
+from .aladin import _to_cover500
 
 
 def _author_for_search(raw: str) -> str:
@@ -79,7 +80,7 @@ def _get_cached_author_sales(author: str, limit: int = 20, ttl_hours: int = 24):
                 "publisher": it.get("publisher", "") or "",
                 "pub_date": None,
                 "description": it.get("description", "") or "",
-                "cover": it.get("cover", "") or "",
+                "cover": _to_cover500(it.get("cover", "") or ""),
                 "best_rank": it.get("bestRank"),
                 "sales_point": it.get("salesPoint") or 0,
                 "customer_review_rank": it.get("customerReviewRank"),

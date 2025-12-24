@@ -12,7 +12,7 @@
 </template>
 
 <style scoped>
-.hero-section { text-align:center; padding: 40px 0 80px; }
+.hero-section { text-align:center; padding: 80px 0; }
 .hero-title {
   font-size: 3rem;
   font-weight: 900;

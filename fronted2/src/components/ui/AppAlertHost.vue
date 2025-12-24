@@ -107,67 +107,63 @@ function onBackdrop() {
 .dialog{
   width: min(520px, 100%);
   border-radius: 26px;
-  background: rgba(255,255,255,0.82);
+  background: #ffffff;
   border: 1px solid rgba(255,255,255,0.55);
   backdrop-filter: blur(22px);
   box-shadow: 0 24px 70px rgba(0,0,0,0.14);
-  padding: 22px 20px 18px;
+  padding: 40px 30px 40px;
   animation: pop 0.18s ease-out;
 }
 .head{
-  display:flex; gap: 12px;
-  align-items:flex-start;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 .badge{
-  width: 12px; height: 12px; border-radius: 50%;
-  margin-top: 6px;
-  background: #00d15b;
-  box-shadow: 0 0 14px rgba(0,209,91,0.22);
+  display: none; /* Hide to match image */
 }
-.dialog[data-variant="danger"] .badge{ background:#ff4040; box-shadow:0 0 14px rgba(255,64,64,0.22); }
-.dialog[data-variant="warning"] .badge{ background:#ffb020; box-shadow:0 0 14px rgba(255,176,32,0.22); }
-.dialog[data-variant="info"] .badge{ background:#3b82f6; box-shadow:0 0 14px rgba(59,130,246,0.22); }
 
 .title{
-  font-size: 1.15rem;
-  font-weight: 800;
-  letter-spacing: -0.4px;
+  font-size: 1.4rem;
+  font-weight: 850;
+  letter-spacing: -0.6px;
   color:#191f28;
 }
 .desc{
-  margin-top: 6px;
-  font-size: 0.95rem;
+  margin-top: 10px;
+  font-size: 1.05rem;
   color:#4e5968;
-  line-height: 1.55;
+  line-height: 1.6;
+  font-weight: 500;
 }
 
 .actions{
-  margin-top: 18px;
+  margin-top: 32px;
   display:flex;
   justify-content:flex-end;
   gap: 10px;
 }
 .btn{
-  height: 42px;
-  padding: 0 16px;
-  border-radius: 999px;
-  font-weight: 800;
+  height: 48px;
+  min-width: 80px;
+  padding: 0 24px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 1rem;
   cursor:pointer;
-  transition: 0.18s;
+  transition: 0.1s;
+  border: none;
 }
 .btn.ghost{
-  background: rgba(242,244,246,0.9);
-  border: 1px solid rgba(0,0,0,0.06);
+  background: #f2f4f6;
   color:#191f28;
 }
-.btn.ghost:hover{ transform: translateY(-1px); }
+.btn.ghost:hover{ background: #e5e8eb; }
 .btn.solid{
-  background: #191f28;
+  background: #1d212a;
   color: white;
 }
 .btn.solid:hover{
-  background:#00d15b;
-  box-shadow: 0 10px 22px rgba(0,209,91,0.28);
-  transform: translateY(-1px);
+  background:#000;
 }
 </style>

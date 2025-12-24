@@ -48,6 +48,8 @@ urlpatterns = [
     path("api/mypage/", include("mypage.urls")),
     # 커뮤니티
     path("api/community/", include("community.urls")),
+    # 리뷰 (기록 및 목록)
+    path("api/review/", include("reviews.urls")),
     # 잔디
     path("api/grass/", include("grass.urls")),
     #AI 큐레이터

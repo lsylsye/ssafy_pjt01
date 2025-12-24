@@ -19,6 +19,10 @@
       <!-- Right -->
       <div class="right">
         <SearchCapsule />
+        <RouterLink v-if="isLoggedIn" to="/review/write" class="record-btn">
+          <Plus :size="18" />
+          기록하기
+        </RouterLink>
 
         <!-- 로그인 전 -->
         <template v-if="!isLoggedIn">
@@ -69,6 +73,7 @@ import { useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/auth.store";      // ✅ Pinia auth 단일 소스
 import { useMypageStore } from "@/stores/mypage.store";  // ✅ level/profile 단일 소스(/api/mypage/me/)
 import SearchCapsule from "@/components/ui/SearchCapsule.vue";
+import { Plus } from "lucide-vue-next";
 
 const router = useRouter();
 const auth = useAuthStore();
@@ -223,6 +228,23 @@ function logout() {
   color: #fff;
   font-weight: 600;
   border: 1px solid #00D15B;
+}
+.record-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: #00D15B;
+  color: #fff;
+  padding: 10px 18px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  transition: 0.2s;
+  box-shadow: 0 4px 12px rgba(0, 209, 91, 0.2);
+}
+.record-btn:hover {
+  background: #00b54f;
+  transform: translateY(-1px);
 }
 
 .profile-wrap{

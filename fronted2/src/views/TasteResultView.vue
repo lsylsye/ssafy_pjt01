@@ -1,49 +1,50 @@
 <template>
   <div class="result-container">
     <div class="result-card">
-      <div class="analysis-section">
-        <h3 class="section-title">당신의 독서 DNA</h3>
+      <div class="analysis-header">
+        <div class="title-row">
+          <span class="dna-label">당신의 독서 DNA</span>
+          <h2 class="main-title">취향 분석 결과</h2>
+        </div>
 
-        <div class="keywords">
-          <span v-for="(keyword, index) in keywords" :key="index" class="keyword-tag">
+        <div class="tags-container">
+          <span v-for="(keyword, index) in keywords" :key="index" class="hashtag">
             #{{ keyword }}
           </span>
         </div>
 
-        <p class="analysis-desc">
-          당신의 취향을 분석하여<br />
-          꼭 맞는 책 {{ books.length }}권을 선정했습니다.
+        <p class="summary-text">
+           {{ books.length }}권의 특별한 책을 선정했습니다.
         </p>
       </div>
 
       <div class="divider"></div>
 
-      <div class="books-wrapper">
+      <div class="recommendation-list">
         <div
           v-for="(book, index) in books"
           :key="index"
-          class="book-card"
+          class="book-row-card"
           @click="goToDetail(book.isbn13)"
-          role="button"
-          tabindex="0"
-          @keydown.enter="goToDetail(book.isbn13)"
         >
-          <div class="badge" :class="index === 0 ? 'badge-primary' : 'badge-secondary'">
-            {{ book.type || (index === 0 ? "운명의 책" : "새로운 시도") }}
+          <div class="book-cover-wrap">
+            <img v-if="book.cover" :src="book.cover" class="book-thumb" />
+            <div v-else class="book-thumb-ph">Cover</div>
+            <div class="rank-badge">{{ index + 1 }}</div>
           </div>
 
-          <div class="cover-area">
-            <img v-if="book.cover" :src="book.cover" :alt="book.title" class="book-cover" />
-            <div v-else class="book-cover-placeholder">NO IMAGE</div>
-          </div>
+            <div class="book-details">
+            <div class="detail-header">
+              <span class="type-tag" :class="index === 0 ? 'destiny' : 'challenge'">
+                {{ book.type || (index === 0 ? "운명의 책" : "새로운 시도") }}
+              </span>
+              <h3 class="display-title">{{ book.title }}</h3>
+              <p class="author-label">{{ book.author }}</p>
+            </div>
 
-          <div class="info-area">
-            <h3 class="book-title">{{ book.title }}</h3>
-            <p class="book-author">{{ book.author }}</p>
-
-            <div class="ai-reason-box">
-              <span class="ai-icon">🤖</span>
-              <p class="ai-text">{{ book.reason }}</p>
+            <div class="ai-insight">
+              <div class="insight-label">AI Insights</div>
+              <p class="insight-content">{{ book.reason }}</p>
             </div>
           </div>
         </div>
@@ -123,314 +124,245 @@ if (!sessionStorage.getItem("taste_result")) {
 
 <style scoped>
 /* src/views/TasteResultView.vue (style scoped 교체본) */
-.result-container{
-  --primary:#00D15B;
-  --primary-dark:#00B84F;
-  --bg:#0b1220;
-  --glass: rgba(255,255,255,0.10);
-  --glass-2: rgba(255,255,255,0.14);
-  --border: rgba(255,255,255,0.16);
-  --border-2: rgba(255,255,255,0.22);
-  --text:#EAF1F7;
-  --text-sub: rgba(234,241,247,0.78);
-  --text-dim: rgba(234,241,247,0.62);
-  --shadow: 0 22px 60px rgba(0,0,0,0.35);
-  --shadow-soft: 0 14px 40px rgba(0,0,0,0.22);
-  --transition: 0.18s ease;
+.result-container {
+  --primary: #00d15b;
+  --bg: #f8fafb;
+  --card-bg: rgba(255, 255, 255, 0.8);
+  --text-main: #191f28;
+  --text-grey: #4e5968;
+  --text-light: #8b95a1;
 
-  min-height: calc(100vh - 80px);
-  padding: 56px 20px;
-  display:flex;
-  justify-content:center;
-  align-items:flex-start;
-  font-family:"Pretendard",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-
-  /* 메인페이지 느낌: 어두운 그라데이션 + 은은한 그린 오로라 */
-  background:
-    radial-gradient(900px 480px at 20% 12%, rgba(0,209,91,0.22), transparent 62%),
-    radial-gradient(860px 520px at 80% 18%, rgba(56,189,248,0.16), transparent 60%),
-    radial-gradient(760px 520px at 55% 88%, rgba(168,85,247,0.12), transparent 62%),
-    linear-gradient(180deg, #07101f 0%, #090f1b 55%, #070b14 100%);
+  min-height: calc(100vh - 70px);
+  padding: 40px 20px;
+  display: flex;
+  justify-content: center;
+  background: var(--bg);
+  font-family: "Pretendard", -apple-system, sans-serif;
 }
 
-/* 메인 카드(유리판) */
-.result-card{
-  width:100%;
-  max-width: 720px;
-  border-radius: 22px;
-  padding: 46px 40px;
-  position: relative;
-
-  background: linear-gradient(180deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.08) 100%);
-  border: 1px solid var(--border);
-  box-shadow: var(--shadow);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-  overflow: hidden;
+.result-card {
+  width: 100%;
+  max-width: 760px;
+  background: var(--card-bg);
+  backdrop-filter: blur(20px);
+  border-radius: 32px;
+  padding: 40px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.03);
+  border: 1px solid #fff;
 }
 
-/* 유리 하이라이트 */
-.result-card::before{
-  content:"";
-  position:absolute;
-  inset: 0;
-  background:
-    radial-gradient(900px 220px at 20% 0%, rgba(255,255,255,0.18), transparent 55%),
-    radial-gradient(700px 240px at 90% 10%, rgba(255,255,255,0.10), transparent 60%);
-  pointer-events:none;
-}
-
-.section-title{
-  position: relative;
-  font-size: 13px;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.6px;
+/* 헤더 구조 */
+.analysis-header {
   text-align: center;
-  color: var(--text-dim);
-  margin: 0 0 18px 0;
+  margin-bottom: 40px;
 }
-
-.keywords{
-  position: relative;
-  display:flex;
-  flex-wrap:wrap;
-  justify-content:center;
-  gap: 10px;
-  margin-bottom: 18px;
-}
-
-.keyword-tag{
-  padding: 8px 14px;
-  border-radius: 999px;
-  font-size: 13px;
+.dna-label {
+  display: block;
+  font-size: 0.92rem;
   font-weight: 800;
-
-  color: var(--text);
-  background: rgba(255,255,255,0.10);
-  border: 1px solid rgba(255,255,255,0.16);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-
-  box-shadow: 0 10px 24px rgba(0,0,0,0.18);
+  color: var(--primary);
+  margin-bottom: 8px;
+  letter-spacing: 1px;
 }
-
-.keyword-tag:hover{
-  border-color: rgba(0,209,91,0.30);
-  box-shadow: 0 14px 30px rgba(0,0,0,0.22);
-}
-
-.analysis-desc{
-  position: relative;
-  font-size: 15px;
-  font-weight: 500;
-  color: var(--text-sub);
-  line-height: 1.7;
-  text-align:center;
-  margin: 0;
-}
-
-.divider{
-  position: relative;
-  height: 1px;
-  margin: 30px 0 34px;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent);
-}
-
-/* 책 카드 레이아웃 */
-.books-wrapper{
-  position: relative;
-  display:flex;
-  flex-direction:column;
-  gap: 18px;
-  margin-bottom: 34px;
-}
-
-@media (min-width: 720px){
-  .books-wrapper{
-    flex-direction: row;
-    gap: 18px;
-  }
-}
-
-/* 개별 책 카드(유리 카드) */
-.book-card{
-  flex:1;
-  border-radius: 18px;
-  padding: 26px 22px 22px;
-  position: relative;
-  cursor: pointer;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition), background var(--transition);
-
-  background: linear-gradient(180deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.06) 100%);
-  border: 1px solid rgba(255,255,255,0.14);
-  box-shadow: var(--shadow-soft);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  overflow: hidden;
-}
-
-.book-card::before{
-  content:"";
-  position:absolute;
-  inset:-1px;
-  background:
-    radial-gradient(520px 180px at 15% 0%, rgba(0,209,91,0.16), transparent 55%),
-    radial-gradient(520px 180px at 85% 0%, rgba(255,255,255,0.10), transparent 55%);
-  opacity: 0.7;
-  pointer-events:none;
-}
-
-.book-card:hover{
-  transform: translateY(-4px);
-  border-color: rgba(0,209,91,0.28);
-  box-shadow: 0 22px 55px rgba(0,0,0,0.34);
-}
-
-/* 배지 */
-.badge{
-  position:absolute;
-  top: 14px;
-  left: 14px;
-  padding: 6px 12px;
-  border-radius: 10px;
-  font-size: 11px;
+.main-title {
+  font-size: 2rem;
   font-weight: 800;
-  letter-spacing: 0.5px;
-  color: #fff;
-  border: 1px solid rgba(255,255,255,0.18);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  box-shadow: 0 10px 26px rgba(0,0,0,0.25);
-  z-index: 2;
-}
-
-.badge-primary{
-  background: linear-gradient(135deg, rgba(0,209,91,0.95), rgba(0,184,79,0.95));
-}
-.badge-secondary{
-  background: linear-gradient(135deg, rgba(239,68,68,0.95), rgba(244,63,94,0.95));
-}
-
-.cover-area{
-  position: relative;
-  margin-top: 34px;
+  color: var(--text-main);
   margin-bottom: 20px;
 }
-
-.book-cover{
-  width: 132px;
-  height: 184px;
-  object-fit: cover;
-  border-radius: 12px;
-
-  border: 1px solid rgba(255,255,255,0.18);
-  box-shadow: 0 18px 45px rgba(0,0,0,0.35);
+.tags-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 20px;
 }
-
-.book-cover-placeholder{
-  width: 132px;
-  height: 184px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  border-radius: 12px;
-
-  color: rgba(234,241,247,0.75);
+.hashtag {
+  font-size: 0.9rem;
   font-weight: 600;
-  background: rgba(255,255,255,0.08);
-  border: 1px dashed rgba(255,255,255,0.22);
-  box-shadow: 0 18px 45px rgba(0,0,0,0.28);
+  color: var(--text-grey);
+  background: #fff;
+  padding: 6px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(0,0,0,0.08);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+  transition: all 0.2s ease;
 }
-
-.info-area{
-  position: relative;
-  width:100%;
+.hashtag:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+  transform: translateY(-1px);
 }
-
-.book-title{
-  margin: 0 0 8px 0;
-  font-size: 16px;
-  font-weight: 800;
-  color: var(--text);
-  line-height: 1.35;
-  word-break: keep-all;
-  text-align: center;
-}
-
-.book-author{
-  margin: 0 0 16px 0;
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--text-dim);
-  text-align: center;
-}
-
-/* AI 추천사 박스(유리 박스) */
-.ai-reason-box{
-  display:flex;
-  gap: 10px;
-  align-items:flex-start;
-
-  padding: 14px;
-  border-radius: 14px;
-
-  background: rgba(255,255,255,0.08);
-  border: 1px solid rgba(255,255,255,0.14);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-
-  color: var(--text-sub);
-  line-height: 1.6;
-}
-
-.ai-icon{
-  font-size: 18px;
-  flex-shrink:0;
-  margin-top: 1px;
-}
-
-.ai-text{
-  margin: 0;
-  font-size: 13px;
+.summary-text {
+  font-size: 1.1rem;
+  color: var(--text-grey);
   font-weight: 500;
 }
 
-/* 버튼 */
-.actions{
-  position: relative;
-  display:flex;
-  justify-content:center;
+.divider {
+  height: 1px;
+  background: rgba(0,0,0,0.05);
+  margin: 32px 0;
 }
 
-.retry-btn{
-  width: 100%;
-  padding: 16px 22px;
-  border-radius: 14px;
-  border: 1px solid rgba(255,255,255,0.16);
+/* 다단 가로 카드 구조 */
+.recommendation-list {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin-bottom: 40px;
+}
 
-  color: #fff;
-  font-size: 15px;
-  font-weight: 800;
+.book-row-card {
+  display: flex;
+  gap: 28px;
+  background: #fff;
+  padding: 24px;
+  border-radius: 24px;
   cursor: pointer;
-
-  background: linear-gradient(135deg, rgba(0,209,91,0.95), rgba(0,184,79,0.95));
-  box-shadow: 0 18px 40px rgba(0,0,0,0.28);
-  transition: transform var(--transition), box-shadow var(--transition), filter var(--transition);
+  transition: 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+  border: 1px solid transparent;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.02);
 }
 
-.retry-btn:hover{
-  transform: translateY(-2px);
-  box-shadow: 0 22px 55px rgba(0,0,0,0.35);
-  filter: brightness(1.02);
+.book-row-card:hover {
+  transform: translateX(8px);
+  border-color: var(--primary);
+  box-shadow: 0 12px 32px rgba(0, 209, 91, 0.08);
 }
 
-.retry-btn:active{
-  transform: translateY(0);
-  box-shadow: 0 18px 40px rgba(0,0,0,0.28);
+.book-cover-wrap {
+  position: relative;
+  flex-shrink: 0;
+}
+.book-thumb {
+  width: 120px;
+  height: 170px;
+  border-radius: 12px;
+  object-fit: cover;
+  box-shadow: 4px 8px 16px rgba(0,0,0,0.1);
+}
+.book-thumb-ph {
+  width: 120px;
+  height: 170px;
+  background: #f2f4f6;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-light);
+}
+.rank-badge {
+  position: absolute;
+  top: -8px;
+  left: -8px;
+  width: 32px;
+  height: 32px;
+  background: var(--primary);
+  color: white;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 1rem;
+  box-shadow: 0 4px 8px rgba(0, 209, 91, 0.3);
+}
+
+.book-details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.type-tag {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 6px;
+  margin-bottom: 8px;
+}
+.type-tag.destiny {
+  color: var(--primary);
+  background: rgba(0, 209, 91, 0.1);
+}
+.type-tag.challenge {
+  color: #a855f7; /* 보라색 계열로 구분 */
+  background: rgba(168, 85, 247, 0.1);
+}
+
+.display-title {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin-bottom: 4px;
+  line-height: 1.3;
+}
+.author-label {
+  font-size: 1rem;
+  color: var(--text-light);
+  font-weight: 500;
+  margin-bottom: 16px;
+}
+
+/* AI 인사이트 블록 */
+.ai-insight {
+  background: #f9fafb;
+  padding: 16px;
+  border-radius: 16px;
+  border-left: 4px solid var(--primary);
+}
+.insight-label {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: var(--primary);
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.insight-content {
+  font-size: 0.9rem;
+  color: var(--text-grey);
+  line-height: 1.6;
+  margin: 0;
+  font-weight: 500;
+}
+
+.actions {
+  display: flex;
+  justify-content: center;
+}
+
+.retry-btn {
+  padding: 16px 48px;
+  border-radius: 16px;
+  border: none;
+  background: #f2f4f6;
+  color: var(--text-grey);
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.retry-btn:hover {
+  background: #e5e8eb;
+  color: var(--text-main);
+}
+
+@media (max-width: 600px) {
+  .book-row-card {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .display-title {
+    font-size: 1.2rem;
+  }
+  .ai-insight {
+    text-align: left;
+  }
 }
 
 </style>

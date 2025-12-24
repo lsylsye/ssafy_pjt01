@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import { getBestsellers } from "@/api/books.api";
+import { getReviews } from "@/api/review";
 
 function normalizeBooks(data) {
   const list = Array.isArray(data) ? data : (data?.results || data?.items || []);
@@ -18,6 +19,8 @@ export const useHomeStore = defineStore("home", {
     bestsellers: [],
     loadingBestsellers: false,
     bestsellersError: "",
+    latestReviews: [],
+    loadingReviews: false,
   }),
 
   actions: {
@@ -34,5 +37,30 @@ export const useHomeStore = defineStore("home", {
         this.loadingBestsellers = false;
       }
     },
+
+    async fetchLatestReviews() {
+      this.loadingReviews = true;
+      try {
+        const res = await getReviews();
+        // 최신순 정렬은 백엔드에서 해줄 수도 있지만 안전하게 체크
+        const data = Array.isArray(res.data) ? res.data : [];
+        // 날짜 내림차순 정렬 (최신순)
+        const sorted = data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+        this.latestReviews = sorted.slice(0, 6).map(r => ({
+          id: r.id,
+          user: r.user_nickname || "익명",
+          time: r.created_at, // ReviewGrid에서 변환 필요
+          bookTitle: r.book_title || "제목 없음",
+          content: r.content || "",
+          rating: r.rating,
+          user_profile_image: r.user_profile_image,
+        }));
+      } catch (e) {
+        console.error(e);
+        this.latestReviews = [];
+      } finally {
+        this.loadingReviews = false;
+      }
+    }
   },
 });

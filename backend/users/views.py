@@ -1,3 +1,4 @@
+from django.utils import timezone
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -7,6 +8,7 @@ from django.contrib.auth import get_user_model
 
 from .models import Follow
 from .serializers import SimpleUserSerializer
+from reviews.models import Review
 
 User = get_user_model()
 
@@ -65,6 +67,14 @@ def profile_detail(request, user_id):
 
     followers_count = Follow.objects.filter(to_user=target).count()
     following_count = Follow.objects.filter(from_user=target).count()
+    reviews_count = Review.objects.filter(user=target).count()
+
+    now = timezone.now()
+    reviews_this_month_count = Review.objects.filter(
+        user=target, 
+        created_at__year=now.year, 
+        created_at__month=now.month
+    ).count()
 
     is_following = False
     if request.user.is_authenticated:
@@ -79,5 +89,7 @@ def profile_detail(request, user_id):
         "profile_image": target.profile_image.url if getattr(target, "profile_image", None) else "",
         "followers_count": followers_count,
         "following_count": following_count,
+        "reviews_count": reviews_count,
+        "reviews_this_month_count": reviews_this_month_count,
         "is_following": is_following,
     })

@@ -10,7 +10,15 @@ const routes = [
   { path: "/taste", component: () => import("@/views/TasteView.vue") },
   { path: "/taste/test", component: () => import("@/views/TasteTestView.vue") },
   { path: "/taste/result", component: () => import("@/views/TasteResultView.vue") },
-  { path: "/community", component: () => import("@/views/CommunityView.vue"),}
+  { path: "/community/free/write", component: () => import("@/views/CommunityWriteView.vue"), meta: { hideHeader: true } },
+  { path: "/community/free/:id", component: () => import("@/views/CommunityDetailView.vue") },
+  { path: "/community", component: () => import("@/views/CommunityView.vue"), },
+  { path: "/profile/:id", component: () => import("@/views/ProfileView.vue") },
+  { path: "/review/write", component: () => import("@/views/ReviewWriteView.vue") },
+  { path: "/bestsellers", component: () => import("@/views/BestsellerListView.vue") },
+  { path: "/reviews", component: () => import("@/views/AllReviewsView.vue") },
+  { path: "/mylib", component: () => import("@/views/MyLibraryView.vue") },
+  { path: "/mypage", component: () => import("@/views/MyLibraryView.vue") }
 ];
 
 const router = createRouter({

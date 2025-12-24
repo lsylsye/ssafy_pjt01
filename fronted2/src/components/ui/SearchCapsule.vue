@@ -22,14 +22,12 @@
       <div v-if="books.searchLoading" class="state">검색 중…</div>
       <div v-else-if="books.searchError" class="state error">{{ books.searchError }}</div>
 
-      <template v-else-if="books.searchResults.length">
+      <template v-else-if="filteredBooks.length">
         <button
-          v-for="b in books.searchResults.slice(0, 8)"
-          :key="b.isbn13 || b.title"
+          v-for="b in filteredBooks.slice(0, 8)"
+          :key="b.isbn13"
           class="item"
           type="button"
-          :disabled="!b.isbn13"
-          :class="{ disabled: !b.isbn13 }"
           @click="pick(b)"
         >
           <div class="thumb">
@@ -44,7 +42,6 @@
               <span class="p">{{ b.publisher || "-" }}</span>
               <span class="dot">·</span>
               <span class="d">{{ b.pub_date || "-" }}</span>
-              <span v-if="!b.isbn13" class="badge">ISBN 없음</span>
             </div>
           </div>
 
@@ -77,12 +74,17 @@ const wrapRef = ref(null);
 
 const trimmed = computed(() => (q.value || "").trim());
 
+// ✅ ISBN이 있는 결과만 필터링
+const filteredBooks = computed(() => {
+  return (books.searchResults || []).filter(b => b.isbn13);
+});
+
 // ✅ 드롭다운: open 상태에서 로딩/에러/결과 있을 때 보여줌
 const showDropdown = computed(() => {
   if (!open.value) return false;
   if (books.searchLoading) return true;
   if (books.searchError) return true;
-  return !!(books.searchResults && books.searchResults.length);
+  return !!(filteredBooks.value.length);
 });
 
 let timer = null;

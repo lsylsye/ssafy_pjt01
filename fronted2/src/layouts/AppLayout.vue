@@ -4,7 +4,7 @@
     <div class="blob blob-2"></div>
   </div>
 
-  <AppNavbar />
+  <AppNavbar v-if="!route.meta.hideHeader" />
 
   <main class="page">
     <slot />
@@ -12,7 +12,10 @@
 </template>
 
 <script setup>
+import { useRoute } from "vue-router";
 import AppNavbar from "@/components/common/AppNavbar.vue";
+
+const route = useRoute();
 </script>
 
 <style scoped>
@@ -41,5 +44,8 @@ import AppNavbar from "@/components/common/AppNavbar.vue";
 }
 @keyframes move{from{transform:translate(0,0);}to{transform:translate(50px,50px);}}
 
-.page{ padding-bottom: 80px; }
+.page{ 
+  min-height: 100vh;
+  padding-bottom: 80px; 
+}
 </style>

@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "community",
     "grass",
     "ai_curator",
+    "reviews",
     
     # 기본설정
     'django.contrib.admin',
@@ -79,6 +80,7 @@ REST_FRAMEWORK = {
     # 1) 인증 방식
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
     ],
     # 2) 권한
     'DEFAULT_PERMISSION_CLASSES': [
@@ -98,7 +100,7 @@ REST_AUTH = {
 ACCOUNT_EMAIL_VERIFICATION = 'none' # 이메일 인증 안함
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
+    "ACCESS_TOKEN_LIFETIME": timedelta(hours=3),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
 }
 

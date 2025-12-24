@@ -10,6 +10,7 @@ from rest_framework.views import APIView
 from .models import Book, Bookmark
 from .serializers import BookDetailSerializer, AladinListItemSerializer, BookSimpleSerializer
 from .services import get_or_create_book_by_isbn13, get_cached_aladin_list
+from .services.aladin import _to_cover500
 from .services.recommendations import recommend_bookmark_based_aladin, recommend_follow_based
 
 
@@ -66,7 +67,7 @@ def book_search(request):
             "publisher": item.get("publisher"),
             "pub_date": item.get("pubDate"),
             "isbn13": item.get("isbn13"),
-            "cover": item.get("cover"),
+            "cover": _to_cover500(item.get("cover")),
             "sales_point": item.get("salesPoint"),
             "customer_review_rank": item.get("customerReviewRank"),
         })

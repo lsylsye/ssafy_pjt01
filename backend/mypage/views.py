@@ -1,4 +1,4 @@
-# backend/mypage/views.py
+from django.utils import timezone
 from rest_framework.decorators import api_view, permission_classes, parser_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -9,13 +9,22 @@ from .serializers import MyBookmarkSerializer, MyProfileUpdateSerializer
 
 from users.models import Follow
 from grass.services import get_level_payload
-from community.models import Post, Review, Comment
+from community.models import Post, Comment
+from reviews.models import Review
 from django.contrib.contenttypes.models import ContentType
 
 
 def _build_profile_response(request, user):
     followers_count = Follow.objects.filter(to_user=user).count()
     following_count = Follow.objects.filter(from_user=user).count()
+    reviews_count = Review.objects.filter(user=user).count()
+    
+    now = timezone.now()
+    reviews_this_month_count = Review.objects.filter(
+        user=user, 
+        created_at__year=now.year, 
+        created_at__month=now.month
+    ).count()
 
     profile_image_url = ""
     if getattr(user, "profile_image", None) and user.profile_image:
@@ -36,6 +45,8 @@ def _build_profile_response(request, user):
         "profile_image": profile_image_url,
         "followers_count": followers_count,
         "following_count": following_count,
+        "reviews_count": reviews_count,
+        "reviews_this_month_count": reviews_this_month_count,
         "exp_total": level_payload["exp_total"],
         "level": level_payload["level"],
         "level_progress": level_payload["level_progress"],
@@ -84,43 +95,47 @@ def my_bookmarks(request):
 @permission_classes([IsAuthenticated])
 def my_posts(request):
     me = request.user
-
-    posts = (
-        Post.objects.filter(user=me)
-        .select_related("board__community")
-        .order_by("-created_at")
-    )
-    reviews = (
-        Review.objects.filter(user=me)
-        .select_related("board__community")
-        .order_by("-created_at")
-    )
+    post_type = request.query_params.get("type", "").upper()
 
     items = []
 
-    for p in posts:
-        country = (p.board.community.country or "").lower()
-        items.append({
-            "type": "FREE",
-            "type_name": "자유",
-            "title": p.title,
-            "created_at": p.created_at,
-            "country": country,
-            "board_slug": "free",
-            "detail_url": f"/api/community/{country}/free/{p.id}/",
-        })
+    # 1. 자유게시판 포스트
+    if not post_type or post_type == "FREE":
+        posts = (
+            Post.objects.filter(user=me)
+            .select_related("board")
+            .order_by("-created_at")
+        )
+        for p in posts:
+            country = "kr"
+            items.append({
+                "type": "FREE",
+                "type_name": "자유",
+                "title": p.title,
+                "created_at": p.created_at,
+                "country": country,
+                "board_slug": "free",
+                "detail_url": f"/api/community/free/{p.id}/",
+            })
 
-    for r in reviews:
-        country = (r.board.community.country or "").lower()
-        items.append({
-            "type": "REVIEW",
-            "type_name": "리뷰",
-            "title": r.book_title,
-            "created_at": r.created_at,
-            "country": country,
-            "board_slug": "review",
-            "detail_url": f"/api/community/{country}/review/{r.id}/",
-        })
+    # 2. 리뷰(기록)
+    if not post_type or post_type == "REVIEW":
+        reviews = (
+            Review.objects.filter(user=me)
+            .select_related("board")
+            .order_by("-created_at")
+        )
+        for r in reviews:
+            country = "kr"
+            items.append({
+                "type": "REVIEW",
+                "type_name": "리뷰",
+                "title": r.book_title,
+                "created_at": r.created_at,
+                "country": country,
+                "board_slug": "review",
+                "detail_url": f"/api/review/{r.id}/",
+            })
 
     items.sort(key=lambda x: x["created_at"], reverse=True)
     return Response(items)
@@ -145,10 +160,10 @@ def my_comments(request):
     review_ids = [c.object_id for c in qs if c.content_type_id == review_ct.id]
 
     post_map = {
-        p.id: p for p in Post.objects.filter(id__in=post_ids).select_related("board__community")
+        p.id: p for p in Post.objects.filter(id__in=post_ids).select_related("board")
     }
     review_map = {
-        r.id: r for r in Review.objects.filter(id__in=review_ids).select_related("board__community")
+        r.id: r for r in Review.objects.filter(id__in=review_ids).select_related("board")
     }
 
     items = []
@@ -169,7 +184,7 @@ def my_comments(request):
                 })
                 continue
 
-            country = (p.board.community.country or "").lower()
+            country = "kr"
             board_slug = p.board.slug
             items.append({
                 "comment_id": c.id,
@@ -199,7 +214,7 @@ def my_comments(request):
                 })
                 continue
 
-            country = (r.board.community.country or "").lower()
+            country = "kr"
             board_slug = r.board.slug
             items.append({
                 "comment_id": c.id,
