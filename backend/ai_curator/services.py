@@ -1,4 +1,5 @@
-# ai_curator/services.py
+# backend/ai_curator/services.py
+
 import requests
 import json
 import re
@@ -10,6 +11,7 @@ client = OpenAI(
     api_key=settings.OPENAI_API_KEY,
     base_url="https://gms.ssafy.io/gmsapi/api.openai.com/v1",
 )
+
 
 def get_aladin_data_complete(isbn13: str):
     ttb_key = getattr(settings, "ALADIN_TTB_KEY", None)
@@ -42,10 +44,8 @@ def get_aladin_data_complete(isbn13: str):
         description = (item.findtext("{*}description") or "").strip()
 
         reviews = []
-        # reviewList/review/title 구조도 네임스페이스 포함
         for r in item.findall(".//{*}review"):
             t = (r.findtext("{*}title") or "").strip()
-            # CDATA 그대로 들어오므로 간단 정리
             t = t.replace("[100자평]", "").replace("[마이리뷰]", "").strip()
             if t:
                 reviews.append(t)
@@ -128,6 +128,23 @@ def analyze_book_complete(book_data):
         return None
 
 
+def _clean_author_for_wiki(author_name: str) -> str:
+    if not author_name:
+        return ""
+
+    s = str(author_name).strip()
+
+    # "댄 브라운 (지은이), 양선아 (옮긴이)" → "댄 브라운 (지은이)"
+    if "," in s:
+        s = s.split(",", 1)[0].strip()
+
+    # "댄 브라운 (지은이)" → "댄 브라운"
+    if "(" in s:
+        s = s.split("(", 1)[0].strip()
+
+    return s
+
+
 def get_wikipedia_author_info(author_name: str):
     """
     위키 소개글/썸네일 + (추가) 위키 페이지 URL까지 반환
@@ -135,7 +152,9 @@ def get_wikipedia_author_info(author_name: str):
     if not author_name:
         return None, None, None
 
-    clean_name = re.sub(r"\(.*?\)", "", author_name).strip()
+    clean_name = _clean_author_for_wiki(author_name)
+    if not clean_name:
+        return None, None, None
 
     url = "https://ko.wikipedia.org/w/api.php"
     params = {
