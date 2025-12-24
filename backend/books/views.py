@@ -4,7 +4,7 @@ from django.utils import timezone
 from django.conf import settings
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .models import Book, Bookmark
@@ -15,6 +15,7 @@ from .services.recommendations import recommend_bookmark_based_aladin, recommend
 
 # 베스트셀러 TOP10
 @api_view(["GET"])
+@permission_classes([AllowAny]) 
 def bestseller_list(request):
     qs = get_cached_aladin_list(query_type="Bestseller", limit=10, ttl_hours=24)
     return Response(AladinListItemSerializer(qs, many=True).data)
