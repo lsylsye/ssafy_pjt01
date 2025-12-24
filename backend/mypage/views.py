@@ -1,26 +1,22 @@
-# mypage/views.py
-from rest_framework.decorators import api_view, permission_classes
+# backend/mypage/views.py
+from rest_framework.decorators import api_view, permission_classes, parser_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 
 from books.models import Bookmark
-from .serializers import MyBookmarkSerializer
+from .serializers import MyBookmarkSerializer, MyProfileUpdateSerializer
 
 from users.models import Follow
 from grass.services import get_level_payload
 from community.models import Post, Review, Comment
 from django.contrib.contenttypes.models import ContentType
 
-# 내 정보 조회
-@api_view(["GET"])
-@permission_classes([IsAuthenticated])
-def my_profile(request):
-    user = request.user
 
+def _build_profile_response(request, user):
     followers_count = Follow.objects.filter(to_user=user).count()
     following_count = Follow.objects.filter(from_user=user).count()
 
-    # 프로필 이미지 변환
     profile_image_url = ""
     if getattr(user, "profile_image", None) and user.profile_image:
         try:
@@ -30,7 +26,7 @@ def my_profile(request):
 
     level_payload = get_level_payload(user)
 
-    return Response({
+    return {
         "id": user.id,
         "username": user.username,
         "email": user.email,
@@ -43,7 +39,30 @@ def my_profile(request):
         "exp_total": level_payload["exp_total"],
         "level": level_payload["level"],
         "level_progress": level_payload["level_progress"],
-    })
+    }
+
+
+# 내 정보 조회 + 수정(닉네임/선호국가/선호장르/프로필이미지)
+@api_view(["GET", "PATCH"])
+@permission_classes([IsAuthenticated])
+@parser_classes([MultiPartParser, FormParser, JSONParser])
+def my_profile(request):
+    user = request.user
+
+    if request.method == "PATCH":
+        serializer = MyProfileUpdateSerializer(
+            user,
+            data=request.data,
+            partial=True,
+            context={"request": request},
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        # 저장 후 최신 값 다시 로드(이미지 url 등)
+        user.refresh_from_db()
+
+    return Response(_build_profile_response(request, user))
 
 
 # 내 북마크 조회
@@ -107,7 +126,6 @@ def my_posts(request):
     return Response(items)
 
 
-
 # 내가 작성한 댓글 조회
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
@@ -135,11 +153,8 @@ def my_comments(request):
 
     items = []
     for c in qs:
-        # 1) 자유글 댓글
         if c.content_type_id == post_ct.id:
             p = post_map.get(c.object_id)
-
-            # ✅ 타겟 글 삭제됨: 숨기지 말고 표시
             if not p:
                 items.append({
                     "comment_id": c.id,
@@ -168,11 +183,8 @@ def my_comments(request):
                 "detail_url": f"/community/{country}/{board_slug}/{p.id}",
             })
 
-        # 2) 리뷰 댓글
         elif c.content_type_id == review_ct.id:
             r = review_map.get(c.object_id)
-
-            # ✅ 타겟 리뷰 삭제됨: 숨기지 말고 표시
             if not r:
                 items.append({
                     "comment_id": c.id,
