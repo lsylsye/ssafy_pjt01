@@ -15,7 +15,7 @@ def _author_for_search(raw: str) -> str:
         return ""
     s = str(raw).strip()
 
-    # "황석영 (지은이), 홍길동 (옮긴이)" 같은 경우 → 첫 덩어리만.
+    # "황석영 (지은이), 홍길동 (옮긴이)" 같은 경우 → 첫 덩어리만
     if "," in s:
         s = s.split(",", 1)[0].strip()
 
