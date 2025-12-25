@@ -63,9 +63,6 @@ def get_aladin_data_complete(isbn13: str):
 
 
 def analyze_book_complete(book_data):
-    """
-    ✅ 프롬프트는 건드리지 않음 (요청대로 그대로 유지)
-    """
     if not book_data:
         return None
 
