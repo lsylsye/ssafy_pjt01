@@ -59,17 +59,27 @@ def book_search(request):
     res.raise_for_status()
     data = res.json()
     
+    bookmarked_isbns = set()
+    if request.user.is_authenticated:
+        isbns = [item.get("isbn13") for item in data.get("item", []) if item.get("isbn13")]
+        bookmarked_isbns = set(
+            Bookmark.objects.filter(user=request.user, book__isbn13__in=isbns)
+            .values_list("book__isbn13", flat=True)
+        )
+
     items = []
     for item in data.get("item", []):
+        isbn13 = item.get("isbn13")
         items.append({
             "title": item.get("title"),
             "author": item.get("author"),
             "publisher": item.get("publisher"),
             "pub_date": item.get("pubDate"),
-            "isbn13": item.get("isbn13"),
+            "isbn13": isbn13,
             "cover": _to_cover500(item.get("cover")),
             "sales_point": item.get("salesPoint"),
             "customer_review_rank": item.get("customerReviewRank"),
+            "is_bookmarked": isbn13 in bookmarked_isbns,
         })
 
     return Response({

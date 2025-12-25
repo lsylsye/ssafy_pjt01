@@ -93,54 +93,30 @@ def my_bookmarks(request):
     return Response(serializer.data)
 
 
-# 내가 작성한 글 조회
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def my_posts(request):
     me = request.user
-    post_type = request.query_params.get("type", "").upper()
-
+    
+    # 오직 자유게시판 포스트만 조회 (리뷰는 내 서재에서 관리하므로 제외)
+    posts = (
+        Post.objects.filter(user=me)
+        .select_related("board")
+        .order_by("-created_at")
+    )
+    
     items = []
-
-    # 1. 자유게시판 포스트
-    if not post_type or post_type == "FREE":
-        posts = (
-            Post.objects.filter(user=me)
-            .select_related("board")
-            .order_by("-created_at")
-        )
-        for p in posts:
-            country = "kr"
-            items.append({
-                "type": "FREE",
-                "type_name": "자유",
-                "title": p.title,
-                "created_at": p.created_at,
-                "country": country,
-                "board_slug": "free",
-                "detail_url": f"/api/community/free/{p.id}/",
-            })
-
-    # 2. 리뷰(기록)
-    if not post_type or post_type == "REVIEW":
-        reviews = (
-            Review.objects.filter(user=me)
-            .select_related("board")
-            .order_by("-created_at")
-        )
-        for r in reviews:
-            country = "kr"
-            items.append({
-                "type": "REVIEW",
-                "type_name": "리뷰",
-                "title": r.book_title,
-                "created_at": r.created_at,
-                "country": country,
-                "board_slug": "review",
-                "detail_url": f"/api/review/{r.id}/",
-            })
-
-    items.sort(key=lambda x: x["created_at"], reverse=True)
+    for p in posts:
+        items.append({
+            "id": p.id,
+            "type": "FREE",
+            "type_name": "자유",
+            "title": p.title,
+            "created_at": p.created_at,
+            "board_slug": "free",
+            "detail_url": f"/community/free/{p.id}",
+        })
+    
     return Response(items)
 
 
@@ -198,7 +174,7 @@ def my_comments(request):
                 "post_title": p.title,
                 "country": country,
                 "board_slug": board_slug,
-                "detail_url": f"/community/{country}/{board_slug}/{p.id}",
+                "detail_url": f"/community/free/{p.id}",
             })
 
         elif c.content_type_id == review_ct.id:
@@ -227,10 +203,12 @@ def my_comments(request):
                 "post_id": r.id,
                 "post_title": r.book_title,
                 "country": country,
-                "board_slug": board_slug,
-                "detail_url": f"/community/{country}/{board_slug}/{r.id}",
+                "board_slug": r.board.slug,
+                "detail_url": f"/reviews/{r.id}",
             })
 
+    # 최신순 정렬
+    items.sort(key=lambda x: x["created_at"], reverse=True)
     return Response(items)
 
 

@@ -1,17 +1,15 @@
 // src/api/books.js
 import api from "@/api/axios";
 
-// (기존)
-export const getNewSpecial = () => {
-  return api.get("/api/books/new/special/", { auth: false });
-};
+export const getBookDetail = (isbn13) =>
+  api.get(`/books/${isbn13}/`, { auth: false });
 
-// (기존 추천1)
-export const recommendBookmarkAuthor = () => {
-  return api.get("/api/books/recommend/bookmark/");
-};
+export const getAiDetail = (isbn13) =>
+  api.get(`/ai_curator/${isbn13}/`, { auth: false });
 
-// ✅ 추천2(팔로잉버전)
-export const recommendFollowBased = () => {
-  return api.get("/api/books/recommend/follow/");
-};
+export const getBookReviews = (isbn13) =>
+  api.get(`/books/${isbn13}/reviews/`, { auth: false });
+
+export const toggleBookmark = (isbn13) =>
+  api.post(`/books/${isbn13}/bookmark/`);
+

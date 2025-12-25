@@ -250,3 +250,19 @@ def my_review_list(request):
         data.append(row)
 
     return Response(data)
+
+
+# 8) 오늘 내가 쓴 리뷰 목록
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def today_reviews(request):
+    from django.utils import timezone
+    today = timezone.localdate()
+    
+    qs = Review.objects.filter(
+        user=request.user, 
+        created_at__date=today
+    ).order_by("-id")
+    
+    data = ReviewListSerializer(qs, many=True, context={"request": request, "liked_ids": set()}).data
+    return Response(data)

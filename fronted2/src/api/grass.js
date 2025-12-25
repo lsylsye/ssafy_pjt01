@@ -7,3 +7,7 @@ export const getMyGrass = (params = {}) => {
 export const getMyLevel = () => {
     return api.get("grass/level/me/");
 };
+
+export const syncTodayGrass = () => {
+    return api.post("grass/sync-today/");
+};

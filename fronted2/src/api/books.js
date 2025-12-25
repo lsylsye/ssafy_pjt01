@@ -10,3 +10,6 @@ export const getAiDetail = (isbn13) =>
 export const getBookReviews = (isbn13) =>
   api.get(`/books/${isbn13}/reviews/`, { auth: false });
 
+export const toggleBookmark = (isbn13) =>
+  api.post(`/books/${isbn13}/bookmark/`);
+

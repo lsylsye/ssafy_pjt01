@@ -1,17 +1,28 @@
-import './assets/main.css'
-import { createApp } from 'vue'
-import { createPinia } from 'pinia'
+// src/main.js
+import { createApp } from "vue";
+import { createPinia } from "pinia";
+import "./styles/main.css";
+import App from "./App.vue";
+import router from "./router";
+import api from "@/api/axios";
+import { useAuthStore } from "@/stores/auth.store";
 
-import App from './App.vue'
-import router from './router'
+const app = createApp(App);
+const pinia = createPinia();
 
-import VueCalendarHeatmap from "vue3-calendar-heatmap";
-import "vue3-calendar-heatmap/dist/style.css";
+app.use(pinia);
+app.use(router);
 
-const app = createApp(App)
+// Axios 요청 인터셉터 설정: 인증 토큰 자동 첨부
+api.interceptors.request.use((config) => {
+  const useAuth = config.auth !== false;
+  if (!useAuth) return config;
 
-app.use(VueCalendarHeatmap);
-app.use(createPinia())
-app.use(router)
+  const auth = useAuthStore(pinia);
+  const token = auth.access;
 
-app.mount('#app')
+  if (token) config.headers.Authorization = `Bearer ${token}`;
+  return config;
+});
+
+app.mount("#app");

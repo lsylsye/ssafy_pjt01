@@ -42,13 +42,13 @@ def level_from_exp(exp_total: int) -> int:
 def grass_bucket(points: int) -> str:
     if points <= 0:
         return "0"
+    if points <= 1:
+        return "1"
     if points <= 2:
-        return "1-2"
-    if points <= 5:
-        return "3-5"
-    if points <= 9:
-        return "6-9"
-    return "10+"
+        return "2"
+    if points <= 3:
+        return "3"
+    return "3+"
 
 
 @transaction.atomic
@@ -62,17 +62,19 @@ def add_points(user, action: str, when=None):
     d = when.date() if hasattr(when, "date") else when
     pts = POINTS[action]
 
-    # 1) 일일 잔디 포인트 업데이트
-    obj, _ = GrassDaily.objects.select_for_update().get_or_create(user=user, date=d)
-    obj.points = (obj.points or 0) + pts
-    obj.save(update_fields=["points", "updated_at"])
-
-    # 2) 유저 누적 경험치 업데이트 (가장 확실한 save 방식)
+    # 1) 유저 누적 경험치 업데이트 (모든 활동 포함)
     if user.is_authenticated:
         user.exp_total = (user.exp_total or 0) + pts
         user.save(update_fields=["exp_total"])
 
-    return obj
+    # 2) 일일 잔디 포인트 업데이트 (오직 리뷰만 반영, 1개당 1점)
+    if action == "REVIEW":
+        obj, _ = GrassDaily.objects.select_for_update().get_or_create(user=user, date=d)
+        obj.points = (obj.points or 0) + 1
+        obj.save(update_fields=["points", "updated_at"])
+        return obj
+
+    return None
 
 
 def get_grass_range(user, days=365, end_date=None):
@@ -93,12 +95,13 @@ def get_grass_range(user, days=365, end_date=None):
     cur = start
     while cur <= end_date:
         raw = int(m.get(cur, 0) or 0)
-        capped = min(raw, 10)
+        # 1개만 써도 이미 10000점이므로, 굳이 여기서 cap하지 않고 
+        # 프론트엔드에서 넘어온 cap 값을 따르도록 count에 raw를 담아 보냄
         out.append({
             "date": cur.isoformat(),
-            "count": capped,          # ✅ vue3-calendar-heatmap용
-            "points": raw,            # (옵션) 원본
-            "bucket": grass_bucket(capped),
+            "count": raw,             # ✅ vue3-calendar-heatmap용
+            "points": raw,
+            "bucket": grass_bucket(raw),
         })
         cur += timedelta(days=1)
 

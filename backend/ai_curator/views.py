@@ -45,10 +45,10 @@ def recommend_book(request):
             
             user_summary = ", ".join(user_traits)
 
-            # 2. DB에서 책 가져오기 (랜덤 60권 샘플링하여 토큰 절약 및 다양성 확보)
+            # 2. DB에서 책 가져오기 (랜덤 80권 샘플링하여 토큰 절약 및 다양성 확보)
             all_books = list(Book.objects.all())
-            if len(all_books) > 60:
-                books = random.sample(all_books, 60)
+            if len(all_books) > 80:
+                books = random.sample(all_books, 80)
             else:
                 books = all_books
 
@@ -58,8 +58,8 @@ def recommend_book(request):
                 # 카테고리 정보도 주면 AI가 판단하기 더 좋음
                 book_context += f"[ID:{book.id}] {book.title} (카테고리: {book.category_name}) / 설명: {book.description[:80]}...\n"
 
-            # 4. 프롬프트 작성 (2권 추천 요청)
-            system_prompt = "당신은 사용자의 성향을 완벽하게 분석해주는 전문 북 큐레이터입니다."
+            # 4. 프롬프트 작성 (5권 추천 요청 및 나무 추천 추가)
+            system_prompt = "당신은 사용자의 성향을 완벽하게 분석해주는 전문 북 큐레이터이자 심리 분석가입니다."
             user_prompt = f"""
             [사용자 성향]
             {user_summary}
@@ -68,25 +68,37 @@ def recommend_book(request):
             {book_context}
 
             [요청사항]
-            1. 사용자의 성향을 분석하여 [도서 목록] 중 가장 어울리는 책 **2권**을 추천해주세요.
+            1. 사용자의 성향을 분석하여 그와 어울리는 '나만의 나무'를 하나 선정해주세요.
+               - 나무 이름, 짧은 슬로건, 그 나무가 사용자와 왜 어울리는지에 대한 상세한 설명.
+               - 그 나무를 상징하는 색상들을 추출하세요:
+                 - "point_color": 텍스트와 배지에 사용할 **채도가 높고 진한** 대표 색상 (예: 벚꽃-진분홍, 은행-진노랑, 소나무-진녹색)
+                 - "bg_colors": 배경에 사용할 **매우 연하고 부드러운** 파스텔 톤 색상 2가지 (예: 벚꽃-연분홍/화이트, 은행-연노랑/베이지)
+               - 모든 색상은 Hex Code로 제공하세요.
+            2. 사용자의 성향을 분석하여 [도서 목록] 중 가장 어울리는 책 **5권**을 추천해주세요.
                - 첫 번째 책: 사용자의 취향을 저격하는 **'운명의 책'**
-               - 두 번째 책: 의외의 발견이 될 수 있는 **'새로운 시도'**
-            2. 각 책에 대해 추천하는 이유를 2문장 내외로 매력적으로 작성하세요.
-            3. 결과는 반드시 아래 JSON 포맷을 준수하여 출력하세요.
+               - 나머지 4권: 사용자의 취향을 학장해주거나 새로운 즐거움을 줄 수 있는 책들
+            3. 각 책에 대해 추천하는 이유를 2문장 내외로 매력적으로 작성하세요.
+            4. 결과는 반드시 아래 JSON 포맷을 준수하여 출력하세요.
 
             [JSON 출력 예시]
             {{
+                "tree": {{
+                    "name": "버드나무",
+                    "tagline": "부드럽게 흔들리지만 절대 꺾이지 않는 마음",
+                    "description": "당신은 주변의 변화에 유연하게 대처하면서도 자신만의 결을 잃지 않는 사람입니다. 이런 당신에게는...",
+                    "point_color": "#059669",
+                    "bg_colors": ["#f0fdf4", "#dcfce7"]
+                }},
                 "recommendations": [
                     {{
                         "book_id": 10,
                         "type": "운명의 책",
                         "reason": "당신의 논리적인 성향에 딱 맞는 과학적 통찰이 담겨 있습니다."
                     }},
-                    {{
-                        "book_id": 45,
-                        "type": "새로운 시도",
-                        "reason": "가끔은 감성적인 소설로 머리를 식혀보는 건 어떨까요?"
-                    }}
+                    {{ "book_id": 45, "type": "감성의 숲", "reason": "..." }},
+                    {{ "book_id": 12, "type": "지식의 샘", "reason": "..." }},
+                    {{ "book_id": 7, "type": "모험의 시작", "reason": "..." }},
+                    {{ "book_id": 22, "type": "새로운 시도", "reason": "..." }}
                 ]
             }}
             """
@@ -106,6 +118,7 @@ def recommend_book(request):
             ai_content = response.choices[0].message.content
             result_data = json.loads(ai_content)
             recommendations = result_data.get('recommendations', [])
+            tree_info = result_data.get('tree', {})
 
             response_books = []
             for item in recommendations:
@@ -117,18 +130,19 @@ def recommend_book(request):
                         "id": book_obj.id,
                         "title": book_obj.title,
                         "author": book_obj.author,
-                        "cover": book_obj.cover,       # 표지 URL
-                        "isbn": book_obj.isbn13,       # 상세페이지 이동용
+                        "cover": book_obj.cover,       
+                        "isbn": book_obj.isbn13,       
                         "description": book_obj.description,
-                        "type": item.get('type'),      # 추천 타입 (운명의 책/새로운 시도)
-                        "reason": item.get('reason')   # AI 추천사
+                        "type": item.get('type'),      
+                        "reason": item.get('reason')   
                     })
                 except Book.DoesNotExist:
                     continue
 
             return JsonResponse({
-                "analysis": user_summary,  # 사용자 분석 키워드
-                "books": response_books    # 추천 책 2권 리스트
+                "analysis": user_summary,  
+                "tree": tree_info,         # 나무 정보 추가
+                "books": response_books    # 추천 책 5권 리스트
             })
 
         except Exception as e:

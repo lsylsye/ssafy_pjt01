@@ -4,30 +4,30 @@
     <div class="inner">
       <!-- Left -->
       <div class="left">
-        <RouterLink class="logo" to="/">
+        <RouterLink class="logo" :to="{ name: 'home' }">
           <span class="logo-text">잔디북</span>
         </RouterLink>
 
         <nav class="gnb">
-          <RouterLink class="gnb-link" to="/taste">취향 분석</RouterLink>
-          <RouterLink class="gnb-link" to="/community">커뮤니티</RouterLink>
-          <RouterLink class="gnb-link" to="/travel">문학 여행</RouterLink>
-          <RouterLink class="gnb-link" to="/mylib">내 서재</RouterLink>
+          <RouterLink class="gnb-link" :to="{ name: 'taste' }">취향 분석</RouterLink>
+          <RouterLink class="gnb-link" :to="{ name: 'community' }">커뮤니티</RouterLink>
+          <RouterLink class="gnb-link" :to="{ name: 'travel' }">문학 여행</RouterLink>
+          <RouterLink class="gnb-link" :to="{ name: 'mylibrary' }">내 서재</RouterLink>
         </nav>
       </div>
 
       <!-- Right -->
       <div class="right">
         <SearchCapsule />
-        <RouterLink v-if="isLoggedIn" to="/review/write" class="record-btn">
-          <Plus :size="18" />
-          기록하기
+        <RouterLink v-if="isLoggedIn" :to="{ name: 'review-write' }" class="record-btn">
+          <PenLine :size="18" />
+          기록 심기
         </RouterLink>
 
         <!-- 로그인 전 -->
         <template v-if="!isLoggedIn">
-          <RouterLink class="ghost" to="/login">로그인</RouterLink>
-          <RouterLink class="primary" to="/signup">회원가입</RouterLink>
+          <RouterLink class="ghost" :to="{ name: 'login' }">로그인</RouterLink>
+          <RouterLink class="primary" :to="{ name: 'signup' }">회원가입</RouterLink>
         </template>
 
         <!-- 로그인 후 -->
@@ -51,8 +51,8 @@
 
               <div class="divider"></div>
 
-              <RouterLink class="menu-item" to="/mylib" @click="closeMenu">📚 내 서재</RouterLink>
-              <RouterLink class="menu-item" to="/mypage" @click="closeMenu">⚙️ 마이페이지</RouterLink>
+              <RouterLink class="menu-item" :to="{ name: 'mylibrary' }" @click="closeMenu">📚 내 서재</RouterLink>
+              <RouterLink class="menu-item" :to="{ name: 'mypage' }" @click="closeMenu">⚙️ 마이페이지</RouterLink>
 
               <div class="divider"></div>
 
@@ -73,7 +73,7 @@ import { useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/auth.store";      // ✅ Pinia auth 단일 소스
 import { useMypageStore } from "@/stores/mypage.store";  // ✅ level/profile 단일 소스(/api/mypage/me/)
 import SearchCapsule from "@/components/ui/SearchCapsule.vue";
-import { Plus } from "lucide-vue-next";
+import { PenLine } from "lucide-vue-next";
 
 const router = useRouter();
 const auth = useAuthStore();
@@ -87,6 +87,8 @@ const nickname = computed(() => mypage.me?.nickname || auth.me?.nickname || "정
 const level = computed(() => (typeof mypage.me?.level === "number" ? mypage.me.level : 1));
 
 const levelLabel = computed(() => {
+  if (mypage.me?.level_title) return mypage.me.level_title;
+
   const l = level.value;
   if (l <= 1) return "새싹";
   if (l === 2) return "줄기";

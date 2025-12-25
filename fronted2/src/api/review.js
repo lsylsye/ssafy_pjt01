@@ -4,7 +4,12 @@ import api from "@/api/axios";
  * GET /api/review/
  */
 export function getReviews() {
-    return api.get("review/", { auth: false });
+    const token = localStorage.getItem("access_token");
+    const config = {};
+    if (token) {
+        config.headers = { Authorization: `Bearer ${token}` };
+    }
+    return api.get("review/", config);
 }
 
 /**
@@ -19,7 +24,12 @@ export function createReview(payload) {
  * GET /api/review/{review_id}/
  */
 export function getReviewDetail(reviewId) {
-    return api.get(`review/${reviewId}/`, { auth: false });
+    const token = localStorage.getItem("access_token");
+    const config = {};
+    if (token) {
+        config.headers = { Authorization: `Bearer ${token}` };
+    }
+    return api.get(`review/${reviewId}/`, config);
 }
 
 /**
@@ -33,7 +43,12 @@ export function toggleReviewLike(reviewId) {
  * GET /api/review/{review_id}/comments/
  */
 export function getReviewComments(reviewId) {
-    return api.get(`review/${reviewId}/comments/`, { auth: false });
+    const token = localStorage.getItem("access_token");
+    const config = {};
+    if (token) {
+        config.headers = { Authorization: `Bearer ${token}` };
+    }
+    return api.get(`review/${reviewId}/comments/`, config);
 }
 
 /**
@@ -62,4 +77,22 @@ export function getMyReviews() {
  */
 export function getUserReviews(userId) {
     return api.get(`review/user/${userId}/`);
+}
+
+export function getTodayReviews() {
+    return api.get("review/today/");
+}
+
+/**
+ * PATCH /api/review/{review_id}/
+ */
+export function updateReview(reviewId, payload) {
+    return api.patch(`review/${reviewId}/`, payload);
+}
+
+/**
+ * DELETE /api/review/{review_id}/
+ */
+export function deleteReview(reviewId) {
+    return api.delete(`review/${reviewId}/`);
 }

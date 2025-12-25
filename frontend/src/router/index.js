@@ -1,112 +1,55 @@
+// src/router/index.js
 import { createRouter, createWebHistory } from "vue-router";
 
-// ✅ 너 프로젝트 기존 라우트들(경로는 네 프로젝트에 맞게 유지)
-import MainView from "@/views/main/MainView.vue";
-import LoginView from "@/views/auth/LoginView.vue";
-import SignupView from "@/views/auth/SignupView.vue";
-import SearchView from "@/views/books/SearchView.vue";
-import BookDetailView from "@/views/books/BookDetailView.vue";
-import LibraryView from "@/views/library/LibraryView.vue";
-
-import MyPageView from "@/views/mypage/MyPageView.vue";
-import MyInfoView from "@/views/mypage/MyInfoView.vue";
-import MyBookmarksView from "@/views/mypage/MyBookmarksView.vue";
-import FollowersView from "@/views/mypage/FollowersView.vue";
-import FollowingView from "@/views/mypage/FollowingView.vue";
-
-// ✅ community
-import CommunityLayoutView from "@/views/community/CommunityLayoutView.vue";
-
-// free
-import FreeLayoutView from "@/views/community/free/FreeLayoutView.vue";
-import FreeListView from "@/views/community/free/FreeListView.vue";
-import FreeWriteView from "@/views/community/free/FreeWriteView.vue";
-import FreeDetailView from "@/views/community/free/FreeDetailView.vue";
-
-// review
-import ReviewLayoutView from "@/views/community/review/ReviewLayoutView.vue";
-import ReviewListView from "@/views/community/review/ReviewListView.vue";
-import ReviewWriteView from "@/views/community/review/ReviewWriteView.vue";
-import ReviewDetailView from "@/views/community/review/ReviewDetailView.vue";
-import ReviewEditView from "@/views/community/review/ReviewEditView.vue";
-
-// follow
-import UserProfileView from "@/views/users/UserProfileView.vue";
-
-// grass
-import MyActivityView from "@/views/mypage/MyActivityView.vue";
-
-// ai_curator
-import SurveyView from "@/views/ai_curator/SurveyView.vue";
-import ResultView from "@/views/ai_curator/ResultView.vue";
+const routes = [
+  { name: "home", path: "/", component: () => import("@/views/HomeView.vue") },
+  { name: "search", path: "/search", component: () => import("@/views/SearchView.vue") },
+  { name: "book-detail", path: "/books/:isbn13", component: () => import("@/views/BookDetailView.vue") },
+  { name: "login", path: "/login", component: () => import("@/views/LoginView.vue") },
+  { name: "signup", path: "/signup", component: () => import("@/views/SignupView.vue") },
+  { name: "taste", path: "/taste", component: () => import("@/views/TasteView.vue") },
+  { name: "taste-test", path: "/taste/test", component: () => import("@/views/TasteTestView.vue") },
+  { name: "taste-result", path: "/taste/result", component: () => import("@/views/TasteResultView.vue") },
+  { name: "community-write", path: "/community/free/write", component: () => import("@/views/CommunityWriteView.vue"), meta: { hideHeader: true } },
+  { name: "community-detail", path: "/community/free/:id", component: () => import("@/views/CommunityDetailView.vue") },
+  { name: "community", path: "/community", component: () => import("@/views/CommunityView.vue") },
+  { name: "review-write", path: "/review/write", component: () => import("@/views/ReviewWriteView.vue") },
+  { name: "review-detail", path: "/reviews/:id", component: () => import("@/views/ReviewDetailView.vue") },
+  { name: "bestsellers", path: "/bestsellers", component: () => import("@/views/BestsellerListView.vue") },
+  { name: "mylibrary", path: "/mylib", component: () => import("@/views/MyLibraryView.vue") },
+  { name: "mypage", path: "/mypage", component: () => import("@/views/MyPageView.vue") },
+  { name: "profile", path: "/profile/:id", component: () => import("@/views/MyPageView.vue") }, // MyPageView로 통일
+  { name: "travel", path: "/travel", component: () => import("@/views/BookTravelView.vue") }
+];
 
 const router = createRouter({
   history: createWebHistory(),
-  routes: [
-    { path: "/", component: MainView },
-    { path: "/login", component: LoginView },
-    { path: "/signup", component: SignupView },
-    { path: "/search", component: SearchView },
-    { path: "/books/:isbn13", component: BookDetailView },
-    { path: "/library", component: LibraryView },
-    { path: "/users/:userId", component: UserProfileView },
-    {
-      path: '/survey',
-      children: [
-        { 
-          path: '', 
-          name: 'survey', 
-          component: SurveyView 
-        },
-        { 
-          path: 'result',
-          name: 'survey-result', 
-          component: ResultView 
-        }
-      ]
-    },
-    {
-      path: "/mypage",
-      component: MyPageView,
-      children: [
-        { path: "", component: MyInfoView },
-        { path: "bookmarks", component: MyBookmarksView },
-        { path: "followers", name: "mypage-followers", component: FollowersView },
-        { path: "following", name: "mypage-following", component: FollowingView },
-        { path: "activity", name: "mypage-activity", component: MyActivityView },
-  
-      ],
-    },
+  routes,
+  scrollBehavior(to, from, savedPosition) {
+    if (savedPosition) {
+      return savedPosition;
+    } else {
+      return { top: 0 };
+    }
+  },
+});
 
-    {
-      path: "/community/:country",
-      component: CommunityLayoutView,
-      children: [
-        { path: "", redirect: "free" },
+// 로그인 상태에 따른 접근 제어
+router.beforeEach((to) => {
+  const loggedIn = !!localStorage.getItem("access_token");
 
-        {
-          path: "free",
-          component: FreeLayoutView,
-          children: [
-            { path: "", name: "free-list", component: FreeListView },
-            { path: "write", name: "free-write", component: FreeWriteView },
-            { path: ":postId", name: "free-detail", component: FreeDetailView },
-          ],
-        },
+  // 로그인 상태에서 로그인/회원가입 접근 시 홈으로
+  if (loggedIn && (to.name === "login" || to.name === "signup")) {
+    return { name: "home" };
+  }
 
-        {
-          path: "review",
-          component: ReviewLayoutView,
-          children: [
-            { path: "", name: "review-list", component: ReviewListView },
-            { path: "write", name: "review-write", component: ReviewWriteView },
-            { path: ":reviewId", name: "review-detail", component: ReviewDetailView },
-            { path: ":reviewId/edit", name: "review-edit", component: ReviewEditView },
-          ],
-        },
-      ],
-    },
-  ],
+  // 로그인이 필요한 페이지 접근 시 로그인으로 (단순 예시)
+  const protectedRoutes = ["mylibrary", "mypage", "review-write"];
+  if (!loggedIn && protectedRoutes.includes(to.name)) {
+    return { name: "login" };
+  }
+
+  return true;
 });
 
 export default router;

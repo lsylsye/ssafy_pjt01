@@ -1,38 +1,98 @@
 import api from "@/api/axios";
 
-const c = (country) => String(country || "kr").toLowerCase();
+/**
+ * GET /api/review/
+ */
+export function getReviews() {
+    const token = localStorage.getItem("access_token");
+    const config = {};
+    if (token) {
+        config.headers = { Authorization: `Bearer ${token}` };
+    }
+    return api.get("review/", config);
+}
 
-// list/detail
-export const getReviewList = (country, params = {}) =>
-  api.get(`/api/community/${c(country)}/review/`, { params, auth: false });
+/**
+ * POST /api/review/write/
+ * payload: { book_title, book_author, content, rating, ... }
+ */
+export function createReview(payload) {
+    return api.post("review/write/", payload);
+}
 
-export const getReviewDetail = (country, reviewId) =>
-  api.get(`/api/community/${c(country)}/review/${reviewId}/`, { auth: false });
+/**
+ * GET /api/review/{review_id}/
+ */
+export function getReviewDetail(reviewId) {
+    const token = localStorage.getItem("access_token");
+    const config = {};
+    if (token) {
+        config.headers = { Authorization: `Bearer ${token}` };
+    }
+    return api.get(`review/${reviewId}/`, config);
+}
 
-// write/edit/delete
-export const createReview = (country, payload) =>
-  api.post(`/api/community/${c(country)}/review/write/`, payload);
+/**
+ * POST /api/review/{review_id}/like/
+ */
+export function toggleReviewLike(reviewId) {
+    return api.post(`review/${reviewId}/like/`, {});
+}
 
-export const patchReview = (country, reviewId, payload) =>
-  api.patch(`/api/community/${c(country)}/review/${reviewId}/`, payload);
+/**
+ * GET /api/review/{review_id}/comments/
+ */
+export function getReviewComments(reviewId) {
+    const token = localStorage.getItem("access_token");
+    const config = {};
+    if (token) {
+        config.headers = { Authorization: `Bearer ${token}` };
+    }
+    return api.get(`review/${reviewId}/comments/`, config);
+}
 
-export const deleteReview = (country, reviewId) =>
-  api.delete(`/api/community/${c(country)}/review/${reviewId}/`);
+/**
+ * POST /api/review/{review_id}/comments/
+ */
+export function createReviewComment(reviewId, payload) {
+    return api.post(`review/${reviewId}/comments/`, payload);
+}
 
-// likes
-export const toggleReviewLike = (country, reviewId) =>
-  api.post(`/api/community/${c(country)}/review/${reviewId}/like/`, {});
+/**
+ * DELETE /api/review/{review_id}/comments/{comment_id}/
+ */
+export function deleteReviewComment(reviewId, commentId) {
+    return api.delete(`review/${reviewId}/comments/${commentId}/`);
+}
 
-// comments (review)
-export const getReviewComments = (country, reviewId) =>
-  api.get(`/api/community/${c(country)}/review/${reviewId}/comments/`);
+/**
+ * GET /api/review/me/ (My Reviews)
+ */
+export function getMyReviews() {
+    return api.get("review/me/");
+}
 
-export const createReviewComment = (country, reviewId, payload) =>
-  api.post(`/api/community/${c(country)}/review/${reviewId}/comments/write/`, payload);
+/**
+ * GET /api/review/user/{user_id}/
+ */
+export function getUserReviews(userId) {
+    return api.get(`review/user/${userId}/`);
+}
 
-// shared comment endpoints
-export const deleteComment = (commentId) =>
-  api.delete(`/api/community/comments/${commentId}/`);
+export function getTodayReviews() {
+    return api.get("review/today/");
+}
 
-export const toggleCommentLike = (commentId) =>
-  api.post(`/api/community/comments/${commentId}/like/`, {});
+/**
+ * PATCH /api/review/{review_id}/
+ */
+export function updateReview(reviewId, payload) {
+    return api.patch(`review/${reviewId}/`, payload);
+}
+
+/**
+ * DELETE /api/review/{review_id}/
+ */
+export function deleteReview(reviewId) {
+    return api.delete(`review/${reviewId}/`);
+}

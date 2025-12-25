@@ -696,8 +696,8 @@ ul {
   border: 1px solid white;
 }
 .loading-text {
-  font-size: 1.3rem;
-  font-weight: 700;
+  font-size: 1rem;
+  font-weight: 500;
   color: #191f28;
   text-align: center;
   line-height: 1.5;
