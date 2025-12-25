@@ -2,7 +2,7 @@
 import { ref, onMounted, computed, watch } from "vue";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import { getBookTravelInfo } from "@/api/ai";
+import { getBookTravelInfo, getSupportedCountries } from "@/api/ai";
 import { useRouter } from "vue-router";
 
 const router = useRouter();
@@ -12,23 +12,13 @@ const countries = [
   { name: "일본", flag: "🇯🇵", lat: 36.2048, lng: 138.2529 },
   { name: "베트남", flag: "🇻🇳", lat: 14.0583, lng: 108.2772 },
   { name: "중국", flag: "🇨🇳", lat: 35.8617, lng: 104.1954 },
-  { name: "태국", flag: "🇹🇭", lat: 15.87, lng: 100.9925 },
   { name: "필리핀", flag: "🇵🇭", lat: 12.8797, lng: 121.774 },
   { name: "미국", flag: "🇺🇸", lat: 37.0902, lng: -95.7129 },
   { name: "대만", flag: "🇹🇼", lat: 23.6978, lng: 120.9605 },
-  { name: "싱가포르", flag: "🇸🇬", lat: 1.3521, lng: 103.8198 },
-  { name: "말레이시아", flag: "🇲🇾", lat: 4.2105, lng: 101.9758 },
-  { name: "괌(미국령)", flag: "🇬🇺", lat: 13.4443, lng: 144.7937 },
   { name: "홍콩", flag: "🇭🇰", lat: 22.3193, lng: 114.1694 },
-  { name: "마카오", flag: "🇲🇴", lat: 22.1987, lng: 113.5439 },
-  { name: "인도네시아", flag: "🇮🇩", lat: -0.7893, lng: 113.9213 },
-  { name: "캄보디아", flag: "🇰🇭", lat: 12.5657, lng: 104.991 },
-  { name: "라오스", flag: "🇱🇦", lat: 19.8563, lng: 102.4955 },
   { name: "몽골", flag: "🇲🇳", lat: 46.8625, lng: 103.8467 },
   { name: "호주", flag: "🇦🇺", lat: -25.2744, lng: 133.7751 },
-  { name: "뉴질랜드", flag: "🇳🇿", lat: -40.9006, lng: 174.886 },
   { name: "캐나다", flag: "🇨🇦", lat: 56.1304, lng: -106.3468 },
-  { name: "아랍에미리트", flag: "🇦🇪", lat: 23.4241, lng: 53.8478 },
   { name: "터키", flag: "🇹🇷", lat: 38.9637, lng: 35.2433 },
   { name: "영국", flag: "🇬🇧", lat: 55.3781, lng: -3.436 },
   { name: "프랑스", flag: "🇫🇷", lat: 46.2276, lng: 2.2137 },
@@ -47,9 +37,28 @@ const showInfoSection = ref(false);
 const isLoading = ref(false);
 const selectedCountryName = ref("");
 
+const isListLoading = ref(true);
+const supportedCountryNames = ref([]);
+
 const filteredCountries = computed(() => {
-  if (!searchQuery.value) return countries;
-  return countries.filter((c) => c.name.includes(searchQuery.value));
+  // 백엔드 지원 목록이 아직 로딩 중이라면 빈 배열
+  if (isListLoading.value) return [];
+  
+  // 1. 백엔드 지원 국가만 필터링 (NFC 정규화 및 트림 적용하여 매칭 확률 극대화)
+  const baseList = countries.filter(c => {
+    const normalizedName = c.name.trim().normalize("NFC");
+    return supportedCountryNames.value.some(sn => 
+      typeof sn === 'string' && sn.trim().normalize("NFC") === normalizedName
+    );
+  });
+  
+  // 2. 검색어 필터링 (트림 및 정규화 적용)
+  const query = searchQuery.value.trim().normalize("NFC");
+  if (!query) return baseList;
+  
+  return baseList.filter((c) => 
+    c.name.normalize("NFC").includes(query)
+  );
 });
 
 const resultData = ref({
@@ -68,9 +77,22 @@ const resultData = ref({
 let map = null;
 let currentMarker = null;
 
-onMounted(() => {
+onMounted(async () => {
   initMap();
+  await fetchSupportedCountries();
 });
+
+async function fetchSupportedCountries() {
+  isListLoading.value = true;
+  try {
+    const res = await getSupportedCountries();
+    supportedCountryNames.value = res.data.countries;
+  } catch (err) {
+    console.error("Failed to fetch supported countries", err);
+  } finally {
+    isListLoading.value = false;
+  }
+}
 
 function initMap() {
   map = L.map("map", {
@@ -193,17 +215,22 @@ function goToDetail(isbn) {
         </div>
 
         <ul class="dropdown-list" :class="{ active: isDropdownActive }">
-          <li
-            v-for="c in filteredCountries"
-            :key="c.name"
-            class="country-item"
-            @click="selectCountry(c)"
-          >
-            <span class="flag-icon">{{ c.flag }}</span> {{ c.name }}
+          <li v-if="isListLoading" class="no-result">
+            데이터를 불러오는 중입니다... 🌍
           </li>
-          <li v-if="filteredCountries.length === 0" class="no-result">
-            검색 결과가 없어요 🍂
-          </li>
+          <template v-else>
+            <li
+              v-for="c in filteredCountries"
+              :key="c.name"
+              class="country-item"
+              @click="selectCountry(c)"
+            >
+              <span class="flag-icon">{{ c.flag }}</span> {{ c.name }}
+            </li>
+            <li v-if="filteredCountries.length === 0" class="no-result">
+              검색 결과가 없어요 🍂
+            </li>
+          </template>
         </ul>
       </div>
     </div>

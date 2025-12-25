@@ -12,6 +12,7 @@ from .services import (
     get_country_literature_info
 )
 from books.services.aladin import search_books_by_query, _to_cover500
+import unicodedata
 
 # API 키 설정
 client = OpenAI(
@@ -222,11 +223,19 @@ def book_travel(request):
         
         data = json.loads(request.body)
         country = data.get("country", "").strip()
+        # NFC 정규화 적용
+        normalized_country = unicodedata.normalize('NFC', country)
+        
         if not country:
             return JsonResponse({"error": "country is required"}, status=400)
 
-        # 1. 사전 정의된 데이터에서 해당 국가 정보 가져오기
-        country_data = COUNTRY_LITERATURE_DATA.get(country)
+        # 1. 사전 정의된 데이터에서 해당 국가 정보 가져오기 (NFC 정규화된 키로 찾기)
+        # COUNTRY_LITERATURE_DATA의 키들을 모두 NFC로 정규화하여 매칭 시도
+        country_data = None
+        for key in COUNTRY_LITERATURE_DATA.keys():
+            if unicodedata.normalize('NFC', key) == normalized_country:
+                country_data = COUNTRY_LITERATURE_DATA[key]
+                break
         if not country_data:
             return JsonResponse({"error": f"{country}에 대한 데이터가 없습니다."}, status=404)
 
@@ -274,4 +283,18 @@ def book_travel(request):
 
     except Exception as e:
         print(f"🚨 book_travel 에러: {e}")
+        return JsonResponse({"error": str(e)}, status=500)
+
+
+@api_view(["GET"])
+def get_supported_countries(request):
+    """
+    지원하는 국가 목록 반환
+    """
+    try:
+        from .country_books_data import COUNTRY_LITERATURE_DATA
+        # 국가 목록도 NFC로 정규화하여 반환
+        normalized_countries = [unicodedata.normalize('NFC', k) for k in COUNTRY_LITERATURE_DATA.keys()]
+        return JsonResponse({"countries": normalized_countries})
+    except Exception as e:
         return JsonResponse({"error": str(e)}, status=500)

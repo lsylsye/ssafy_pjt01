@@ -8216,7 +8216,10 @@
     "pk": 1,
     "fields": {
       "user": 20,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 1,
       "parent_comment": null,
       "content": "추천 감사합니다!",
@@ -8228,7 +8231,10 @@
     "pk": 2,
     "fields": {
       "user": 7,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 1,
       "parent_comment": null,
       "content": "좋은 추천 감사합니다~",
@@ -8240,7 +8246,10 @@
     "pk": 3,
     "fields": {
       "user": 16,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 1,
       "parent_comment": 2,
       "content": "오 이거 재밌을 것 같네요",
@@ -8252,7 +8261,10 @@
     "pk": 4,
     "fields": {
       "user": 10,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 2,
       "parent_comment": null,
       "content": "완전 공감이에요 ㅋㅋㅋ",
@@ -8264,7 +8276,10 @@
     "pk": 5,
     "fields": {
       "user": 26,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 2,
       "parent_comment": 4,
       "content": "벌써 읽으셨네요 부럽습니다",
@@ -8276,7 +8291,10 @@
     "pk": 6,
     "fields": {
       "user": 26,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 2,
       "parent_comment": null,
       "content": "벌써 읽으셨네요 부럽습니다",
@@ -8288,7 +8306,10 @@
     "pk": 7,
     "fields": {
       "user": 20,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 2,
       "parent_comment": 6,
       "content": "저도 같은 생각이었어요",
@@ -8300,7 +8321,10 @@
     "pk": 8,
     "fields": {
       "user": 29,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 2,
       "parent_comment": null,
       "content": "후기 잘 읽었습니다!",
@@ -8312,7 +8336,10 @@
     "pk": 9,
     "fields": {
       "user": 28,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 2,
       "parent_comment": null,
       "content": "저도 그 부분 인상 깊었어요!",
@@ -8324,7 +8351,10 @@
     "pk": 10,
     "fields": {
       "user": 27,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 2,
       "parent_comment": 9,
       "content": "후기 잘 읽었습니다!",
@@ -8336,7 +8366,10 @@
     "pk": 11,
     "fields": {
       "user": 21,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 2,
       "parent_comment": null,
       "content": "저도 같은 생각이었어요",
@@ -8348,7 +8381,10 @@
     "pk": 12,
     "fields": {
       "user": 29,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 3,
       "parent_comment": null,
       "content": "완전 공감이에요 ㅋㅋㅋ",
@@ -8360,7 +8396,10 @@
     "pk": 13,
     "fields": {
       "user": 1,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 4,
       "parent_comment": null,
       "content": "저도 읽어봤는데 정말 좋더라구요!",
@@ -8372,7 +8411,10 @@
     "pk": 14,
     "fields": {
       "user": 21,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 4,
       "parent_comment": null,
       "content": "다음에 꼭 읽어볼게요",
@@ -8384,7 +8426,10 @@
     "pk": 15,
     "fields": {
       "user": 8,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 4,
       "parent_comment": null,
       "content": "저도 같은 생각이었어요",
@@ -8396,7 +8441,10 @@
     "pk": 16,
     "fields": {
       "user": 8,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 5,
       "parent_comment": null,
       "content": "다음에 꼭 읽어볼게요",
@@ -8408,7 +8456,10 @@
     "pk": 17,
     "fields": {
       "user": 2,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 5,
       "parent_comment": null,
       "content": "저도 읽어봤는데 정말 좋더라구요!",
@@ -8420,7 +8471,10 @@
     "pk": 18,
     "fields": {
       "user": 13,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 6,
       "parent_comment": null,
       "content": "오 이거 제 취향일 것 같은데 읽어봐야겠어요",
@@ -8432,7 +8486,10 @@
     "pk": 19,
     "fields": {
       "user": 19,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 6,
       "parent_comment": null,
       "content": "다음에 꼭 읽어볼게요",
@@ -8444,7 +8501,10 @@
     "pk": 20,
     "fields": {
       "user": 17,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 6,
       "parent_comment": null,
       "content": "저도 읽고 있는데 너무 재밌어요",
@@ -8456,7 +8516,10 @@
     "pk": 21,
     "fields": {
       "user": 16,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 7,
       "parent_comment": null,
       "content": "저도 읽고 있는데 너무 재밌어요",
@@ -8468,7 +8531,10 @@
     "pk": 22,
     "fields": {
       "user": 18,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 7,
       "parent_comment": null,
       "content": "완전 공감이에요 ㅋㅋㅋ",
@@ -8480,7 +8546,10 @@
     "pk": 23,
     "fields": {
       "user": 16,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 7,
       "parent_comment": null,
       "content": "완전 공감이에요 ㅋㅋㅋ",
@@ -8492,7 +8561,10 @@
     "pk": 24,
     "fields": {
       "user": 17,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 7,
       "parent_comment": null,
       "content": "완전 공감이에요 ㅋㅋㅋ",
@@ -8504,7 +8576,10 @@
     "pk": 25,
     "fields": {
       "user": 30,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 7,
       "parent_comment": null,
       "content": "오 이거 재밌을 것 같네요",
@@ -8516,7 +8591,10 @@
     "pk": 26,
     "fields": {
       "user": 4,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 7,
       "parent_comment": 25,
       "content": "저도 읽어봤는데 정말 좋더라구요!",
@@ -8528,7 +8606,10 @@
     "pk": 27,
     "fields": {
       "user": 12,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 8,
       "parent_comment": null,
       "content": "저도 그 부분 인상 깊었어요!",
@@ -8540,7 +8621,10 @@
     "pk": 28,
     "fields": {
       "user": 26,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 9,
       "parent_comment": null,
       "content": "추천 감사합니다!",
@@ -8552,7 +8636,10 @@
     "pk": 29,
     "fields": {
       "user": 8,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 9,
       "parent_comment": 28,
       "content": "이 작가 다른 작품도 추천드려요",
@@ -8564,7 +8651,10 @@
     "pk": 30,
     "fields": {
       "user": 26,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 10,
       "parent_comment": null,
       "content": "오 이거 재밌을 것 같네요",
@@ -8576,7 +8666,10 @@
     "pk": 31,
     "fields": {
       "user": 7,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 11,
       "parent_comment": null,
       "content": "오 이거 재밌을 것 같네요",
@@ -8588,7 +8681,10 @@
     "pk": 32,
     "fields": {
       "user": 24,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 11,
       "parent_comment": 31,
       "content": "공감합니다! 저도 비슷하게 느꼈어요",
@@ -8600,7 +8696,10 @@
     "pk": 33,
     "fields": {
       "user": 24,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 11,
       "parent_comment": null,
       "content": "오 이거 제 취향일 것 같은데 읽어봐야겠어요",
@@ -8612,7 +8711,10 @@
     "pk": 34,
     "fields": {
       "user": 13,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 11,
       "parent_comment": 33,
       "content": "완전 공감이에요 ㅋㅋㅋ",
@@ -8624,7 +8726,10 @@
     "pk": 35,
     "fields": {
       "user": 18,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 11,
       "parent_comment": null,
       "content": "저도 읽고 있는데 너무 재밌어요",
@@ -8636,7 +8741,10 @@
     "pk": 36,
     "fields": {
       "user": 15,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 11,
       "parent_comment": null,
       "content": "오 이거 제 취향일 것 같은데 읽어봐야겠어요",
@@ -8648,7 +8756,10 @@
     "pk": 37,
     "fields": {
       "user": 10,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 11,
       "parent_comment": 36,
       "content": "다음에 꼭 읽어볼게요",
@@ -8660,7 +8771,10 @@
     "pk": 38,
     "fields": {
       "user": 24,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 11,
       "parent_comment": null,
       "content": "추천 감사합니다!",
@@ -8672,7 +8786,10 @@
     "pk": 39,
     "fields": {
       "user": 23,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 13,
       "parent_comment": null,
       "content": "후기 잘 읽었습니다!",
@@ -8684,7 +8801,10 @@
     "pk": 40,
     "fields": {
       "user": 29,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 14,
       "parent_comment": null,
       "content": "저도 그 부분 인상 깊었어요!",
@@ -8696,7 +8816,10 @@
     "pk": 41,
     "fields": {
       "user": 9,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 15,
       "parent_comment": null,
       "content": "저도 읽고 있는데 너무 재밌어요",
@@ -8708,7 +8831,10 @@
     "pk": 42,
     "fields": {
       "user": 12,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 15,
       "parent_comment": null,
       "content": "저도 읽어봤는데 정말 좋더라구요!",
@@ -8720,7 +8846,10 @@
     "pk": 43,
     "fields": {
       "user": 8,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 15,
       "parent_comment": null,
       "content": "다음에 꼭 읽어볼게요",
@@ -8732,7 +8861,10 @@
     "pk": 44,
     "fields": {
       "user": 4,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 16,
       "parent_comment": null,
       "content": "다음에 꼭 읽어볼게요",
@@ -8744,7 +8876,10 @@
     "pk": 45,
     "fields": {
       "user": 8,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 16,
       "parent_comment": null,
       "content": "완전 공감이에요 ㅋㅋㅋ",
@@ -8756,7 +8891,10 @@
     "pk": 46,
     "fields": {
       "user": 25,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 16,
       "parent_comment": null,
       "content": "완전 공감이에요 ㅋㅋㅋ",
@@ -8768,7 +8906,10 @@
     "pk": 47,
     "fields": {
       "user": 21,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 16,
       "parent_comment": null,
       "content": "완전 공감이에요 ㅋㅋㅋ",
@@ -8780,7 +8921,10 @@
     "pk": 48,
     "fields": {
       "user": 23,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 18,
       "parent_comment": null,
       "content": "오 이거 제 취향일 것 같은데 읽어봐야겠어요",
@@ -8792,7 +8936,10 @@
     "pk": 49,
     "fields": {
       "user": 21,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 18,
       "parent_comment": 48,
       "content": "저도 읽어봤는데 정말 좋더라구요!",
@@ -8804,7 +8951,10 @@
     "pk": 50,
     "fields": {
       "user": 2,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 19,
       "parent_comment": null,
       "content": "저는 좀 아쉬웠는데 의견이 다르네요 ㅎㅎ",
@@ -8816,7 +8966,10 @@
     "pk": 51,
     "fields": {
       "user": 28,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 19,
       "parent_comment": null,
       "content": "완전 공감이에요 ㅋㅋㅋ",
@@ -8828,7 +8981,10 @@
     "pk": 52,
     "fields": {
       "user": 1,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 19,
       "parent_comment": null,
       "content": "후기 잘 읽었습니다!",
@@ -8840,7 +8996,10 @@
     "pk": 53,
     "fields": {
       "user": 11,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 19,
       "parent_comment": 52,
       "content": "저도 같은 생각이었어요",
@@ -8852,7 +9011,10 @@
     "pk": 54,
     "fields": {
       "user": 16,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 19,
       "parent_comment": null,
       "content": "공감합니다! 저도 비슷하게 느꼈어요",
@@ -8864,7 +9026,10 @@
     "pk": 55,
     "fields": {
       "user": 11,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 19,
       "parent_comment": 54,
       "content": "다음에 꼭 읽어볼게요",
@@ -8876,7 +9041,10 @@
     "pk": 56,
     "fields": {
       "user": 2,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 19,
       "parent_comment": null,
       "content": "오 이거 제 취향일 것 같은데 읽어봐야겠어요",
@@ -8888,7 +9056,10 @@
     "pk": 57,
     "fields": {
       "user": 23,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 20,
       "parent_comment": null,
       "content": "저도 읽어봤는데 정말 좋더라구요!",
@@ -8900,7 +9071,10 @@
     "pk": 58,
     "fields": {
       "user": 6,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 20,
       "parent_comment": 57,
       "content": "오 이거 제 취향일 것 같은데 읽어봐야겠어요",
@@ -8912,7 +9086,10 @@
     "pk": 59,
     "fields": {
       "user": 5,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 21,
       "parent_comment": null,
       "content": "오 이거 재밌을 것 같네요",
@@ -8924,7 +9101,10 @@
     "pk": 60,
     "fields": {
       "user": 4,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 21,
       "parent_comment": 59,
       "content": "추천 감사합니다!",
@@ -8936,7 +9116,10 @@
     "pk": 61,
     "fields": {
       "user": 26,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 21,
       "parent_comment": null,
       "content": "저도 읽어봤는데 정말 좋더라구요!",
@@ -8948,7 +9131,10 @@
     "pk": 62,
     "fields": {
       "user": 18,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 21,
       "parent_comment": null,
       "content": "오 이거 재밌을 것 같네요",
@@ -8960,7 +9146,10 @@
     "pk": 63,
     "fields": {
       "user": 16,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 21,
       "parent_comment": null,
       "content": "저도 그 부분 인상 깊었어요!",
@@ -8972,7 +9161,10 @@
     "pk": 64,
     "fields": {
       "user": 1,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 22,
       "parent_comment": null,
       "content": "다음에 꼭 읽어볼게요",
@@ -8984,7 +9176,10 @@
     "pk": 65,
     "fields": {
       "user": 3,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 22,
       "parent_comment": 64,
       "content": "완전 공감이에요 ㅋㅋㅋ",
@@ -8996,7 +9191,10 @@
     "pk": 66,
     "fields": {
       "user": 25,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 22,
       "parent_comment": null,
       "content": "저도 읽어봤는데 정말 좋더라구요!",
@@ -9008,7 +9206,10 @@
     "pk": 67,
     "fields": {
       "user": 9,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 22,
       "parent_comment": 66,
       "content": "저는 좀 아쉬웠는데 의견이 다르네요 ㅎㅎ",
@@ -9020,7 +9221,10 @@
     "pk": 68,
     "fields": {
       "user": 17,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 23,
       "parent_comment": null,
       "content": "저도 읽고 있는데 너무 재밌어요",
@@ -9032,7 +9236,10 @@
     "pk": 69,
     "fields": {
       "user": 16,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 23,
       "parent_comment": 68,
       "content": "다음에 꼭 읽어볼게요",
@@ -9044,7 +9251,10 @@
     "pk": 70,
     "fields": {
       "user": 11,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 23,
       "parent_comment": null,
       "content": "좋은 추천 감사합니다~",
@@ -9056,7 +9266,10 @@
     "pk": 71,
     "fields": {
       "user": 19,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 23,
       "parent_comment": null,
       "content": "저도 그 부분 인상 깊었어요!",
@@ -9068,7 +9281,10 @@
     "pk": 72,
     "fields": {
       "user": 21,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 23,
       "parent_comment": 71,
       "content": "오 이거 제 취향일 것 같은데 읽어봐야겠어요",
@@ -9080,7 +9296,10 @@
     "pk": 73,
     "fields": {
       "user": 23,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 23,
       "parent_comment": null,
       "content": "이 작가 다른 작품도 추천드려요",
@@ -9092,7 +9311,10 @@
     "pk": 74,
     "fields": {
       "user": 10,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 23,
       "parent_comment": 73,
       "content": "벌써 읽으셨네요 부럽습니다",
@@ -9104,7 +9326,10 @@
     "pk": 75,
     "fields": {
       "user": 11,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 23,
       "parent_comment": null,
       "content": "추천 감사합니다!",
@@ -9116,7 +9341,10 @@
     "pk": 76,
     "fields": {
       "user": 18,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 23,
       "parent_comment": 75,
       "content": "완전 공감이에요 ㅋㅋㅋ",
@@ -9128,7 +9356,10 @@
     "pk": 77,
     "fields": {
       "user": 16,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 24,
       "parent_comment": null,
       "content": "저도 같은 생각이었어요",
@@ -9140,7 +9371,10 @@
     "pk": 78,
     "fields": {
       "user": 7,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 25,
       "parent_comment": null,
       "content": "저도 읽어봤는데 정말 좋더라구요!",
@@ -9152,7 +9386,10 @@
     "pk": 79,
     "fields": {
       "user": 28,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 25,
       "parent_comment": null,
       "content": "저도 같은 생각이었어요",
@@ -9164,7 +9401,10 @@
     "pk": 80,
     "fields": {
       "user": 9,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 25,
       "parent_comment": null,
       "content": "저도 그 부분 인상 깊었어요!",
@@ -9176,7 +9416,10 @@
     "pk": 81,
     "fields": {
       "user": 22,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 25,
       "parent_comment": null,
       "content": "오 이거 제 취향일 것 같은데 읽어봐야겠어요",
@@ -9188,7 +9431,10 @@
     "pk": 82,
     "fields": {
       "user": 20,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 25,
       "parent_comment": 81,
       "content": "오 이거 제 취향일 것 같은데 읽어봐야겠어요",
@@ -9200,7 +9446,10 @@
     "pk": 83,
     "fields": {
       "user": 2,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 25,
       "parent_comment": null,
       "content": "벌써 읽으셨네요 부럽습니다",
@@ -9212,7 +9461,10 @@
     "pk": 84,
     "fields": {
       "user": 21,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 26,
       "parent_comment": null,
       "content": "오 이거 재밌을 것 같네요",
@@ -9224,7 +9476,10 @@
     "pk": 85,
     "fields": {
       "user": 2,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 26,
       "parent_comment": 84,
       "content": "후기 잘 읽었습니다!",
@@ -9236,7 +9491,10 @@
     "pk": 86,
     "fields": {
       "user": 8,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 26,
       "parent_comment": null,
       "content": "저도 그 부분 인상 깊었어요!",
@@ -9248,7 +9506,10 @@
     "pk": 87,
     "fields": {
       "user": 4,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 26,
       "parent_comment": 86,
       "content": "오 이거 재밌을 것 같네요",
@@ -9260,7 +9521,10 @@
     "pk": 88,
     "fields": {
       "user": 2,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 26,
       "parent_comment": null,
       "content": "저는 좀 아쉬웠는데 의견이 다르네요 ㅎㅎ",
@@ -9272,7 +9536,10 @@
     "pk": 89,
     "fields": {
       "user": 14,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 26,
       "parent_comment": 88,
       "content": "저는 좀 아쉬웠는데 의견이 다르네요 ㅎㅎ",
@@ -9284,7 +9551,10 @@
     "pk": 90,
     "fields": {
       "user": 3,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 26,
       "parent_comment": null,
       "content": "다음에 꼭 읽어볼게요",
@@ -9296,7 +9566,10 @@
     "pk": 91,
     "fields": {
       "user": 14,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 26,
       "parent_comment": 90,
       "content": "벌써 읽으셨네요 부럽습니다",
@@ -9308,7 +9581,10 @@
     "pk": 92,
     "fields": {
       "user": 1,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 26,
       "parent_comment": null,
       "content": "이 작가 다른 작품도 추천드려요",
@@ -9320,7 +9596,10 @@
     "pk": 93,
     "fields": {
       "user": 8,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 26,
       "parent_comment": 92,
       "content": "오 이거 제 취향일 것 같은데 읽어봐야겠어요",
@@ -9332,7 +9611,10 @@
     "pk": 94,
     "fields": {
       "user": 1,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 27,
       "parent_comment": null,
       "content": "공감합니다! 저도 비슷하게 느꼈어요",
@@ -9344,7 +9626,10 @@
     "pk": 95,
     "fields": {
       "user": 29,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 27,
       "parent_comment": null,
       "content": "저도 읽고 있는데 너무 재밌어요",
@@ -9356,7 +9641,10 @@
     "pk": 96,
     "fields": {
       "user": 11,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 28,
       "parent_comment": null,
       "content": "공감합니다! 저도 비슷하게 느꼈어요",
@@ -9368,7 +9656,10 @@
     "pk": 97,
     "fields": {
       "user": 24,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 28,
       "parent_comment": 96,
       "content": "저도 읽어봤는데 정말 좋더라구요!",
@@ -9380,7 +9671,10 @@
     "pk": 98,
     "fields": {
       "user": 28,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 29,
       "parent_comment": null,
       "content": "저도 읽고 있는데 너무 재밌어요",
@@ -9392,7 +9686,10 @@
     "pk": 99,
     "fields": {
       "user": 6,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 29,
       "parent_comment": null,
       "content": "좋은 추천 감사합니다~",
@@ -9404,7 +9701,10 @@
     "pk": 100,
     "fields": {
       "user": 11,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 29,
       "parent_comment": 99,
       "content": "후기 잘 읽었습니다!",
@@ -9416,7 +9716,10 @@
     "pk": 101,
     "fields": {
       "user": 13,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 29,
       "parent_comment": null,
       "content": "다음에 꼭 읽어볼게요",
@@ -9428,7 +9731,10 @@
     "pk": 102,
     "fields": {
       "user": 23,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 29,
       "parent_comment": 101,
       "content": "추천 감사합니다!",
@@ -9440,7 +9746,10 @@
     "pk": 103,
     "fields": {
       "user": 30,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 30,
       "parent_comment": null,
       "content": "저도 읽고 있는데 너무 재밌어요",
@@ -9452,7 +9761,10 @@
     "pk": 104,
     "fields": {
       "user": 9,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 30,
       "parent_comment": 103,
       "content": "저도 읽고 있는데 너무 재밌어요",
@@ -9464,7 +9776,10 @@
     "pk": 105,
     "fields": {
       "user": 26,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 30,
       "parent_comment": null,
       "content": "저는 좀 아쉬웠는데 의견이 다르네요 ㅎㅎ",
@@ -9476,7 +9791,10 @@
     "pk": 106,
     "fields": {
       "user": 14,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 30,
       "parent_comment": null,
       "content": "완전 공감이에요 ㅋㅋㅋ",
@@ -9488,7 +9806,10 @@
     "pk": 107,
     "fields": {
       "user": 22,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 30,
       "parent_comment": null,
       "content": "벌써 읽으셨네요 부럽습니다",
@@ -9500,7 +9821,10 @@
     "pk": 108,
     "fields": {
       "user": 27,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 30,
       "parent_comment": 107,
       "content": "추천 감사합니다!",
@@ -9512,7 +9836,10 @@
     "pk": 109,
     "fields": {
       "user": 29,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 31,
       "parent_comment": null,
       "content": "오 이거 제 취향일 것 같은데 읽어봐야겠어요",
@@ -9524,7 +9851,10 @@
     "pk": 110,
     "fields": {
       "user": 27,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 33,
       "parent_comment": null,
       "content": "이 작가 다른 작품도 추천드려요",
@@ -9536,7 +9866,10 @@
     "pk": 111,
     "fields": {
       "user": 14,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 33,
       "parent_comment": null,
       "content": "이 작가 다른 작품도 추천드려요",
@@ -9548,7 +9881,10 @@
     "pk": 112,
     "fields": {
       "user": 22,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 33,
       "parent_comment": null,
       "content": "오 이거 재밌을 것 같네요",
@@ -9560,7 +9896,10 @@
     "pk": 113,
     "fields": {
       "user": 13,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 33,
       "parent_comment": 112,
       "content": "오 이거 제 취향일 것 같은데 읽어봐야겠어요",
@@ -9572,7 +9911,10 @@
     "pk": 114,
     "fields": {
       "user": 9,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 33,
       "parent_comment": null,
       "content": "저도 같은 생각이었어요",
@@ -9584,7 +9926,10 @@
     "pk": 115,
     "fields": {
       "user": 6,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 34,
       "parent_comment": null,
       "content": "오 이거 제 취향일 것 같은데 읽어봐야겠어요",
@@ -9596,7 +9941,10 @@
     "pk": 116,
     "fields": {
       "user": 4,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 34,
       "parent_comment": null,
       "content": "저도 같은 생각이었어요",
@@ -9608,7 +9956,10 @@
     "pk": 117,
     "fields": {
       "user": 17,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 34,
       "parent_comment": null,
       "content": "다음에 꼭 읽어볼게요",
@@ -9620,7 +9971,10 @@
     "pk": 118,
     "fields": {
       "user": 18,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 34,
       "parent_comment": 117,
       "content": "좋은 추천 감사합니다~",
@@ -9632,7 +9986,10 @@
     "pk": 119,
     "fields": {
       "user": 16,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 35,
       "parent_comment": null,
       "content": "벌써 읽으셨네요 부럽습니다",
@@ -9644,7 +10001,10 @@
     "pk": 120,
     "fields": {
       "user": 5,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 35,
       "parent_comment": 119,
       "content": "공감합니다! 저도 비슷하게 느꼈어요",
@@ -9656,7 +10016,10 @@
     "pk": 121,
     "fields": {
       "user": 6,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 36,
       "parent_comment": null,
       "content": "저도 그 부분 인상 깊었어요!",
@@ -9668,7 +10031,10 @@
     "pk": 122,
     "fields": {
       "user": 27,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 36,
       "parent_comment": 121,
       "content": "저는 좀 아쉬웠는데 의견이 다르네요 ㅎㅎ",
@@ -9680,7 +10046,10 @@
     "pk": 123,
     "fields": {
       "user": 22,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 36,
       "parent_comment": null,
       "content": "다음에 꼭 읽어볼게요",
@@ -9692,7 +10061,10 @@
     "pk": 124,
     "fields": {
       "user": 23,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 36,
       "parent_comment": 123,
       "content": "저도 그 부분 인상 깊었어요!",
@@ -9704,7 +10076,10 @@
     "pk": 125,
     "fields": {
       "user": 22,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 37,
       "parent_comment": null,
       "content": "좋은 추천 감사합니다~",
@@ -9716,7 +10091,10 @@
     "pk": 126,
     "fields": {
       "user": 15,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 37,
       "parent_comment": null,
       "content": "벌써 읽으셨네요 부럽습니다",
@@ -9728,7 +10106,10 @@
     "pk": 127,
     "fields": {
       "user": 23,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 37,
       "parent_comment": null,
       "content": "좋은 추천 감사합니다~",
@@ -9740,7 +10121,10 @@
     "pk": 128,
     "fields": {
       "user": 3,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 37,
       "parent_comment": null,
       "content": "오 이거 재밌을 것 같네요",
@@ -9752,7 +10136,10 @@
     "pk": 129,
     "fields": {
       "user": 6,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 37,
       "parent_comment": 128,
       "content": "오 이거 제 취향일 것 같은데 읽어봐야겠어요",
@@ -9764,7 +10151,10 @@
     "pk": 130,
     "fields": {
       "user": 8,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 37,
       "parent_comment": null,
       "content": "이 작가 다른 작품도 추천드려요",
@@ -9776,7 +10166,10 @@
     "pk": 131,
     "fields": {
       "user": 6,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 38,
       "parent_comment": null,
       "content": "저도 읽어봤는데 정말 좋더라구요!",
@@ -9788,7 +10181,10 @@
     "pk": 132,
     "fields": {
       "user": 6,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 38,
       "parent_comment": 131,
       "content": "저도 같은 생각이었어요",
@@ -9800,7 +10196,10 @@
     "pk": 133,
     "fields": {
       "user": 22,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 38,
       "parent_comment": null,
       "content": "저는 좀 아쉬웠는데 의견이 다르네요 ㅎㅎ",
@@ -9812,7 +10211,10 @@
     "pk": 134,
     "fields": {
       "user": 17,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 38,
       "parent_comment": 133,
       "content": "저도 그 부분 인상 깊었어요!",
@@ -9824,7 +10226,10 @@
     "pk": 135,
     "fields": {
       "user": 23,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 38,
       "parent_comment": null,
       "content": "추천 감사합니다!",
@@ -9836,7 +10241,10 @@
     "pk": 136,
     "fields": {
       "user": 24,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 39,
       "parent_comment": null,
       "content": "다음에 꼭 읽어볼게요",
@@ -9848,7 +10256,10 @@
     "pk": 137,
     "fields": {
       "user": 13,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 39,
       "parent_comment": null,
       "content": "벌써 읽으셨네요 부럽습니다",
@@ -9860,7 +10271,10 @@
     "pk": 138,
     "fields": {
       "user": 27,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 39,
       "parent_comment": null,
       "content": "오 이거 재밌을 것 같네요",
@@ -9872,7 +10286,10 @@
     "pk": 139,
     "fields": {
       "user": 3,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 39,
       "parent_comment": null,
       "content": "공감합니다! 저도 비슷하게 느꼈어요",
@@ -9884,7 +10301,10 @@
     "pk": 140,
     "fields": {
       "user": 6,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 40,
       "parent_comment": null,
       "content": "오 이거 제 취향일 것 같은데 읽어봐야겠어요",
@@ -9896,7 +10316,10 @@
     "pk": 141,
     "fields": {
       "user": 11,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 40,
       "parent_comment": 140,
       "content": "후기 잘 읽었습니다!",
@@ -9908,7 +10331,10 @@
     "pk": 142,
     "fields": {
       "user": 17,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 40,
       "parent_comment": null,
       "content": "후기 잘 읽었습니다!",
@@ -9920,7 +10346,10 @@
     "pk": 143,
     "fields": {
       "user": 1,
-      "content_type": 15,
+      "content_type": [
+        "reviews",
+        "review"
+      ],
       "object_id": 531,
       "parent_comment": null,
       "content": "ㅁㄴㅇㅁㄴㅇㅁ",
@@ -9932,7 +10361,10 @@
     "pk": 144,
     "fields": {
       "user": 1,
-      "content_type": 15,
+      "content_type": [
+        "reviews",
+        "review"
+      ],
       "object_id": 531,
       "parent_comment": 143,
       "content": "ㅁㄴㅇㅁㄴㅇ",
@@ -9944,7 +10376,10 @@
     "pk": 1,
     "fields": {
       "user": 1,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 40,
       "created_at": "2025-12-21T13:59:01Z"
     }
@@ -9954,7 +10389,10 @@
     "pk": 2,
     "fields": {
       "user": 1,
-      "content_type": 9,
+      "content_type": [
+        "community",
+        "post"
+      ],
       "object_id": 36,
       "created_at": "2025-08-04T01:53:40Z"
     }
@@ -9964,7 +10402,10 @@
     "pk": 3,
     "fields": {
       "user": 1,
-      "content_type": 10,
+      "content_type": [
+        "community",
+        "comment"
+      ],
       "object_id": 123,
       "created_at": "2025-04-06T19:58:04Z"
     }
@@ -9974,7 +10415,10 @@
     "pk": 4,
     "fields": {
       "user": 1,
-      "content_type": 15,
+      "content_type": [
+        "reviews",
+        "review"
+      ],
       "object_id": 531,
       "created_at": "2025-03-15T17:58:48Z"
     }
@@ -23386,1238 +23830,6 @@
       "rating": 5,
       "created_at": "2025-06-30T15:22:52Z",
       "updated_at": "2025-06-30T15:22:52Z"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 1,
-    "fields": {
-      "name": "Can add user",
-      "content_type": 1,
-      "codename": "add_user"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 2,
-    "fields": {
-      "name": "Can change user",
-      "content_type": 1,
-      "codename": "change_user"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 3,
-    "fields": {
-      "name": "Can delete user",
-      "content_type": 1,
-      "codename": "delete_user"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 4,
-    "fields": {
-      "name": "Can view user",
-      "content_type": 1,
-      "codename": "view_user"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 5,
-    "fields": {
-      "name": "Can add follow",
-      "content_type": 2,
-      "codename": "add_follow"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 6,
-    "fields": {
-      "name": "Can change follow",
-      "content_type": 2,
-      "codename": "change_follow"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 7,
-    "fields": {
-      "name": "Can delete follow",
-      "content_type": 2,
-      "codename": "delete_follow"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 8,
-    "fields": {
-      "name": "Can view follow",
-      "content_type": 2,
-      "codename": "view_follow"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 9,
-    "fields": {
-      "name": "Can add aladin sync",
-      "content_type": 3,
-      "codename": "add_aladinsync"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 10,
-    "fields": {
-      "name": "Can change aladin sync",
-      "content_type": 3,
-      "codename": "change_aladinsync"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 11,
-    "fields": {
-      "name": "Can delete aladin sync",
-      "content_type": 3,
-      "codename": "delete_aladinsync"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 12,
-    "fields": {
-      "name": "Can view aladin sync",
-      "content_type": 3,
-      "codename": "view_aladinsync"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 13,
-    "fields": {
-      "name": "Can add aladin list item",
-      "content_type": 4,
-      "codename": "add_aladinlistitem"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 14,
-    "fields": {
-      "name": "Can change aladin list item",
-      "content_type": 4,
-      "codename": "change_aladinlistitem"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 15,
-    "fields": {
-      "name": "Can delete aladin list item",
-      "content_type": 4,
-      "codename": "delete_aladinlistitem"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 16,
-    "fields": {
-      "name": "Can view aladin list item",
-      "content_type": 4,
-      "codename": "view_aladinlistitem"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 17,
-    "fields": {
-      "name": "Can add book",
-      "content_type": 5,
-      "codename": "add_book"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 18,
-    "fields": {
-      "name": "Can change book",
-      "content_type": 5,
-      "codename": "change_book"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 19,
-    "fields": {
-      "name": "Can delete book",
-      "content_type": 5,
-      "codename": "delete_book"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 20,
-    "fields": {
-      "name": "Can view book",
-      "content_type": 5,
-      "codename": "view_book"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 21,
-    "fields": {
-      "name": "Can add bookmark",
-      "content_type": 6,
-      "codename": "add_bookmark"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 22,
-    "fields": {
-      "name": "Can change bookmark",
-      "content_type": 6,
-      "codename": "change_bookmark"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 23,
-    "fields": {
-      "name": "Can delete bookmark",
-      "content_type": 6,
-      "codename": "delete_bookmark"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 24,
-    "fields": {
-      "name": "Can view bookmark",
-      "content_type": 6,
-      "codename": "view_bookmark"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 25,
-    "fields": {
-      "name": "Can add board",
-      "content_type": 7,
-      "codename": "add_board"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 26,
-    "fields": {
-      "name": "Can change board",
-      "content_type": 7,
-      "codename": "change_board"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 27,
-    "fields": {
-      "name": "Can delete board",
-      "content_type": 7,
-      "codename": "delete_board"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 28,
-    "fields": {
-      "name": "Can view board",
-      "content_type": 7,
-      "codename": "view_board"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 29,
-    "fields": {
-      "name": "Can add prefix",
-      "content_type": 8,
-      "codename": "add_prefix"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 30,
-    "fields": {
-      "name": "Can change prefix",
-      "content_type": 8,
-      "codename": "change_prefix"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 31,
-    "fields": {
-      "name": "Can delete prefix",
-      "content_type": 8,
-      "codename": "delete_prefix"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 32,
-    "fields": {
-      "name": "Can view prefix",
-      "content_type": 8,
-      "codename": "view_prefix"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 33,
-    "fields": {
-      "name": "Can add post",
-      "content_type": 9,
-      "codename": "add_post"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 34,
-    "fields": {
-      "name": "Can change post",
-      "content_type": 9,
-      "codename": "change_post"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 35,
-    "fields": {
-      "name": "Can delete post",
-      "content_type": 9,
-      "codename": "delete_post"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 36,
-    "fields": {
-      "name": "Can view post",
-      "content_type": 9,
-      "codename": "view_post"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 37,
-    "fields": {
-      "name": "Can add comment",
-      "content_type": 10,
-      "codename": "add_comment"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 38,
-    "fields": {
-      "name": "Can change comment",
-      "content_type": 10,
-      "codename": "change_comment"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 39,
-    "fields": {
-      "name": "Can delete comment",
-      "content_type": 10,
-      "codename": "delete_comment"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 40,
-    "fields": {
-      "name": "Can view comment",
-      "content_type": 10,
-      "codename": "view_comment"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 41,
-    "fields": {
-      "name": "Can add like",
-      "content_type": 11,
-      "codename": "add_like"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 42,
-    "fields": {
-      "name": "Can change like",
-      "content_type": 11,
-      "codename": "change_like"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 43,
-    "fields": {
-      "name": "Can delete like",
-      "content_type": 11,
-      "codename": "delete_like"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 44,
-    "fields": {
-      "name": "Can view like",
-      "content_type": 11,
-      "codename": "view_like"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 45,
-    "fields": {
-      "name": "Can add grass daily",
-      "content_type": 12,
-      "codename": "add_grassdaily"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 46,
-    "fields": {
-      "name": "Can change grass daily",
-      "content_type": 12,
-      "codename": "change_grassdaily"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 47,
-    "fields": {
-      "name": "Can delete grass daily",
-      "content_type": 12,
-      "codename": "delete_grassdaily"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 48,
-    "fields": {
-      "name": "Can view grass daily",
-      "content_type": 12,
-      "codename": "view_grassdaily"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 49,
-    "fields": {
-      "name": "Can add book",
-      "content_type": 13,
-      "codename": "add_book"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 50,
-    "fields": {
-      "name": "Can change book",
-      "content_type": 13,
-      "codename": "change_book"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 51,
-    "fields": {
-      "name": "Can delete book",
-      "content_type": 13,
-      "codename": "delete_book"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 52,
-    "fields": {
-      "name": "Can view book",
-      "content_type": 13,
-      "codename": "view_book"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 53,
-    "fields": {
-      "name": "Can add ai review analysis",
-      "content_type": 14,
-      "codename": "add_aireviewanalysis"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 54,
-    "fields": {
-      "name": "Can change ai review analysis",
-      "content_type": 14,
-      "codename": "change_aireviewanalysis"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 55,
-    "fields": {
-      "name": "Can delete ai review analysis",
-      "content_type": 14,
-      "codename": "delete_aireviewanalysis"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 56,
-    "fields": {
-      "name": "Can view ai review analysis",
-      "content_type": 14,
-      "codename": "view_aireviewanalysis"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 57,
-    "fields": {
-      "name": "Can add review",
-      "content_type": 15,
-      "codename": "add_review"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 58,
-    "fields": {
-      "name": "Can change review",
-      "content_type": 15,
-      "codename": "change_review"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 59,
-    "fields": {
-      "name": "Can delete review",
-      "content_type": 15,
-      "codename": "delete_review"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 60,
-    "fields": {
-      "name": "Can view review",
-      "content_type": 15,
-      "codename": "view_review"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 61,
-    "fields": {
-      "name": "Can add log entry",
-      "content_type": 16,
-      "codename": "add_logentry"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 62,
-    "fields": {
-      "name": "Can change log entry",
-      "content_type": 16,
-      "codename": "change_logentry"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 63,
-    "fields": {
-      "name": "Can delete log entry",
-      "content_type": 16,
-      "codename": "delete_logentry"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 64,
-    "fields": {
-      "name": "Can view log entry",
-      "content_type": 16,
-      "codename": "view_logentry"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 65,
-    "fields": {
-      "name": "Can add permission",
-      "content_type": 17,
-      "codename": "add_permission"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 66,
-    "fields": {
-      "name": "Can change permission",
-      "content_type": 17,
-      "codename": "change_permission"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 67,
-    "fields": {
-      "name": "Can delete permission",
-      "content_type": 17,
-      "codename": "delete_permission"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 68,
-    "fields": {
-      "name": "Can view permission",
-      "content_type": 17,
-      "codename": "view_permission"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 69,
-    "fields": {
-      "name": "Can add group",
-      "content_type": 18,
-      "codename": "add_group"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 70,
-    "fields": {
-      "name": "Can change group",
-      "content_type": 18,
-      "codename": "change_group"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 71,
-    "fields": {
-      "name": "Can delete group",
-      "content_type": 18,
-      "codename": "delete_group"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 72,
-    "fields": {
-      "name": "Can view group",
-      "content_type": 18,
-      "codename": "view_group"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 73,
-    "fields": {
-      "name": "Can add content type",
-      "content_type": 19,
-      "codename": "add_contenttype"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 74,
-    "fields": {
-      "name": "Can change content type",
-      "content_type": 19,
-      "codename": "change_contenttype"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 75,
-    "fields": {
-      "name": "Can delete content type",
-      "content_type": 19,
-      "codename": "delete_contenttype"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 76,
-    "fields": {
-      "name": "Can view content type",
-      "content_type": 19,
-      "codename": "view_contenttype"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 77,
-    "fields": {
-      "name": "Can add session",
-      "content_type": 20,
-      "codename": "add_session"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 78,
-    "fields": {
-      "name": "Can change session",
-      "content_type": 20,
-      "codename": "change_session"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 79,
-    "fields": {
-      "name": "Can delete session",
-      "content_type": 20,
-      "codename": "delete_session"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 80,
-    "fields": {
-      "name": "Can view session",
-      "content_type": 20,
-      "codename": "view_session"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 81,
-    "fields": {
-      "name": "Can add site",
-      "content_type": 21,
-      "codename": "add_site"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 82,
-    "fields": {
-      "name": "Can change site",
-      "content_type": 21,
-      "codename": "change_site"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 83,
-    "fields": {
-      "name": "Can delete site",
-      "content_type": 21,
-      "codename": "delete_site"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 84,
-    "fields": {
-      "name": "Can view site",
-      "content_type": 21,
-      "codename": "view_site"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 85,
-    "fields": {
-      "name": "Can add email address",
-      "content_type": 22,
-      "codename": "add_emailaddress"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 86,
-    "fields": {
-      "name": "Can change email address",
-      "content_type": 22,
-      "codename": "change_emailaddress"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 87,
-    "fields": {
-      "name": "Can delete email address",
-      "content_type": 22,
-      "codename": "delete_emailaddress"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 88,
-    "fields": {
-      "name": "Can view email address",
-      "content_type": 22,
-      "codename": "view_emailaddress"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 89,
-    "fields": {
-      "name": "Can add email confirmation",
-      "content_type": 23,
-      "codename": "add_emailconfirmation"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 90,
-    "fields": {
-      "name": "Can change email confirmation",
-      "content_type": 23,
-      "codename": "change_emailconfirmation"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 91,
-    "fields": {
-      "name": "Can delete email confirmation",
-      "content_type": 23,
-      "codename": "delete_emailconfirmation"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 92,
-    "fields": {
-      "name": "Can view email confirmation",
-      "content_type": 23,
-      "codename": "view_emailconfirmation"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 93,
-    "fields": {
-      "name": "Can add social application",
-      "content_type": 24,
-      "codename": "add_socialapp"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 94,
-    "fields": {
-      "name": "Can change social application",
-      "content_type": 24,
-      "codename": "change_socialapp"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 95,
-    "fields": {
-      "name": "Can delete social application",
-      "content_type": 24,
-      "codename": "delete_socialapp"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 96,
-    "fields": {
-      "name": "Can view social application",
-      "content_type": 24,
-      "codename": "view_socialapp"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 97,
-    "fields": {
-      "name": "Can add social account",
-      "content_type": 25,
-      "codename": "add_socialaccount"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 98,
-    "fields": {
-      "name": "Can change social account",
-      "content_type": 25,
-      "codename": "change_socialaccount"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 99,
-    "fields": {
-      "name": "Can delete social account",
-      "content_type": 25,
-      "codename": "delete_socialaccount"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 100,
-    "fields": {
-      "name": "Can view social account",
-      "content_type": 25,
-      "codename": "view_socialaccount"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 101,
-    "fields": {
-      "name": "Can add social application token",
-      "content_type": 26,
-      "codename": "add_socialtoken"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 102,
-    "fields": {
-      "name": "Can change social application token",
-      "content_type": 26,
-      "codename": "change_socialtoken"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 103,
-    "fields": {
-      "name": "Can delete social application token",
-      "content_type": 26,
-      "codename": "delete_socialtoken"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 104,
-    "fields": {
-      "name": "Can view social application token",
-      "content_type": 26,
-      "codename": "view_socialtoken"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 105,
-    "fields": {
-      "name": "Can add Token",
-      "content_type": 27,
-      "codename": "add_token"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 106,
-    "fields": {
-      "name": "Can change Token",
-      "content_type": 27,
-      "codename": "change_token"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 107,
-    "fields": {
-      "name": "Can delete Token",
-      "content_type": 27,
-      "codename": "delete_token"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 108,
-    "fields": {
-      "name": "Can view Token",
-      "content_type": 27,
-      "codename": "view_token"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 109,
-    "fields": {
-      "name": "Can add Token",
-      "content_type": 28,
-      "codename": "add_tokenproxy"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 110,
-    "fields": {
-      "name": "Can change Token",
-      "content_type": 28,
-      "codename": "change_tokenproxy"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 111,
-    "fields": {
-      "name": "Can delete Token",
-      "content_type": 28,
-      "codename": "delete_tokenproxy"
-    }
-  },
-  {
-    "model": "auth.permission",
-    "pk": 112,
-    "fields": {
-      "name": "Can view Token",
-      "content_type": 28,
-      "codename": "view_tokenproxy"
-    }
-  },
-  {
-    "model": "contenttypes.contenttype",
-    "pk": 1,
-    "fields": {
-      "app_label": "users",
-      "model": "user"
-    }
-  },
-  {
-    "model": "contenttypes.contenttype",
-    "pk": 2,
-    "fields": {
-      "app_label": "users",
-      "model": "follow"
-    }
-  },
-  {
-    "model": "contenttypes.contenttype",
-    "pk": 3,
-    "fields": {
-      "app_label": "books",
-      "model": "aladinsync"
-    }
-  },
-  {
-    "model": "contenttypes.contenttype",
-    "pk": 4,
-    "fields": {
-      "app_label": "books",
-      "model": "aladinlistitem"
-    }
-  },
-  {
-    "model": "contenttypes.contenttype",
-    "pk": 5,
-    "fields": {
-      "app_label": "books",
-      "model": "book"
-    }
-  },
-  {
-    "model": "contenttypes.contenttype",
-    "pk": 6,
-    "fields": {
-      "app_label": "books",
-      "model": "bookmark"
-    }
-  },
-  {
-    "model": "contenttypes.contenttype",
-    "pk": 7,
-    "fields": {
-      "app_label": "community",
-      "model": "board"
-    }
-  },
-  {
-    "model": "contenttypes.contenttype",
-    "pk": 8,
-    "fields": {
-      "app_label": "community",
-      "model": "prefix"
-    }
-  },
-  {
-    "model": "contenttypes.contenttype",
-    "pk": 9,
-    "fields": {
-      "app_label": "community",
-      "model": "post"
-    }
-  },
-  {
-    "model": "contenttypes.contenttype",
-    "pk": 10,
-    "fields": {
-      "app_label": "community",
-      "model": "comment"
-    }
-  },
-  {
-    "model": "contenttypes.contenttype",
-    "pk": 11,
-    "fields": {
-      "app_label": "community",
-      "model": "like"
-    }
-  },
-  {
-    "model": "contenttypes.contenttype",
-    "pk": 12,
-    "fields": {
-      "app_label": "grass",
-      "model": "grassdaily"
-    }
-  },
-  {
-    "model": "contenttypes.contenttype",
-    "pk": 13,
-    "fields": {
-      "app_label": "ai_curator",
-      "model": "book"
-    }
-  },
-  {
-    "model": "contenttypes.contenttype",
-    "pk": 14,
-    "fields": {
-      "app_label": "ai_curator",
-      "model": "aireviewanalysis"
-    }
-  },
-  {
-    "model": "contenttypes.contenttype",
-    "pk": 15,
-    "fields": {
-      "app_label": "reviews",
-      "model": "review"
-    }
-  },
-  {
-    "model": "contenttypes.contenttype",
-    "pk": 16,
-    "fields": {
-      "app_label": "admin",
-      "model": "logentry"
-    }
-  },
-  {
-    "model": "contenttypes.contenttype",
-    "pk": 17,
-    "fields": {
-      "app_label": "auth",
-      "model": "permission"
-    }
-  },
-  {
-    "model": "contenttypes.contenttype",
-    "pk": 18,
-    "fields": {
-      "app_label": "auth",
-      "model": "group"
-    }
-  },
-  {
-    "model": "contenttypes.contenttype",
-    "pk": 19,
-    "fields": {
-      "app_label": "contenttypes",
-      "model": "contenttype"
-    }
-  },
-  {
-    "model": "contenttypes.contenttype",
-    "pk": 20,
-    "fields": {
-      "app_label": "sessions",
-      "model": "session"
-    }
-  },
-  {
-    "model": "contenttypes.contenttype",
-    "pk": 21,
-    "fields": {
-      "app_label": "sites",
-      "model": "site"
-    }
-  },
-  {
-    "model": "contenttypes.contenttype",
-    "pk": 22,
-    "fields": {
-      "app_label": "account",
-      "model": "emailaddress"
-    }
-  },
-  {
-    "model": "contenttypes.contenttype",
-    "pk": 23,
-    "fields": {
-      "app_label": "account",
-      "model": "emailconfirmation"
-    }
-  },
-  {
-    "model": "contenttypes.contenttype",
-    "pk": 24,
-    "fields": {
-      "app_label": "socialaccount",
-      "model": "socialapp"
-    }
-  },
-  {
-    "model": "contenttypes.contenttype",
-    "pk": 25,
-    "fields": {
-      "app_label": "socialaccount",
-      "model": "socialaccount"
-    }
-  },
-  {
-    "model": "contenttypes.contenttype",
-    "pk": 26,
-    "fields": {
-      "app_label": "socialaccount",
-      "model": "socialtoken"
-    }
-  },
-  {
-    "model": "contenttypes.contenttype",
-    "pk": 27,
-    "fields": {
-      "app_label": "authtoken",
-      "model": "token"
-    }
-  },
-  {
-    "model": "contenttypes.contenttype",
-    "pk": 28,
-    "fields": {
-      "app_label": "authtoken",
-      "model": "tokenproxy"
     }
   },
   {
