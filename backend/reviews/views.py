@@ -266,3 +266,20 @@ def today_reviews(request):
     
     data = ReviewListSerializer(qs, many=True, context={"request": request, "liked_ids": set()}).data
     return Response(data)
+
+# 9) 대표 리뷰 설정
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def set_representative_review(request, review_id):
+    review = Review.objects.filter(id=review_id, user=request.user).first()
+    if not review:
+        return Response({"error": "Review not found"}, status=status.HTTP_404_NOT_FOUND)
+    
+    # 해당 날짜의 다른 리뷰들 해제
+    target_date = review.created_at.date()
+    Review.objects.filter(user=request.user, created_at__date=target_date).update(is_representative=False)
+    
+    review.is_representative = True
+    review.save()
+    
+    return Response({"status": "success"})

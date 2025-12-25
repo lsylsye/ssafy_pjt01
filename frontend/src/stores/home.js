@@ -41,15 +41,21 @@ export const useHomeStore = defineStore("home", {
     async fetchLatestReviews() {
       this.loadingReviews = true;
       try {
+        // 캐시 무효화를 위해 타임스탬프 추가
         const res = await getReviews();
-        // 최신순 정렬은 백엔드에서 해줄 수도 있지만 안전하게 체크
         const data = Array.isArray(res.data) ? res.data : [];
-        // 날짜 내림차순 정렬 (최신순)
-        const sorted = data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
+        // 날짜 내림차순 정렬 (최신순) - created_at 기준
+        const sorted = data.sort((a, b) => {
+          const dateA = new Date(a.created_at);
+          const dateB = new Date(b.created_at);
+          return dateB - dateA;
+        });
+
         this.latestReviews = sorted.slice(0, 6).map(r => ({
           id: r.id,
           user: r.user_nickname || "익명",
-          time: r.created_at, // ReviewGrid에서 변환 필요
+          time: r.created_at,
           bookTitle: r.book_title || "제목 없음",
           content: r.content || "",
           rating: r.rating,

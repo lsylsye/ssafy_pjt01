@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from django.contrib.contenttypes.fields import GenericRelation
 
 class Review(models.Model):
     board = models.ForeignKey("community.Board", on_delete=models.CASCADE, related_name="reviews_list")
@@ -15,9 +16,13 @@ class Review(models.Model):
     cover = models.URLField(blank=True)
 
     rating = models.PositiveSmallIntegerField(null=True, blank=True)  # 1~5
+    is_representative = models.BooleanField(default=False)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    comments_list = GenericRelation("community.Comment")
+    likes_list = GenericRelation("community.Like")
 
     class Meta:
         ordering = ["-id"]

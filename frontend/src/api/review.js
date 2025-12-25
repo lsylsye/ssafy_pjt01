@@ -96,3 +96,7 @@ export function updateReview(reviewId, payload) {
 export function deleteReview(reviewId) {
     return api.delete(`review/${reviewId}/`);
 }
+
+export function setRepresentativeReview(reviewId) {
+    return api.post(`review/${reviewId}/representative/`);
+}

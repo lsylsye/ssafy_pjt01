@@ -12,4 +12,5 @@ urlpatterns = [
     path("<int:review_id>/comments/<int:comment_id>/", comment_delete),
     path("user/<int:user_id>/", views.user_review_list),
     path("today/", views.today_reviews),
+    path("<int:review_id>/representative/", views.set_representative_review),
 ]

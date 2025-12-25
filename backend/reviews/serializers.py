@@ -77,7 +77,7 @@ class ReviewListSerializer(serializers.ModelSerializer):
             "book_title", "book_author",
             "isbn13", "publisher", "pub_date", "cover",
             "rating", "content",
-            "liked",                 
+            "liked", "is_representative",
             "like_count", "comment_count",
             "created_at", "updated_at",
         ]

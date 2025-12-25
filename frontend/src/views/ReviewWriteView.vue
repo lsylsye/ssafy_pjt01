@@ -88,12 +88,8 @@ const submitReview = async () => {
         await createReview(payload);
         uiStore.addToast({ message: '기록이 성공적으로 심어졌습니다! 🌱', variant: 'success' });
         
-        // 도서 상세에서 왔다면 뒤로가기, 그 외(직접 진입 등)는 커뮤니티나 마이페이지로
-        if (route.query.isbn13) {
-            router.back();
-        } else {
-            router.push('/community');
-        }
+        // 이전 페이지로 돌아가기
+        router.back();
     } catch (e) {
         console.error(e);
         if (e.response?.status === 401) {

@@ -75,6 +75,18 @@ export function deletePost(id) {
 }
 
 /**
+ * PATCH /api/community/free/{id}/
+ */
+export function updatePost(id, payload) {
+  const token = localStorage.getItem("access_token");
+  const config = {};
+  if (token) {
+    config.headers = { Authorization: `Bearer ${token}` };
+  }
+  return api.patch(`community/free/${id}/`, payload, config);
+}
+
+/**
  * POST /api/community/free/{id}/like/
  */
 export function toggleLike(id) {

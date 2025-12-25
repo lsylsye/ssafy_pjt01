@@ -1,12 +1,12 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { getPostDetail, getComments, createComment, deleteComment } from '@/api/community';
+import { getPostDetail, getComments, createComment, deleteComment, updatePost, deletePost } from '@/api/community';
 import { useAuthStore } from "@/stores/auth.store";
 import { useCommunityStore } from "@/stores/community.store";
 import { useUiStore } from "@/stores/ui.store";
 import { meApi } from '@/api/auth.store';
-import { Heart, MessageCircle, Reply, Trash2, SendHorizontal } from 'lucide-vue-next';
+import { Heart, MessageCircle, Reply, Trash2, SendHorizontal, MoreHorizontal } from 'lucide-vue-next';
 
 const route = useRoute();
 const router = useRouter();
@@ -21,6 +21,11 @@ const replyContent = ref("");
 const loading = ref(true);
 const userProfile = ref(null);
 const replyTargetId = ref(null);
+const showMenu = ref(false);
+const isEditing = ref(false);
+const editTitle = ref("");
+const editContent = ref("");
+const editPrefix = ref("");
 
 const fetchData = async () => {
     try {
@@ -120,6 +125,44 @@ const handleDeleteComment = async (commentId) => {
     }
 };
 
+const startEdit = () => {
+    isEditing.value = true;
+    editTitle.value = post.value.title;
+    editContent.value = post.value.content;
+    editPrefix.value = post.value.prefix_name || "";
+    showMenu.value = false;
+};
+
+const handleUpdatePost = async () => {
+    if (!editTitle.value.trim() || !editContent.value.trim()) return;
+    try {
+        await updatePost(post.value.id, { 
+            title: editTitle.value, 
+            content: editContent.value,
+            prefix: editPrefix.value
+        });
+        post.value.title = editTitle.value;
+        post.value.content = editContent.value;
+        post.value.prefix_name = editPrefix.value;
+        isEditing.value = false;
+        uiStore.addToast({ message: '게시글이 수정되었습니다.', variant: 'success' });
+    } catch (e) {
+        uiStore.alert('게시글 수정에 실패했습니다.');
+    }
+};
+
+const handleDeletePost = async () => {
+    const ok = await uiStore.confirm('게시글을 정말 삭제하시겠습니까?', '게시글 삭제');
+    if (!ok) return;
+    try {
+        await deletePost(post.value.id);
+        uiStore.addToast({ message: '게시글이 삭제되었습니다.', variant: 'success' });
+        router.back();
+    } catch (e) {
+        uiStore.alert('게시글 삭제에 실패했습니다.');
+    }
+};
+
 const submitComment = async () => {
     if (!authStore.access && !localStorage.getItem("access_token")) {
         uiStore.alert('로그인이 필요합니다.');
@@ -216,28 +259,51 @@ onMounted(() => {
             <span class="badge">
                 {{ normalizedPrefix(post.prefix_name) }}
             </span>
-            <div class="post-title">
+            <div class="post-title" v-if="!isEditing">
                 {{ post.title }}
             </div>
 
-            <div class="post-meta">
-                <div 
-                    class="avatar clickable"
-                    @click="goProfile(post.user_id || post.user)"
-                    :style="{ 
-                        backgroundImage: post.user_profile_image ? `url(${getProfileImage(post.user_profile_image)})` : 'none' 
-                    }"
-                ></div>
-                <div class="user-info">
-                    <div class="clickable" @click="goProfile(post.user_id || post.user)">
-                        {{ post.user_nickname }}
+            <div class="user-header">
+                <div class="post-meta">
+                    <div 
+                        class="avatar clickable"
+                        @click="goProfile(post.user_id || post.user)"
+                        :style="{ 
+                            backgroundImage: post.user_profile_image ? `url(${getProfileImage(post.user_profile_image)})` : 'none' 
+                        }"
+                    ></div>
+                    <div class="user-info">
+                        <div class="clickable" @click="goProfile(post.user_id || post.user)">
+                            {{ post.user_nickname }}
+                        </div>
+                        <div>{{ new Date(post.created_at).toLocaleString() }}</div>
                     </div>
-                    <div>{{ new Date(post.created_at).toLocaleString() }}</div>
+                </div>
+
+                <!-- 메뉴 버튼 -->
+                <div class="menu-wrap" v-if="userProfile && (post.user_id === userProfile.id || post.user === userProfile.id)">
+                    <button class="more-btn" @click="showMenu = !showMenu">
+                        <MoreHorizontal :size="20" />
+                    </button>
+                    <div v-if="showMenu" class="dropdown-menu glass-panel" @click.stop>
+                        <button class="menu-item" @click="startEdit">수정하기</button>
+                        <button class="menu-item delete" @click="handleDeletePost">삭제하기</button>
+                    </div>
                 </div>
             </div>
 
-            <div class="post-content">
-                {{ post.content }}
+            <div v-if="!isEditing" class="post-body">
+                <div class="post-content">
+                    {{ post.content }}
+                </div>
+            </div>
+            <div v-else class="edit-mode">
+                <input v-model="editTitle" class="edit-title-input" placeholder="제목을 입력하세요"/>
+                <textarea v-model="editContent" class="edit-textarea" placeholder="내용을 입력하세요"></textarea>
+                <div class="edit-actions">
+                    <button class="btn-cancel" @click="isEditing = false">취소</button>
+                    <button class="btn-save" @click="handleUpdatePost">저장</button>
+                </div>
             </div>
 
             <div class="action-bar">
@@ -402,9 +468,6 @@ onMounted(() => {
 
 <style scoped>
 .page {
-    /* 변수 스코프 문제 해결 위해 직접 정의하거나 App.vue/global css에 있어야 함.
-       여기선 직접 정의
-    */
     --primary: #00d15b;
     --bg: #f2f4f6;
     --text: #191f28;
@@ -446,7 +509,6 @@ onMounted(() => {
     display: flex;
     align-items: center;
     gap: 12px;
-    margin-bottom: 20px;
 }
 .avatar {
     width: 40px;
@@ -477,7 +539,7 @@ onMounted(() => {
     color: #333;
     min-height: 100px;
     margin-bottom: 30px;
-    white-space: pre-wrap; /* 줄바꿈 반영 */
+    white-space: pre-wrap;
 }
 
 .action-bar {
@@ -680,6 +742,7 @@ onMounted(() => {
     background: #eee;
     background-size: cover;
     background-position: center;
+    flex-shrink: 0;
 }
 .reply-input-box {
     flex: 1;
@@ -712,4 +775,49 @@ onMounted(() => {
 .r-btn:hover {
     opacity: 0.7;
 }
+
+.user-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+}
+
+.menu-wrap { position: relative; }
+.more-btn { background: none; border: none; color: #adb5bd; cursor: pointer; padding: 4px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
+.more-btn:hover { color: #191f28; background: #f2f4f6; }
+
+.dropdown-menu {
+  position: absolute; top: 100%; right: 0; min-width: 120px;
+  background: white; border-radius: 12px; padding: 8px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1); z-index: 50;
+  display: flex; flex-direction: column; gap: 4px;
+}
+.menu-item {
+  background: none; border: none; width: 100%; padding: 10px;
+  font-size: 0.9rem; font-weight: 700; text-align: left;
+  border-radius: 8px; cursor: pointer; color: #4e5968;
+}
+.menu-item:hover { background: #f2f4f6; color: #191f28; }
+.menu-item.delete { color: #ff6b6b; }
+.menu-item.delete:hover { background: #fff0f0; }
+
+.edit-mode { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
+.edit-title-input {
+  width: 100%; padding: 12px 16px; border-radius: 12px;
+  border: 1px solid #e5e8eb; font-size: 1.2rem; font-weight: 700;
+  outline: none; background: #f9fafb;
+}
+.edit-title-input:focus { border-color: #00d15b; background: white; }
+
+.edit-textarea {
+  width: 100%; height: 200px; padding: 16px; border-radius: 16px;
+  border: 1px solid #e5e8eb; font-family: inherit; font-size: 1rem;
+  resize: none; background: #f9fafb; outline: none;
+}
+.edit-textarea:focus { border-color: #00d15b; background: white; }
+
+.edit-actions { display: flex; justify-content: flex-end; gap: 8px; }
+.btn-cancel { background: #f2f4f6; border: none; padding: 10px 20px; border-radius: 12px; font-weight: 700; cursor: pointer; }
+.btn-save { background: #00d15b; color: white; border: none; padding: 10px 20px; border-radius: 12px; font-weight: 700; cursor: pointer; }
 </style>

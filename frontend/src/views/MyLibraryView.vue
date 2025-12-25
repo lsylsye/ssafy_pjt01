@@ -288,7 +288,7 @@
 import { ref, computed, onMounted, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth.store';
-import { getMyReviews, getTodayReviews } from '@/api/review';
+import { getMyReviews, getTodayReviews, setRepresentativeReview } from '@/api/review';
 import { getMyGrass, getMyLevel, syncTodayGrass } from '@/api/grass';
 import { getMyBookmarks } from '@/api/mypage';
 import { User, Check, Heart, MessageCircle, Share2, MoreHorizontal, Send } from 'lucide-vue-next';
@@ -447,7 +447,6 @@ const currentMonth = ref(now.getMonth());
 // 팝업
 const showDayModal = ref(false);
 const selectedDay = ref(null);
-const forcedFeatured = ref({});
 
 const sortedReviews = computed(() => {
   return [...reviews.value].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
@@ -563,12 +562,8 @@ const calendarDays = computed(() => {
      
      let featured = null;
      if (dayReviews.length > 0) {
-        const forcedId = forcedFeatured.value[dateStr];
-        if (forcedId) {
-           featured = dayReviews.find(r => r.id === forcedId) || dayReviews[dayReviews.length - 1];
-        } else {
-           featured = dayReviews[dayReviews.length - 1]; // Last review of the day
-        }
+        // 백엔드에서 설정된 대표 리뷰가 있다면 우선, 없으면 마지막 리뷰
+        featured = dayReviews.find(r => r.is_representative) || dayReviews[dayReviews.length - 1];
      }
 
      days.push({
@@ -624,10 +619,18 @@ const selectedDayReviews = computed(() => {
   return selectedDay.value?.reviews || [];
 });
 
-const setFeaturedReview = (rev) => {
+const setFeaturedReview = async (rev) => {
   if (!selectedDay.value) return;
-  forcedFeatured.value[selectedDay.value.fullDate] = rev.id;
-  showDayModal.value = false;
+  try {
+    await setRepresentativeReview(rev.id);
+    // 선택 후 최신 데이터 다시 로드하여 캘린더 반영
+    const res = await getMyReviews();
+    reviews.value = res.data || [];
+    showDayModal.value = false;
+  } catch (err) {
+    console.error("대표 리뷰 설정 실패:", err);
+    alert("대표 리뷰 설정에 실패했습니다.");
+  }
 };
 </script>
 
