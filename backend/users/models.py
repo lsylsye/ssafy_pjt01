@@ -13,7 +13,7 @@ class User(AbstractUser):
     bio = models.TextField(blank=True, default="")  # 소개글
 
     FAVORITE_COUNTRIES = [
-        ('KR', '한국'),
+        ('KR', '대한민국'),
         ('JP', '일본'),
         ('CN', '중화권'),
         ('EN', '영미권'),
@@ -24,7 +24,8 @@ class User(AbstractUser):
         ("novel_poem_drama", "소설/시/희곡"),
         ("business", "경제/경영"),
         ("self_help", "자기계발"),
-        ("humanities", "인문/교양"),
+        ("humanities", "인문/철학"),
+        ("hobby_practical", "취미/실용"),
         ("comic_ebook", "만화/eBook"),
         ("science", "과학"),
     ]

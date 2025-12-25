@@ -105,6 +105,13 @@ def boards_list(request):
 # FREE
 # -----------------------------
 
+from rest_framework.pagination import PageNumberPagination
+
+
+class CommunityPagination(PageNumberPagination):
+    page_size = 7
+
+
 # 1) 자유 게시판 목록: /api/community/free/
 @api_view(["GET"])
 def free_list(request):
@@ -112,7 +119,7 @@ def free_list(request):
     if board is None:
         return Response({"error": "Board not found"}, status=status.HTTP_404_NOT_FOUND)
 
-    qs = Post.objects.filter(board=board).select_related("user", "prefix").order_by("-id")
+    qs = Post.objects.filter(board=board).select_related("user", "prefix").order_by("-created_at", "-id")
 
     q = (request.query_params.get("q") or "").strip()
     if q:
@@ -122,19 +129,22 @@ def free_list(request):
     if prefix:
         qs = qs.filter(prefix__name=prefix)
 
-    post_ids = list(qs.values_list("id", flat=True))
+    paginator = CommunityPagination()
+    page = paginator.paginate_queryset(qs, request)
+
+    post_ids = [p.id for p in page]
     like_map = _like_count_map(Post, post_ids)
     comment_map = _comment_count_map(Post, post_ids)
     liked_ids = _bulk_liked_ids(request, Post, post_ids)
 
     data = []
-    for p in qs:
+    for p in page:
         row = PostListSerializer(p, context={"request": request, "liked_ids": liked_ids}).data
         row["like_count"] = like_map.get(p.id, 0)
         row["comment_count"] = comment_map.get(p.id, 0)
         data.append(row)
 
-    return Response(data)
+    return paginator.get_paginated_response(data)
 
 
 # 2) 자유 글 작성: /api/community/free/write/

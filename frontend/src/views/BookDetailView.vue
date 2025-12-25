@@ -28,6 +28,12 @@
                 <span>{{ book.publisher || "-" }}</span>
               </div>
 
+              <div class="book-rating-info">
+                <span class="star-icon">★</span>
+                <span class="rating-val">{{ (book.customerReviewRank / 2).toFixed(1) }}</span>
+                <span class="sales-val">(판매지수 {{ book.sales_point?.toLocaleString() }})</span>
+              </div>
+
               <div class="action-row">
                 <button class="btn-primary" type="button" @click="goWriteReview">
                   <PenLine :size="18" /> 기록 심기
@@ -164,6 +170,8 @@ const book = ref({
   cover: "",
   description: "",
   is_bookmarked: false,
+  customerReviewRank: 0,
+  sales_point: 0,
   review_count: 0,
   reviews: []
 });
@@ -225,7 +233,7 @@ async function fetchBook() {
   try {
     if (!isbn13.value) throw new Error("isbn13가 없습니다.");
 
-    const res = await api.get(`books/${encodeURIComponent(isbn13.value)}/`, { auth: false });
+    const res = await api.get(`books/${encodeURIComponent(isbn13.value)}/`);
     const d = res?.data || {};
 
     book.value = {
@@ -236,6 +244,8 @@ async function fetchBook() {
       cover: d.cover || "",
       description: d.description || "",
       is_bookmarked: !!d.is_bookmarked,
+      customerReviewRank: d.customerReviewRank || 0,
+      sales_point: d.sales_point || 0,
       review_count: d.review_count || 0,
       reviews: Array.isArray(d.reviews) ? d.reviews : []
     };
@@ -255,7 +265,7 @@ async function fetchAi() {
   try {
     if (!isbn13.value) throw new Error("isbn13가 없습니다.");
 
-    const res = await api.get(`ai_curator/${encodeURIComponent(isbn13.value)}/`, { auth: false });
+    const res = await api.get(`ai_curator/${encodeURIComponent(isbn13.value)}/`);
     const d = res?.data || {};
 
     ai.value = {
@@ -398,6 +408,33 @@ watch(
   margin-bottom: 24px;
 }
 .dot { margin: 0 4px; opacity: 0.5; }
+
+.rating-max {
+  font-size: 0.95rem;
+  color: #8b95a1;
+  font-weight: 500;
+}
+
+.book-rating-info {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 24px;
+}
+.star-icon {
+  color: #FFD700;
+  font-size: 1.2rem;
+}
+.rating-val {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #191f28;
+}
+.sales-val {
+  font-size: 0.95rem;
+  color: #8b95a1;
+  font-weight: 400;
+}
 
 .action-row { display: flex; gap: 10px; }
 .btn-primary, .btn-secondary {

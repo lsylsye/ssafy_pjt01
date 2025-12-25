@@ -170,20 +170,37 @@
       <div v-show="activeTab === 'review'" class="section-content animate-in">
         <div v-if="loading" class="loading-state">기록을 불러오는 중...</div>
         <div v-else-if="reviews.length === 0" class="empty-state">아직 작성한 리뷰가 없습니다.</div>
-        <div v-else class="review-grid">
-          <div v-for="rev in sortedReviews" :key="rev.id" class="rev-item" @click="goReviewDetail(rev.id)">
-            <div class="rev-cover-box">
-              <img :src="rev.cover" alt="" />
-              <div class="rev-spine"></div>
-            </div>
-            <div class="rev-main">
-              <div class="rev-top">
-                <span class="rev-title">{{ rev.book_title }}</span>
-                <span class="rev-star">★ {{ rev.rating }}</span>
+        <div v-else>
+          <div class="review-grid">
+            <div v-for="rev in paginatedReviews" :key="rev.id" class="rev-item" @click="goReviewDetail(rev.id)">
+              <div class="rev-cover-box">
+                <img :src="rev.cover" alt="" />
+                <div class="rev-spine"></div>
               </div>
-              <p class="rev-txt">{{ rev.content }}</p>
-              <span class="rev-date">{{ formatDate(rev.created_at) }}</span>
+              <div class="rev-main">
+                <div class="rev-top">
+                  <span class="rev-title">{{ rev.book_title }}</span>
+                  <span class="rev-star">★ {{ rev.rating }}</span>
+                </div>
+                <p class="rev-txt">{{ rev.content }}</p>
+                <span class="rev-date">{{ formatDate(rev.created_at) }}</span>
+              </div>
             </div>
+          </div>
+
+          <!-- 리뷰 페이지네이션 -->
+          <div v-if="reviewTotalPages > 1" class="review-pagination">
+            <button 
+              class="pg-btn" 
+              :disabled="reviewCurrentPage === 1"
+              @click="reviewCurrentPage--"
+            > 이전 </button>
+            <span class="pg-info">{{ reviewCurrentPage }} / {{ reviewTotalPages }}</span>
+            <button 
+              class="pg-btn" 
+              :disabled="reviewCurrentPage === reviewTotalPages"
+              @click="reviewCurrentPage++"
+            > 다음 </button>
           </div>
         </div>
       </div>
@@ -434,6 +451,17 @@ const forcedFeatured = ref({});
 
 const sortedReviews = computed(() => {
   return [...reviews.value].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+});
+
+// 리뷰 페이지네이션 관련
+const reviewCurrentPage = ref(1);
+const reviewPageSize = 9;
+const reviewTotalPages = computed(() => Math.ceil(sortedReviews.value.length / reviewPageSize));
+
+const paginatedReviews = computed(() => {
+  const start = (reviewCurrentPage.value - 1) * reviewPageSize;
+  const end = start + reviewPageSize;
+  return sortedReviews.value.slice(start, end);
 });
 
 const syncActivity = async () => {
@@ -981,15 +1009,15 @@ const setFeaturedReview = (rev) => {
 }
 
 .calendar-card {
-  max-width: 700px;
+  max-width: 600px;
   margin: 0 auto;
-  padding: 30px;
+  padding: 20px 24px;
 }
 .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
-.day-label { text-align: center; color: #8b95a1; font-weight: 700; font-size: 0.8rem; padding-bottom: 15px; }
+.day-label { text-align: center; color: #8b95a1; font-weight: 700; font-size: 0.8rem; padding-bottom: 12px; }
 .day-label.sun { color: #ff6b6b; }
 .day-label.sat { color: #4d96ff; }
-.day-cell { aspect-ratio: 1/1.4; border-radius: 8px; background: #f2f4f6; display: flex; align-items: center; justify-content: center; color: #adb5bd; font-weight: 700; position: relative; cursor: pointer; font-size: 0.85rem; }
+.day-cell { aspect-ratio: 1/1.3; border-radius: 8px; background: #f2f4f6; display: flex; align-items: center; justify-content: center; color: #adb5bd; font-weight: 700; position: relative; cursor: pointer; font-size: 0.85rem; }
 .day-cell.not-current { opacity: 0.3; pointer-events: none; }
 .day-cell.filled { background-size: cover; background-position: center; color: transparent; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
 .star-badge { position: absolute; top: 4px; right: 4px; background: rgba(0,0,0,0.6); color: #ffd700; font-size: 0.65rem; padding: 2px 5px; border-radius: 6px; backdrop-filter: blur(2px); font-weight: 800; }
@@ -1008,4 +1036,36 @@ const setFeaturedReview = (rev) => {
 .day-rev-title { font-weight: 800; font-size: 0.9rem; }
 .day-rev-rating { color: #FFD700; font-size: 0.8rem; font-weight: 800; }
 .check-icon { color: #00d15b; }
+/* Review Pagination Specific Styles */
+.review-pagination {
+  margin-top: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+}
+.pg-btn {
+  padding: 8px 16px;
+  border-radius: 8px;
+  background: white;
+  border: 1px solid #e5e8eb;
+  color: #4e5968;
+  font-weight: 700;
+  font-size: 0.9rem;
+  transition: 0.2s;
+  cursor: pointer;
+}
+.pg-btn:hover:not(:disabled) {
+  background: #f2f4f6;
+  border-color: #b0b8c1;
+}
+.pg-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.pg-info {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #191f28;
+}
 </style>

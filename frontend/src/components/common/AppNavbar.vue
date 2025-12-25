@@ -11,7 +11,7 @@
         <nav class="gnb">
           <RouterLink class="gnb-link" :to="{ name: 'taste' }">취향 분석</RouterLink>
           <RouterLink class="gnb-link" :to="{ name: 'community' }">커뮤니티</RouterLink>
-          <RouterLink class="gnb-link" :to="{ name: 'travel' }">문학 여행</RouterLink>
+          <RouterLink class="gnb-link" :to="{ name: 'travel' }">북트래블</RouterLink>
           <RouterLink class="gnb-link" :to="{ name: 'mylibrary' }">내 서재</RouterLink>
         </nav>
       </div>

@@ -58,6 +58,7 @@ class Book(models.Model):
 
     category_id = models.IntegerField(null=True, blank=True)
     category_name = models.CharField(max_length=255, blank=True)
+    customer_review_rank = models.IntegerField(null=True, blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
 

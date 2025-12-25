@@ -74,6 +74,7 @@ class BookDetailSerializer(serializers.ModelSerializer):
             "cover",
             "category_id",
             "category_name",
+            "sales_point",
             "is_bookmarked",
             "customerReviewRank",
             "reviews",
@@ -90,10 +91,7 @@ class BookDetailSerializer(serializers.ModelSerializer):
         return Bookmark.objects.filter(user=request.user, book=obj).exists()
     
     def get_customerReviewRank(self, obj):
-        item = AladinListItem.objects.filter(isbn13=obj.isbn13).first()  # Meta.ordering=-id 적용
-        if not item or item.customer_review_rank is None:
-            return 0
-        return int(item.customer_review_rank)
+        return obj.customer_review_rank or 0
 
     def get_reviews(self, obj):
         # 해당 도서의 리뷰 (최신순)

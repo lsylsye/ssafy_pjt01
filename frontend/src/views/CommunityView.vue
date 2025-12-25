@@ -57,29 +57,48 @@
           @click="goDetail(post.id)"
         >
           <div class="card-left">
-            <div class="post-top-meta">
+            <div class="card-main-row">
               <span class="prefix-tag" :class="getPrefixClass(post.prefix_name)">
                 {{ post.prefix_name || '자유' }}
               </span>
-              <span class="time">{{ fromNow(post.created_at) }}</span>
-              <span class="author">· {{ post.user_nickname }}</span>
+              <h3 class="post-title">{{ post.title }}</h3>
             </div>
-            
-            <h3 class="post-title">{{ post.title }}</h3>
-            <p class="post-summary">{{ post.content }}</p>
+            <div class="card-sub-row">
+              <p class="post-summary">{{ post.content }}</p>
+              <span class="post-meta-mini">{{ post.user_nickname }} · {{ fromNow(post.created_at) }}</span>
+            </div>
           </div>
 
           <div class="card-right">
             <div class="meta-item" :class="{ liked: post.liked }">
-              <Heart :size="14" :fill="post.liked ? 'currentColor' : 'none'" />
+              <Heart :size="13" :fill="post.liked ? 'currentColor' : 'none'" />
               <span>{{ post.like_count }}</span>
             </div>
             <div class="meta-item">
-              <MessageCircle :size="14" />
+              <MessageCircle :size="13" />
               <span>{{ post.comment_count }}</span>
             </div>
           </div>
         </div>
+      </div>
+
+      <!-- 페이지네이션 -->
+      <div v-if="totalPages > 1" class="pagination">
+        <button 
+          class="pg-btn" 
+          :disabled="!prev"
+          @click="changePage(currentPage - 1)"
+        >
+          이전
+        </button>
+        <span class="pg-info">{{ currentPage }} / {{ totalPages }}</span>
+        <button 
+          class="pg-btn" 
+          :disabled="!next"
+          @click="changePage(currentPage + 1)"
+        >
+          다음
+        </button>
       </div>
     </div>
   </div>
@@ -98,6 +117,12 @@ const error = ref("");
 const posts = ref([]);
 const selectedPrefix = ref("");
 const q = ref("");
+
+// Pagination State
+const currentPage = ref(1);
+const totalPages = ref(1);
+const next = ref(null);
+const prev = ref(null);
 
 const getPrefixClass = (name) => {
   if (!name) return 'free';
@@ -121,15 +146,29 @@ const fromNow = (iso) => {
   } catch { return ""; }
 };
 
-async function fetchList() {
+async function fetchList(resetPage = false) {
+  if (resetPage) currentPage.value = 1;
+  
   loading.value = true;
   error.value = "";
   try {
     const res = await getFreePosts({
       q: q.value.trim(),
       prefix: selectedPrefix.value,
+      page: currentPage.value,
     });
-    posts.value = Array.isArray(res.data) ? res.data : [];
+    
+    // DRF Pagination response: { count, next, previous, results }
+    const data = res.data;
+    if (data.results) {
+      posts.value = data.results;
+      next.value = data.next;
+      prev.value = data.previous;
+      totalPages.value = Math.ceil(data.count / 7);
+    } else {
+      posts.value = Array.isArray(data) ? data : [];
+      totalPages.value = 1;
+    }
   } catch (e) {
     console.error("[Community List Fail]", e);
     error.value = "게시글을 불러오지 못했습니다.";
@@ -138,15 +177,21 @@ async function fetchList() {
   }
 }
 
+const changePage = (newPage) => {
+  currentPage.value = newPage;
+  fetchList();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+};
+
 const selectPrefix = (prefix) => {
   selectedPrefix.value = prefix;
-  fetchList();
+  fetchList(true);
 };
 
 const resetFilters = () => {
   q.value = "";
   selectedPrefix.value = "";
-  fetchList();
+  fetchList(true);
 };
 
 const goDetail = (id) => router.push(`/community/free/${id}`);
@@ -276,44 +321,53 @@ onMounted(fetchList);
 .card-left {
   flex: 1;
   min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
-.post-top-meta {
+.card-main-row {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 4px;
 }
+.card-sub-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
 .prefix-tag {
-  font-size: 0.7rem;
+  font-size: 0.65rem;
   font-weight: 800;
-  padding: 2px 8px;
+  padding: 2px 6px;
   border-radius: 4px;
+  flex-shrink: 0;
 }
 .prefix-tag.free { background: #e3f2fd; color: #1e88e5; }
 .prefix-tag.review { background: #e8f5e9; color: #2e7d32; }
 .prefix-tag.question { background: #fff3e0; color: #ef6c00; }
 
-.time, .author {
-  font-size: 0.8rem;
-  color: #8b95a1;
-  font-weight: 500;
-}
-
 .post-title {
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 700;
   color: #191f28;
-  margin-bottom: 2px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 .post-summary {
-  font-size: 0.88rem;
+  font-size: 0.85rem;
   color: #6b7684;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  flex: 1;
+}
+.post-meta-mini {
+  font-size: 0.75rem;
+  color: #adb5bd;
+  font-weight: 500;
+  flex-shrink: 0;
 }
 
 .card-right {
@@ -339,5 +393,37 @@ onMounted(fetchList);
   text-align: center;
   padding: 40px 0;
   color: #8b95a1;
+}
+
+/* Pagination */
+.pagination {
+  margin-top: 32px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+}
+.pg-btn {
+  padding: 8px 16px;
+  border-radius: 8px;
+  background: white;
+  border: 1px solid #e5e8eb;
+  color: #4e5968;
+  font-weight: 700;
+  font-size: 0.9rem;
+  transition: 0.2s;
+}
+.pg-btn:hover:not(:disabled) {
+  background: #f2f4f6;
+  border-color: #b0b8c1;
+}
+.pg-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.pg-info {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #191f28;
 }
 </style>

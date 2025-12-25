@@ -6,10 +6,11 @@ import api from "@/api/axios";
  * 인증 X  → auth:false로 토큰 안 붙여서 401 이슈 방지
  */
 // 이미 존재하는 getFreePosts ...
-export function getFreePosts({ q = "", prefix = "" } = {}) {
+export function getFreePosts({ q = "", prefix = "", page = 1 } = {}) {
   const params = {};
   if (q) params.q = q;
   if (prefix) params.prefix = prefix;
+  if (page) params.page = page;
 
   return api.get("community/free/", {
     params,

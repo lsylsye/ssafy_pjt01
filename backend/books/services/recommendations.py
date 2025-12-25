@@ -8,6 +8,7 @@ from django.db.models import Count
 from datetime import timedelta
 from users.models import Follow
 from books.models import Book, Bookmark, AladinSync, AladinListItem
+from reviews.models import Review
 from .aladin import _to_cover500
 
 
@@ -137,33 +138,55 @@ def recommend_bookmark_based_aladin(user, limit=5):
 
 
 def recommend_follow_based(user, limit=5, pool_limit=5):
+    # 1. 내가 팔로우하는 유저들 중 리뷰를 작성한 유저 후보 추출
     candidates = (
         Follow.objects
         .filter(from_user=user)
         .values("to_user_id")
-        .annotate(bookmark_count=Count("to_user__bookmarks"))
-        .filter(bookmark_count__gte=limit)
-        .order_by("-bookmark_count")[:pool_limit]
+        .annotate(review_count=Count("to_user__book_reviews"))
+        .filter(review_count__gt=0) # 최소 1개라도 쓴 사람
+        .order_by("-review_count")[:pool_limit]
     )
 
     candidate_ids = [c["to_user_id"] for c in candidates]
     if not candidate_ids:
         return {"type": "follow_based", "picked_user_id": None, "items": []}
 
+    # 2. 후보 중 한 명 랜덤 선택
     picked_user_id = random.choice(candidate_ids)
 
-    my_book_ids = Bookmark.objects.filter(user=user).values_list("book_id", flat=True)
+    # 3. 내가 이미 북마크했거나 리뷰를 쓴 책은 제외하고 싶지만, 
+    # 간단하게 내가 북마크한 isbn13 목록을 가져옴
+    my_bookmarked_isbns = set(Bookmark.objects.filter(user=user).values_list("book__isbn13", flat=True))
+    my_reviewed_isbns = set(Review.objects.filter(user=user).values_list("isbn13", flat=True))
+    exclude_isbns = my_bookmarked_isbns | my_reviewed_isbns
 
-    picked_bookmarks = (
-        Bookmark.objects
+    # 4. 선택된 유저의 최근 리뷰에서 책 정보 추출
+    picked_reviews = (
+        Review.objects
         .filter(user_id=picked_user_id)
-        .exclude(book_id__in=my_book_ids)
-        .select_related("book")
-        .order_by("-created_at")[:limit]
+        .exclude(isbn13__in=exclude_isbns)
+        .order_by("-created_at")
     )
+
+    items = []
+    seen_isbns = set()
+    for rev in picked_reviews:
+        if rev.isbn13 in seen_isbns:
+            continue
+        
+        # Review 모델의 정보를 바탕으로 Book 객체처럼 변환 (Serializer 호환용)
+        # 만약 실제 Book 테이블에 데이터가 있다면 그걸 쓰는 게 좋음
+        book = Book.objects.filter(isbn13=rev.isbn13).first()
+        if book:
+            items.append(book)
+            seen_isbns.add(rev.isbn13)
+        
+        if len(items) >= limit:
+            break
 
     return {
         "type": "follow_based",
         "picked_user_id": picked_user_id,
-        "items": [bm.book for bm in picked_bookmarks],
+        "items": items,
     }

@@ -22,7 +22,7 @@ def review_list(request):
     if board is None:
         return Response({"error": "Board not found"}, status=status.HTTP_404_NOT_FOUND)
 
-    qs = Review.objects.filter(board=board).select_related("user").order_by("-id")
+    qs = Review.objects.filter(board=board).select_related("user").order_by("-created_at", "-id")
 
     review_ids = list(qs.values_list("id", flat=True))
     like_map = _like_count_map(Review, review_ids)
@@ -210,7 +210,7 @@ def user_review_list(request, user_id):
     if board is None:
         return Response({"error": "Board not found"}, status=status.HTTP_404_NOT_FOUND)
 
-    qs = Review.objects.filter(board=board, user_id=user_id).select_related("user").order_by("-id")
+    qs = Review.objects.filter(board=board, user_id=user_id).select_related("user").order_by("-created_at", "-id")
 
     review_ids = list(qs.values_list("id", flat=True))
     like_map = _like_count_map(Review, review_ids)
@@ -235,7 +235,7 @@ def my_review_list(request):
     if board is None:
         return Response({"error": "Board not found"}, status=status.HTTP_404_NOT_FOUND)
 
-    qs = Review.objects.filter(board=board, user=request.user).select_related("user").order_by("-id")
+    qs = Review.objects.filter(board=board, user=request.user).select_related("user").order_by("-created_at", "-id")
 
     review_ids = list(qs.values_list("id", flat=True))
     like_map = _like_count_map(Review, review_ids)
@@ -262,7 +262,7 @@ def today_reviews(request):
     qs = Review.objects.filter(
         user=request.user, 
         created_at__date=today
-    ).order_by("-id")
+    ).order_by("-created_at", "-id")
     
     data = ReviewListSerializer(qs, many=True, context={"request": request, "liked_ids": set()}).data
     return Response(data)

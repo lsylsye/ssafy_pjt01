@@ -22,6 +22,7 @@ const editForm = ref({
   nickname: "",
   bio: "",
   favorite_country: "",
+  other_country: "",
   favorite_genre: "",
   profile_image: null,
 });
@@ -48,6 +49,29 @@ const levelIcon = computed(() => {
 
 const levelProgress = computed(() => {
   return Math.round((profile.value?.level_progress || 0) * 100);
+});
+
+// Pagination for My Activity
+const postsPage = ref(1);
+const commentsPage = ref(1);
+const pageSize = 6;
+
+const paginatedPosts = computed(() => {
+  const start = (postsPage.value - 1) * pageSize;
+  return myPosts.value.slice(start, start + pageSize);
+});
+
+const paginatedComments = computed(() => {
+  const start = (commentsPage.value - 1) * pageSize;
+  return myComments.value.slice(start, start + pageSize);
+});
+
+const totalPostsPages = computed(() => Math.ceil(myPosts.value.length / pageSize) || 1);
+const totalCommentsPages = computed(() => Math.ceil(myComments.value.length / pageSize) || 1);
+
+watch(activeTab, () => {
+  postsPage.value = 1;
+  commentsPage.value = 1;
 });
 
 onMounted(async () => {
@@ -94,6 +118,7 @@ function openEditModal() {
     nickname: profile.value.nickname,
     bio: profile.value.bio || "",
     favorite_country: profile.value.favorite_country || "",
+    other_country: profile.value.other_country || "",
     favorite_genre: profile.value.favorite_genre || "",
     profile_image: null,
   };
@@ -111,6 +136,9 @@ async function saveProfile() {
     formData.append("bio", editForm.value.bio);
     if (editForm.value.favorite_country) {
       formData.append("favorite_country", editForm.value.favorite_country);
+    }
+    if (editForm.value.favorite_country === "OTHER") {
+      formData.append("other_country", editForm.value.other_country);
     }
     if (editForm.value.favorite_genre) {
       formData.append("favorite_genre", editForm.value.favorite_genre);
@@ -221,8 +249,10 @@ function goToUserProfile(userId) {
                 </span>
               </div>
               <div class="user-email">{{ profile.email }}</div>
-              
-              <!-- 팔로우/수정 버튼 -->
+            </div>
+
+            <!-- 프로필 액션 버튼 (우측 가운데) -->
+            <div class="profile-compact-actions">
               <button 
                 v-if="!isMe" 
                 class="btn-follow"
@@ -243,10 +273,10 @@ function goToUserProfile(userId) {
 
           <div class="tag-group">
             <span v-if="profile.favorite_country" class="tag-badge tag-country">
-              🌍 {{ profile.favorite_country }}
+              🌍 {{ profile.favorite_country_display }}
             </span>
             <span v-if="profile.favorite_genre" class="tag-badge">
-              📚 {{ profile.favorite_genre }}
+              📚 {{ profile.favorite_genre_display }}
             </span>
           </div>
         </div>
@@ -315,13 +345,25 @@ function goToUserProfile(userId) {
               작성한 글이 없습니다.
             </div>
             <div 
-              v-for="post in myPosts" 
+              v-for="post in paginatedPosts" 
               :key="post.detail_url"
-              class="activity-item"
+              class="activity-item compact-item"
               @click="router.push(post.detail_url)"
             >
               <div class="activity-title">{{ post.title }}</div>
-              <div class="activity-date">{{ new Date(post.created_at).toLocaleDateString() }}</div>
+              <div class="activity-footer">
+                <div class="activity-sub">
+                  {{ post.board_name }}<span v-if="post.prefix_name"> &gt; {{ post.prefix_name }}</span>
+                </div>
+                <div class="activity-date">{{ new Date(post.created_at).toLocaleDateString() }}</div>
+              </div>
+            </div>
+
+            <!-- Posts Pagination -->
+            <div v-if="totalPostsPages > 1" class="mini-pagination">
+              <button :disabled="postsPage === 1" @click="postsPage--">이전</button>
+              <span>{{ postsPage }} / {{ totalPostsPages }}</span>
+              <button :disabled="postsPage === totalPostsPages" @click="postsPage++">다음</button>
             </div>
           </div>
 
@@ -331,14 +373,23 @@ function goToUserProfile(userId) {
               작성한 댓글이 없습니다.
             </div>
             <div 
-              v-for="comment in myComments" 
+              v-for="comment in paginatedComments" 
               :key="comment.comment_id"
-              class="activity-item"
+              class="activity-item compact-item"
               @click="router.push(comment.detail_url)"
             >
               <div class="activity-title">{{ comment.post_title }}</div>
-              <div class="activity-content-text">{{ comment.content }}</div>
-              <div class="activity-date">{{ new Date(comment.created_at).toLocaleDateString() }}</div>
+              <div class="activity-footer">
+                <div class="activity-content-text">{{ comment.content }}</div>
+                <div class="activity-date">{{ new Date(comment.created_at).toLocaleDateString() }}</div>
+              </div>
+            </div>
+
+            <!-- Comments Pagination -->
+            <div v-if="totalCommentsPages > 1" class="mini-pagination">
+              <button :disabled="commentsPage === 1" @click="commentsPage--">이전</button>
+              <span>{{ commentsPage }} / {{ totalCommentsPages }}</span>
+              <button :disabled="commentsPage === totalCommentsPages" @click="commentsPage++">다음</button>
             </div>
           </div>
         </div>
@@ -362,22 +413,28 @@ function goToUserProfile(userId) {
         <label class="form-label">좋아하는 나라</label>
         <select class="input-field" v-model="editForm.favorite_country">
           <option value="">선택 안함</option>
-          <option value="KR">한국</option>
-          <option value="JP">일본</option>
-          <option value="CN">중화권</option>
-          <option value="EN">영미권</option>
-          <option value="OTHER">기타</option>
+          <option value="KR">🇰🇷 대한민국</option>
+          <option value="JP">🇯🇵 일본</option>
+          <option value="CN">🇨🇳 중화권</option>
+          <option value="EN">🇺🇸 영미권</option>
+          <option value="OTHER">🌍 기타</option>
         </select>
+
+        <div v-if="editForm.favorite_country === 'OTHER'" style="margin-top: 10px;">
+          <label class="form-label">기타 나라(직접 입력)</label>
+          <input type="text" class="input-field" v-model="editForm.other_country" placeholder="예) 스페인, 러시아, 브라질…" />
+        </div>
 
         <label class="form-label">좋아하는 장르</label>
         <select class="input-field" v-model="editForm.favorite_genre">
           <option value="">선택 안함</option>
-          <option value="novel_poem_drama">소설/시/희곡</option>
-          <option value="business">경제/경영</option>
-          <option value="self_help">자기계발</option>
-          <option value="humanities">인문/교양</option>
-          <option value="comic_ebook">만화/eBook</option>
-          <option value="science">과학</option>
+          <option value="novel_poem_drama">📖 소설/시/희곡</option>
+          <option value="business">💰 경제/경영</option>
+          <option value="self_help">🔥 자기계발</option>
+          <option value="humanities">🧠 인문/철학</option>
+          <option value="hobby_practical">🧩 취미/실용</option>
+          <option value="comic_ebook">🧿 만화/eBook</option>
+          <option value="science">🔭 과학</option>
         </select>
 
         <div class="btn-row">
@@ -490,7 +547,7 @@ function goToUserProfile(userId) {
 .profile-compact {
   display: flex;
   gap: 16px;
-  align-items: flex-start;
+  align-items: center;
 }
 
 .avatar {
@@ -507,7 +564,11 @@ function goToUserProfile(userId) {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 4px;
+}
+
+.profile-compact-actions {
+  margin-left: auto;
 }
 
 .user-name {
@@ -744,30 +805,77 @@ function goToUserProfile(userId) {
   background: #f9f9f9;
 }
 
-.activity-type {
-  font-size: 0.7rem;
-  color: var(--primary);
-  font-weight: 600;
-  margin-bottom: 3px;
+.activity-main {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.activity-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+}
+
+.activity-sub {
+  font-size: 0.8rem;
+  color: #8b95a1;
+  font-weight: 500;
 }
 
 .activity-title {
   font-size: 0.95rem;
-  font-weight: 600;
-  margin-bottom: 3px;
+  font-weight: 700;
+  color: #191f28;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
 }
 
 .activity-content-text {
   font-size: 0.85rem;
-  color: #666;
-  margin-bottom: 3px;
+  color: #4e5968;
+  flex: 1;
+  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .activity-date {
   font-size: 0.75rem;
+  color: #adb5bd;
+  white-space: nowrap;
+}
+
+.mini-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  padding: 15px 0;
+}
+
+.mini-pagination button {
+  background: #f2f4f6;
+  border: none;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #4e5968;
+  cursor: pointer;
+}
+
+.mini-pagination button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.mini-pagination span {
+  font-size: 0.8rem;
+  font-weight: 700;
   color: #8b95a1;
 }
 
