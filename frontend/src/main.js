@@ -25,4 +25,17 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+// Axios 응답 인터셉터 설정: 401 인증 에러 처리
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      const auth = useAuthStore(pinia);
+      auth.logout(); // 이 함수 안에서 토큰 삭제 및 상태 초기화
+      router.push({ name: "login" });
+    }
+    return Promise.reject(error);
+  }
+);
+
 app.mount("#app");

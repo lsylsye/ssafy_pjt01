@@ -12,18 +12,20 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 from datetime import timedelta
-
-
+import os
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+load_dotenv(BASE_DIR / '.env')
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-ya9(#mtv-wonao^*%#5!82s7c3@%zc39lk$oay1=!r4a9zz8te'
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -205,7 +207,7 @@ CORS_ALLOW_HEADERS = ["*"]
 
 
 # 알라딘 OPEN API 설정
-ALADIN_TTB_KEY = "ttblsy74301608001"
+ALADIN_TTB_KEY = os.getenv("ALADIN_TTB_KEY")
 ALADIN_API_VERSION = "20131101"
 ALADIN_ITEMLIST_URL = "http://www.aladin.co.kr/ttb/api/ItemList.aspx"
 ALADIN_SEARCH_URL = "http://www.aladin.co.kr/ttb/api/ItemSearch.aspx"
@@ -213,4 +215,4 @@ ALADIN_LOOKUP_URL = "http://www.aladin.co.kr/ttb/api/ItemLookUp.aspx"
 
 
 # OpenAI API 설정
-OPENAI_API_KEY = "S14P02EB10-3faa8e5a-1d7e-41b0-96bc-4b2b5cdd2ea9" 
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY") 
